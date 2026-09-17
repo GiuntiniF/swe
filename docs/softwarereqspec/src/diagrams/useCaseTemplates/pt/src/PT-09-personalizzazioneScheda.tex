@@ -1,0 +1,101 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{PT-09} \\ \hline
+  \ucname{Personalizzazione di una Scheda Assegnata} \\ \hline
+  \ucactor{PT} \\ \hline
+  \ucdescription{Il PT modifica le sessioni di allenamento di una
+    scheda che un atleta sta già seguendo. La modifica vale solo per
+    quell'atleta.} \\ \hline
+  \ucprecond{Il PT deve essere autenticato. L'atleta scelto deve
+    avere almeno una scheda assegnata in corso, con assegnazione
+    confermata: le bozze non sono personalizzabili (vedi Nota 5 del
+    caso d'uso PT-05).} \\ \hline
+  \ucpostcond{Le sessioni di allenamento prescritte a quell'atleta per
+    la settimana scelta sono modificate. La scheda non cambia. Le
+    sessioni di allenamento degli altri atleti che seguono la scheda
+    non cambiano.} \\ \hline
+  \ucmainflow{
+    \item Il PT si trova sulla pagina di dettaglio di un atleta,
+      raggiunta tramite il caso d'uso PT-08.
+    \item Il PT preme su una scheda dell'elenco delle schede
+      assegnate.
+    \item Il sistema mostra il dettaglio dell'assegnazione: nome
+      della scheda, periodo di validità ed elenco delle settimane di
+      allenamento. Il sistema evidenzia la settimana corrente e
+      segnala le settimane che contengono personalizzazioni.
+    \item Il PT preme su una settimana, scelta tra la settimana
+      corrente e quelle successive (vedi Nota 2).
+    \item Il sistema mostra le sessioni di allenamento della
+      settimana con i valori previsti per quell'atleta (vedi
+      Nota 1).
+    \item Il PT preme su un esercizio.
+    \item Il sistema mostra il form con i valori correnti
+      dell'esercizio:
+      \begin{itemize}
+        \item peso;
+        \item numero di serie/ripetizioni;
+        \item tempo di recupero tra una serie e l'altra (in
+          secondi).
+      \end{itemize}
+    \item Il PT modifica i valori che vuole cambiare.
+    \item Il PT preme il pulsante "Salva".
+    \item Il sistema registra la personalizzazione per la settimana
+      scelta.
+    \item Il sistema invia un'email di notifica all'Atleta per
+      informarlo che la sua scheda è cambiata.
+  } \\ \hline
+  \ucaltflow{
+    \textbf{2a. Nessuna scheda assegnata} \newline
+    - L'atleta non ha schede assegnate. Il sistema mostra la
+    sezione vuota. \newline
+    - Il flusso termina. \newline
+    \textbf{4a. Scheda terminata} \newline
+    - Tutte le settimane della scheda sono trascorse: nessuna
+    settimana è modificabile. \newline
+    - Il sistema mostra un messaggio ("Scheda terminata: non ci sono
+    settimane modificabili"). \newline
+    - Il flusso termina. \newline
+    \textbf{7a. Ripristino del valore originale} \newline
+    - Se l'esercizio è personalizzato, il sistema mostra
+    accanto ai valori il pulsante "Ripristina". \newline
+    - Il PT preme il pulsante. Il sistema riporta l'esercizio ai valori
+    previsti dalla scheda. \newline
+    - Il flusso riprende dal passo 5.
+  } \\ \hline
+  \ucnote{
+    \textbf{Nota 1:} quali esercizi l'atleta svolge è deciso dalle
+    sessioni di allenamento configurate nel blocco mensile (PT-04) e
+    non è modificabile qui. Sono invece memorizzati sull'assegnazione,
+    per ciascun esercizio di ciascuna sessione: il carico, che il PT
+    inserisce al momento dell'assegnazione (PT-05), e le
+    serie/ripetizioni e il tempo di recupero, che restano quelli
+    della scheda finché il PT non li modifica con questo caso d'uso.
+    La modifica agisce sull'assegnazione e non sulla scheda: la
+    scheda resta invariata e gli altri atleti che la seguono non sono
+    toccati.\newline
+    \textbf{Nota 2:} sono modificabili solo la settimana corrente e
+    le settimane successive. Le settimane già trascorse sono in sola
+    lettura, perché l'atleta si è già allenato su quanto vi era
+    prescritto.\newline
+    \textbf{Nota 3:} lo statement richiede che la tipologia di
+    esercizi in una scheda vari solo da mese a mese. Questo caso
+    d'uso rispetta il vincolo: la personalizzazione tocca solo peso,
+    serie/ripetizioni e tempo di recupero, che lo statement lascia
+    liberi di variare da una sessione di allenamento all'altra. Quali
+    esercizi l'atleta svolge resta fissato per l'intero blocco mensile
+    dalle sessioni di allenamento configurate in PT-04.\newline
+    \textbf{Nota 4:} la personalizzazione non permette di: aggiungere,
+    sostituire o togliere esercizi, cambiare il numero o la
+    composizione delle sessioni, cambiare la durata della scheda.
+    Questi elementi sono parte della scheda e valgono per tutti gli
+    atleti che la seguono. Per interventi di questo tipo, il PT deve
+    duplicare la scheda e assegnare la copia.
+  } \\ \hline
+\end{xltabular}
+\end{document}

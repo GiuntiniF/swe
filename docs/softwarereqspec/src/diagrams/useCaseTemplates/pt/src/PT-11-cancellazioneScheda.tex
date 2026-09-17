@@ -1,0 +1,56 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{PT-11} \\ \hline
+  \ucname{Cancellazione Scheda} \\ \hline
+  \ucactor{PT} \\ \hline
+  \ucdescription{Il PT elimina una scheda che ha creato e che non ha
+    assegnazioni attive.} \\ \hline
+  \ucprecond{Il PT deve essere autenticato. Deve esistere almeno una
+    scheda da eliminare. La scheda non deve avere assegnazioni
+    attive (vedi Nota).} \\ \hline
+  \ucpostcond{Il sistema elimina la scheda con tutti i blocchi
+    mensili, le sessioni di allenamento e gli esercizi che
+    contiene.} \\ \hline
+  \ucmainflow{
+    \item Il PT apre la pagina delle proprie schede.
+    \item Il sistema mostra l'elenco delle schede create dal PT.
+    \item Il PT preme il pulsante "Elimina" su una scheda
+      dell'elenco.
+    \item Il sistema chiede conferma dell'eliminazione, avvisando
+      che l'operazione non è reversibile.
+    \item Il PT preme il pulsante "Conferma Eliminazione".
+    \item Il sistema verifica che la scheda non abbia assegnazioni
+      attive.
+    \item Il sistema elimina la scheda.
+    \item Il sistema mostra un messaggio di conferma e aggiorna
+      l'elenco delle schede.
+  } \\ \hline
+  \ucaltflow{
+    \textbf{4a. Il PT annulla} \newline
+    - Il PT preme il pulsante "Annulla" invece di confermare.
+    \newline
+    - Il sistema non elimina nulla. \newline
+    - Il flusso termina. \newline
+    \textbf{6a. Scheda con assegnazioni attive} \newline
+    - Il sistema mostra un messaggio di errore ("Impossibile
+    eliminare: la scheda ha assegnazioni attive") e non elimina la
+    scheda. \newline
+    - Il flusso termina.
+  } \\ \hline
+  \ucnote{
+    Una scheda con assegnazioni attive non può essere eliminata
+    perché uno o più atleti la stanno seguendo: eliminarla
+    cancellerebbe le sessioni di allenamento su cui l'atleta si sta
+    allenando (vedi caso d'uso A-03). Per smettere di assegnare una
+    scheda a un atleta, il PT deve prima terminare l'assegnazione.
+    Questa restrizione è la stessa già usata in PT-04 per la
+    modifica delle sessioni di allenamento.
+  } \\ \hline
+\end{xltabular}
+\end{document}

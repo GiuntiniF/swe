@@ -1,0 +1,36 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{A-02} \\ \hline
+  \ucname{Richiesta Appuntamento} \\ \hline
+  \ucactor{Atleta} \\ \hline
+  \ucdescription{L'atleta richiede un appuntamento con il PT.
+    L'atleta indica la data, l'ora e la motivazione.} \\ \hline
+  \ucprecond{L'atleta deve essere autenticato.} \\ \hline
+  \ucpostcond{Il sistema crea un appuntamento in attesa
+    di conferma dal PT. Il PT riceve un'email di notifica.} \\ \hline
+  \ucmainflow{
+    \item L'atleta apre la pagina dei propri appuntamenti.
+    \item L'atleta preme il pulsante "Richiedi Appuntamento".
+    \item Il sistema mostra il form di richiesta appuntamento.
+    \item L'atleta inserisce i dati necessari: la data e l'ora
+      dell'appuntamento e la motivazione.
+    \item L'atleta preme il pulsante "Invia Richiesta".
+    \item Il sistema verifica i dati nel database.
+    \item Il sistema salva nel database la richiesta di appuntamento.
+    \item Il sistema invia al PT un'email per informarlo
+      della nuova richiesta.
+  } \\ \hline
+  \ucaltflow{
+    \textbf{6a. Richiesta in attesa già presente} \newline
+    - Il sistema mostra un messaggio di errore ("C'è già una richiesta
+    di appuntamento in attesa di risposta."). \newline
+    - Il flusso riprende dal passo 1. \newline
+  } \\ \hline
+\end{xltabular}
+\end{document}

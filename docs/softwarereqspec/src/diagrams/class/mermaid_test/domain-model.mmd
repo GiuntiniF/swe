@@ -1,0 +1,35 @@
+---
+title: "Domain Model — mappa dei package"
+---
+flowchart TB
+    subgraph AppPT["App PT"]
+        BusinessLogic["BusinessLogic"]
+        subgraph DomainModel["Domain Model"]
+            Coaching["Coaching"]
+            Exercises["Exercises"]
+            TrainingPlan["TrainingPlan"]
+            User["User"]
+        end
+    end
+
+    Coaching -.-> DomainModel
+    Coaching -.-> User
+    User -.-> DomainModel
+    User -.-> Exercises
+    Exercises -.-> User
+    TrainingPlan -.-> User
+    TrainingPlan -.-> Exercises
+
+%% ---------------------------------------------------------------------------
+%% Mermaid non ha i package diagram di UML: i package sono resi con i subgraph
+%% di flowchart e le dipendenze con le frecce tratteggiate.
+%%
+%% Le tre dipendenze verso "Domain Model" puntano al subgraph che contiene il
+%% nodo sorgente. Se il layout risulta illeggibile, sostituire il subgraph
+%% "Domain Model" come bersaglio con un nodo esplicito per la radice del
+%% package (le classi Gym e Address di domain-model-root.mmd):
+%%
+%%     DomainModelRoot["Domain Model (radice)"]
+%%     Coaching -.-> DomainModelRoot
+%%     User -.-> DomainModelRoot
+%% ---------------------------------------------------------------------------

@@ -1,0 +1,40 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{PT-06} \\ \hline
+  \ucname{Gestione Richiesta di Appuntamento} \\ \hline
+  \ucactor{PT} \\ \hline
+  \ucdescription{Il PT conferma o rifiuta una richiesta
+  di appuntamento che ha ricevuto da un atleta.} \\ \hline
+  \ucprecond{Il PT deve essere autenticato. Deve esistere almeno una
+    richiesta di appuntamento in attesa di conferma o
+  rifiuto.} \\ \hline
+  \ucpostcond{Il sistema conferma o rifiuta la richiesta di
+    appuntamento. L'atleta riceve un'email di notifica con
+  l'esito.} \\ \hline
+  \ucmainflow{
+  \item Il PT apre la pagina delle richieste di appuntamento.
+  \item Il PT preme una richiesta.
+  \item Il sistema mostra i dettagli della richiesta: l'atleta che
+    l'ha effettuata, la palestra in cui si allena, la data, l'ora e
+    la motivazione della richiesta.
+  \item Il PT preme il pulsante "Conferma Richiesta".
+  \item Il sistema imposta la richiesta come confermata.
+  \item Il sistema invia all'atleta un'email per informarlo che la
+    richiesta è stata confermata.
+  } \\ \hline
+  \ucaltflow{
+    \textbf{4a. Pulsante "Rifiuta Richiesta"} \newline
+    - Il sistema mostra un form con la motivazione del rifiuto. \newline
+    - Il PT preme il pulsante "Conferma Rifiuto". \newline
+    - Il sistema salva la richiesta rifiutata. \newline
+    - Il sistema invia all'atleta un'email per informarlo che la
+    richiesta è stata rifiutata.
+  } \\ \hline
+\end{xltabular}
+\end{document}

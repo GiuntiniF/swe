@@ -1,0 +1,57 @@
+---
+title: User
+---
+classDiagram
+    class User {
+        -string firstName
+        -string lastName
+        -string email
+    }
+
+    class Athlete {
+        -LocalDate birthDate
+        -float height
+        -float weight
+        +getAge() int
+        +isFreeIn(s: LocalDate, e: LocalDate) Boolean
+    }
+
+    class PT
+
+    class OneRepMax {
+        -ExerciseType exerciseType
+        -float value
+        -WeightMeasureUnit unit
+        -LocalDate measuredOn
+    }
+
+    Athlete --|> User
+    PT --|> User
+
+    PT "1" -- "0..*" Athlete : pt / athletes
+    Athlete "1" -- "0..*" OneRepMax : oneRepMaxes
+    Athlete "0..*" -- "0..*" Gym : gymList
+
+%% ---------------------------------------------------------------------------
+%% User::email e' {unique}: Mermaid non ha una sintassi per i vincoli sugli
+%% attributi, quindi la property e' annotata qui.
+%%
+%% Vincoli su Athlete (#36 passata 6).
+%% Scritti come commenti e non come `note`: ADR-0001 §6 e #43 stabiliscono che
+%% le invarianti non stanno nei sorgenti dei diagrammi, perché le note
+%% renderizzano dentro il diagramma, cioè dentro un deliverable valutato. La
+%% forma discorsiva, in italiano e con il rimando alla decisione, va in
+%% CONTEXT.md (#43).
+%%
+%% {nonSovrapposizione} (#11)
+%%   assignments->forAll(a1, a2 | a1 <> a2 implies
+%%       a1.startDate > a2./endDate or a2.startDate > a1./endDate)
+%%   Confronti stretti: la contiguità fra due assegnazioni e' ammessa.
+%%
+%% {unaSolaRichiestaInAttesa} (#33)
+%%   coachingSessions->select(status = BookingStatus::pending)->size() <= 1
+%%
+%% {unMassimalePerEsercizio} (#16)
+%%   oneRepMaxes->isUnique(exerciseType)
+%%   Un valore corrente per tipo di esercizio, nessuna serie storica.
+%% ---------------------------------------------------------------------------

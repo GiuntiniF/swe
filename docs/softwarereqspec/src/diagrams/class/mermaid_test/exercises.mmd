@@ -1,0 +1,300 @@
+---
+title: Exercises
+---
+classDiagram
+    class AbsoluteLoad
+
+    class BodyweightLoad
+
+    class CaloriesTarget {
+        +int calories
+        +getTargetDisplay() string
+    }
+
+    class Cardio {
+        -CardioTarget target
+        -CardioIntensity intensity
+        +getCalories() int
+        +getTargetDisplay() string
+        +getIntensityDisplay() string
+    }
+
+    class DensityProgression {
+        -float weeklyRestReductionPercentage
+    }
+
+    class DistanceTarget {
+        +float distanceValue
+        +DistanceUnit distanceUnit
+        +getTargetDisplay() string
+    }
+
+    class DoubleProgression {
+        -float weeklyIncrementPercentage
+        -int setsIncrement
+        -int repsIncrement
+    }
+
+    class DropSetDecorator {
+        +float dropRepsWeightMultiplier
+        +getVolumeValue() int
+        +getVolumeDisplay() string
+    }
+    note for DropSetDecorator "NOTA: di fatto non ha senso se le reps non sono di tipo FailureReps ma lo si permette per flessibilità"
+
+    class DurationTarget {
+        +Duration minutes
+        +getTargetDisplay() string
+    }
+
+    class Exercise {
+        -int sets
+        -Reps reps
+        -LoadPrescription[1] loadPrescription
+        -Progression[0..1] progression
+        -Duration restTime
+        +ExerciseType exerciseType
+        +getVolumeValue() int
+        +getRestTime() int
+        +supports(p: ProgressionParameter) boolean
+    }
+
+    class FailureReps {
+        +getVolumeValue() int
+        +getDisplayValue() string
+        +isToFailure() bool
+    }
+
+    class FixedReps {
+        -int repsNumber
+        +getVolumeValue() int
+        +getDisplayValue() string
+        +isToFailure() bool
+    }
+
+    class HeartRateIntensity {
+        +HeartRateZone zone
+        +int value
+        +getTargetDisplay() string
+    }
+
+    class HIIT {
+        +CardioActivity[1..*] intervals
+        +getCalories() int
+        +getTargetDisplay() string
+        +getIntensityDisplay() string
+    }
+
+    class LoadPrescription {
+        <<abstract>>
+        +resolveFor(a: Athlete, ptInput: float[0..1]) Weight[0..1]
+        +requiresPtInput() boolean
+        +isScalable() boolean
+    }
+
+    class LoadProgression {
+        -float weeklyIncrementPercentage
+    }
+
+    class MachineSettingsIntensity {
+        -float speed
+        -float incline
+        -float level
+        +getTargetDisplay() string
+    }
+
+    class PercentageOfOneRepMax {
+        -float percentage
+    }
+
+    class Progression {
+        <<abstract>>
+        +applyTo(p: WeeklyPrescription, step: int) WeeklyPrescription
+        +requiredParameters() ProgressionParameter[*]
+    }
+
+    class RangeReps {
+        -int minReps
+        -int maxReps
+        +getVolumeValue() int
+        +getDisplayValue() string
+        +isToFailure() bool
+    }
+
+    class RestPauseDecorator {
+        +Duration restTimeBetweenReps
+        +getRestTimeBetweenReps() Duration
+    }
+
+    class Superset {
+        -Exercise[1..*] exercises
+        +getVolumeValue() int
+        +getRestTime() Duration
+        +getExerciseType() ExerciseType
+        +getVolumeDisplay() string
+    }
+
+    class VolumeProgression {
+        -int setsIncrement
+        -int repsIncrement
+    }
+
+    class WeightActivityDecorator {
+        +getVolumeValue() int
+        +getVolumeDisplay() string
+        +getRestTime() Duration
+        +getExerciseType() ExerciseType
+    }
+
+    class ExerciseType {
+        <<DataType>>
+        +string name
+        +string description
+        +string targetMuscleGroup
+        +string[0..*] musclesInvolved
+    }
+
+    class Weight {
+        <<DataType>>
+        +float value
+        +WeightMeasureUnit weightMeasureUnit
+        +getLoadValue() float
+    }
+
+    class WeeklyPrescription {
+        <<DataType>>
+        +Exercise exerciseRef
+        +Weight weight
+        +int sets
+        +Reps reps
+        +Duration restTime
+    }
+    note for WeeklyPrescription "derivato, mai persistito"
+
+    class DistanceUnit {
+        <<enumeration>>
+        Km
+        m
+        mi
+    }
+
+    class HeartRateZone {
+        <<enumeration>>
+        Z1
+        Z2
+        Z3
+        Z4
+        Z5
+    }
+
+    class ProgressionParameter {
+        <<enumeration>>
+        ScalableLoad
+        NumericReps
+        RestTime
+    }
+
+    class WeightMeasureUnit {
+        <<enumeration>>
+        KG
+        Lbs
+    }
+
+    class CardioActivity {
+        <<interface>>
+        +getCalories() int
+        +getTarget() CardioTarget
+        +getIntensity() CardioIntensity
+    }
+
+    class CardioIntensity {
+        <<interface>>
+        +getDisplay() string
+    }
+
+    class CardioTarget {
+        <<interface>>
+        +getTargetDisplay() string
+    }
+
+    class Reps {
+        <<interface>>
+        +getVolumeValue() int
+        +getDisplayValue() string
+        +isToFailure() boolean
+    }
+
+    class WeightActivity {
+        <<interface>>
+        +getCalories() int
+        +getVolumeValue() int
+        +getVolumeDisplay() string
+        +getRestTime() Duration
+        +getExerciseType() ExerciseType
+        +getExecutionNotes() string
+    }
+
+    class WorkoutActivity {
+        <<interface>>
+        +getCalories() int
+    }
+
+    WeightActivity --|> WorkoutActivity
+    CardioActivity --|> WorkoutActivity
+
+    Exercise ..|> WeightActivity
+    Superset ..|> WeightActivity
+    WeightActivityDecorator ..|> WeightActivity
+    DropSetDecorator --|> WeightActivityDecorator
+    RestPauseDecorator --|> WeightActivityDecorator
+
+    Cardio ..|> CardioActivity
+    HIIT ..|> CardioActivity
+    CaloriesTarget ..|> CardioTarget
+    DistanceTarget ..|> CardioTarget
+    DurationTarget ..|> CardioTarget
+    HeartRateIntensity ..|> CardioIntensity
+    MachineSettingsIntensity ..|> CardioIntensity
+
+    FixedReps ..|> Reps
+    RangeReps ..|> Reps
+    FailureReps ..|> Reps
+
+    PercentageOfOneRepMax --|> LoadPrescription
+    BodyweightLoad --|> LoadPrescription
+    AbsoluteLoad --|> LoadPrescription
+
+    LoadProgression --|> Progression
+    VolumeProgression --|> Progression
+    DoubleProgression --|> Progression
+    DensityProgression --|> Progression
+
+    Superset "0..1" o-- "1..*" Exercise : exercises
+    HIIT "0..1" o-- "1..*" CardioActivity : intervals
+
+    Cardio ..> CardioTarget
+    Cardio ..> CardioIntensity
+    DistanceTarget ..> DistanceUnit
+    HeartRateIntensity ..> HeartRateZone
+    Exercise ..> Reps
+    Exercise ..> LoadPrescription
+    Exercise ..> Progression
+    LoadPrescription ..> Weight
+    Weight ..> WeightMeasureUnit
+    Progression ..> WeeklyPrescription
+    Progression ..> ProgressionParameter
+    WeightActivity ..> ExerciseType
+    Superset ..> ExerciseType
+
+%% ---------------------------------------------------------------------------
+%% Vincoli su Exercise (#36 passata 6) — cfr. nota in user.mmd: commenti e non
+%% `note`, per ADR-0001 §6 e #43. Forma discorsiva in CONTEXT.md (#43).
+%%
+%% {progressioneCompatibile} (#4 §8, riespresso contro loadPrescription come #16 richiede)
+%%   progression->notEmpty() implies
+%%       progression.requiredParameters()->forAll(p | self.supports(p))
+%%   dove supports(p) vale:
+%%       ProgressionParameter::ScalableLoad <=> loadPrescription.isScalable()
+%%       ProgressionParameter::NumericReps  <=> not reps.isToFailure()
+%%       ProgressionParameter::RestTime     <=> restTime->notEmpty()
+%% ---------------------------------------------------------------------------

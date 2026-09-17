@@ -1,0 +1,144 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{PT-05} \\ \hline
+  \ucname{Assegnazione Scheda ad un Atleta} \\ \hline
+  \ucactor{PT} \\ \hline
+  \ucdescription{Il PT assegna ad un atleta una scheda
+    già presente nel sistema.} \\ \hline
+  \ucprecond{Il PT deve essere autenticato. Deve esistere almeno una
+    scheda configurata.} \\ \hline
+  \ucpostcond{La scheda scelta è assegnata all'atleta e
+    l'assegnazione è confermata. I carichi di tutte le sessioni della
+    scheda sono specifici per quell'atleta. Se il PT ha interrotto la
+    compilazione, l'assegnazione resta in bozza e non è visibile
+    all'atleta (vedi Nota 5).} \\ \hline
+  \ucmainflow{
+    \item Il PT si trova sulla pagina di dettaglio di un atleta,
+      raggiunta tramite il caso d'uso PT-08.
+    \item Il PT preme il pulsante "Assegna nuova Scheda".
+    \item Il sistema mostra la lista delle schede presenti nel sistema.
+    \item Il PT preme sulla scheda che vuole usare.
+    \item Il sistema mostra il form dei dati aggiuntivi necessari: la
+      data di inizio della scheda e la durata della scheda, derivata
+      dal numero di blocchi mensili configurati in PT-04. Dopo che il
+      PT inserisce la data di inizio, il sistema mostra anche la data
+      di fine (vedi le Note).
+    \item Il PT inserisce i dati e preme il pulsante "Continua".
+    \item Il sistema mostra il form dei carichi degli esercizi,
+      sessione per sessione, per tutte le sessioni di tutti i blocchi
+      mensili della scheda (vedi le Note).
+    \item Il PT inserisce i dati nel form e preme il pulsante
+      "Assegna Scheda".
+    \item Il sistema verifica che ogni esercizio di ogni sessione
+      abbia un carico e che l'intervallo di date non si sovrapponga a
+      quello di un'altra assegnazione confermata dell'atleta.
+    \item Il sistema conferma l'assegnazione della Scheda all'Atleta.
+    \item Il sistema invia un'email di notifica all'Atleta per
+      informarlo che c'è una nuova scheda assegnata.
+  } \\ \hline
+  \ucaltflow{
+    \textbf{4a. Creazione scheda ad hoc} \newline
+    - Invece di scegliere una scheda già presente, il PT può crearne
+    una da zero per l'atleta. \newline
+    - Il flusso continua dal passo 1 del caso d'uso PT-03, poi dal
+    passo 1 del caso d'uso PT-04. \newline
+    - Dopo la creazione della scheda, il flusso riprende dal
+    passo 5. \newline
+    \newline
+    \textbf{6a. Sovrapposizione con una scheda già assegnata} \newline
+    - Il sistema rileva che l'intervallo di date della nuova
+    assegnazione si sovrappone a quello di una scheda già assegnata
+    all'atleta. \newline
+    - Il sistema mostra un messaggio di errore con il nome e
+    l'intervallo di date della scheda in conflitto. \newline
+    - Il flusso riprende dal passo 5. \newline
+    \newline
+    \textbf{8a. Salvataggio parziale} \newline
+    - Invece di premere "Assegna Scheda", il PT preme il pulsante "Salva
+    e continua dopo". \newline
+    - Il sistema salva l'assegnazione in bozza, con i carichi
+    inseriti fino a quel momento. Non invia alcuna email all'atleta e
+    non verifica la completezza dei carichi. \newline
+    - Il flusso termina. Il PT riprende in un secondo momento dal
+    flusso 2a. \newline
+    \newline
+    \textbf{2a. Ripresa di un'assegnazione in bozza} \newline
+    - Sulla pagina di dettaglio dell'atleta il PT preme su
+    un'assegnazione in bozza invece del pulsante "Assegna nuova
+    Scheda". \newline
+    - Il sistema mostra il form del passo 7 precompilato con i
+    carichi già inseriti, segnalando quelli mancanti. \newline
+    - Il flusso riprende dal passo 8. \newline
+    \newline
+    \textbf{9a. Carichi incompleti} \newline
+    - Alla conferma manca il carico di almeno un esercizio. \newline
+    - Il sistema segnala le sessioni incomplete e non conferma
+    l'assegnazione. L'assegnazione resta in bozza. \newline
+    - Il flusso riprende dal passo 8. \newline
+    \newline
+    \textbf{9b. Sovrapposizione rilevata alla conferma} \newline
+    - Nel tempo intercorso tra la creazione della bozza e la
+    conferma, all'atleta è stata assegnata un'altra scheda il cui
+    intervallo si sovrappone. \newline
+    - Il sistema mostra lo stesso errore del flusso 6a e non conferma
+    l'assegnazione. \newline
+    - Il flusso riprende dal passo 5, dove il PT può spostare la data
+    di inizio. \newline
+  } \\ \hline
+  \ucnote{
+    \textbf{Nota 1:} il PT inserisce un carico per ciascun esercizio
+    di ciascuna sessione della scheda. Il sistema non calcola nessun
+    carico: la variazione del peso da una sessione all'altra è
+    decisa dal PT, esercizio per esercizio. Per velocizzare
+    l'inserimento, il sistema precompila ogni sessione con i carichi
+    della sessione precedente, che il PT conferma o modifica. Il
+    campo è obbligatorio per confermare l'assegnazione, ma non per
+    salvarla in bozza (vedi Nota 5).\newline
+    \textbf{Nota 2:} per gli esercizi con variante drop-set, il PT
+    inserisce un solo carico. Il sistema ottiene il peso delle
+    ripetizioni in drop applicando il moltiplicatore configurato
+    nella variante.\newline
+    \textbf{Nota 3:} l'intervallo di date di un'assegnazione va dalla
+    data di inizio all'ultimo giorno dell'ultimo blocco mensile. Ogni
+    blocco dura 4 settimane (28 giorni). La data di fine è quindi
+    determinata dalla data di inizio e dal numero di blocchi: il
+    sistema non la chiede al PT. Due assegnazioni contigue, in cui
+    una termina il giorno prima che l'altra inizi, non si sovrappongono
+    e sono quindi ammesse.\newline
+    \textbf{Nota 4:} per adeguare i carichi di una scheda già in
+    corso, il PT usa il caso d'uso PT-09, oppure assegna una nuova
+    scheda.\newline
+    \textbf{Nota 5:} la compilazione dei carichi può essere lunga,
+    perché copre ogni esercizio di ogni sessione di ogni blocco
+    mensile. Per questo il PT può interromperla e riprenderla: il
+    sistema salva l'assegnazione in \textbf{bozza}. Un'assegnazione
+    in bozza:
+    \begin{itemize}
+      \item è visibile al solo PT, che la trova nel dettaglio
+        dell'atleta (caso d'uso PT-08) segnalata come tale;
+      \item non è visibile all'atleta, che nel caso d'uso A-03 vede
+        solo le assegnazioni confermate;
+      \item non genera nessuna notifica: l'email all'atleta parte
+        solo alla conferma;
+      \item non è personalizzabile con il caso d'uso PT-09, che
+        opera solo su assegnazioni confermate;
+      \item non occupa l'intervallo di date: il controllo di
+        sovrapposizione del flusso 6a considera solo le assegnazioni
+        confermate. Una bozza abbandonata non impedisce quindi di
+        assegnare altre schede all'atleta. Per questo motivo il
+        controllo viene rifatto alla conferma (flusso 9b).
+    \end{itemize}
+    Lo stato di bozza riguarda solo la compilazione
+    dell'assegnazione, non il periodo di allenamento. Se la scheda
+    sia programmata, in corso o terminata dipende dalle sue date e
+    dalla data odierna, ed è indipendente dal fatto che
+    l'assegnazione sia in bozza o confermata.
+  } \\ \hline
+\end{xltabular}
+\end{document}

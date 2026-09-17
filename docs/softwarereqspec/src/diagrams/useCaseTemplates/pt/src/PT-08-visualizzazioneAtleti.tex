@@ -1,0 +1,71 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{PT-08} \\ \hline
+  \ucname{Visualizzazione Atleti} \\ \hline
+  \ucactor{PT} \\ \hline
+  \ucdescription{Il PT visualizza l'elenco dei propri
+    atleti e ne consulta i dettagli.} \\ \hline
+  \ucprecond{Il PT deve essere autenticato.} \\ \hline
+  \ucpostcond{Il PT visualizza i dettagli dell'atleta
+    selezionato.} \\ \hline
+  \ucmainflow{
+    \item Il PT apre la pagina dell'elenco dei propri atleti.
+    \item Il sistema mostra l'elenco degli atleti seguiti dal PT, in
+      ordine alfabetico per cognome. Per ciascun atleta mostra nome,
+      cognome ed email.
+    \item Il PT preme su un atleta dell'elenco.
+    \item Il sistema mostra la pagina di dettaglio dell'atleta, con:
+      \begin{itemize}
+        \item i dati anagrafici (nome, cognome, età, email);
+        \item i dati fisici (altezza e peso);
+        \item le palestre in cui l'atleta si allena;
+        \item l'elenco delle schede assegnate, con nome, periodo di
+          validità e stato. Il sistema segnala le assegnazioni ancora
+          in bozza (vedi Nota 5 del caso d'uso PT-05);
+        \item l'elenco degli appuntamenti e delle richieste
+          di appuntamento dell'atleta, con data, ora e stato.
+      \end{itemize}
+    \item Il PT può premere il pulsante "Assegna nuova Scheda" per
+      assegnare una nuova scheda all'atleta.
+    \item Il flusso continua dal passo 3 del caso d'uso PT-05.
+  } \\ \hline
+  \ucaltflow{
+    \textbf{2a. Nessun atleta presente} \newline
+    - Il sistema mostra un messaggio ("Nessun atleta registrato"). \newline
+    - Il flusso termina. \newline
+    \textbf{5a. Personalizzazione di una scheda già assegnata} \newline
+    - Invece di assegnare una nuova scheda, il PT preme su una scheda
+    confermata dell'elenco delle schede assegnate, per modificarne le
+    sessioni di allenamento limitatamente a quell'atleta. \newline
+    - Il flusso continua dal passo 3 del caso d'uso PT-09. \newline
+    \textbf{5b. Ripresa di un'assegnazione in bozza} \newline
+    - Il PT preme su un'assegnazione segnalata come bozza, per
+    completarne i carichi. \newline
+    - Il flusso continua dal flusso alternativo 2a del caso
+    d'uso PT-05.
+  } \\ \hline
+  \ucnote{
+    \textbf{Nota 1:} tutte le informazioni della pagina di dettaglio
+    sono in sola lettura. Lo statement assegna al PT solo la
+    visualizzazione dei dettagli dei propri atleti. L'inserimento e
+    la modifica dei dati anagrafici spettano invece all'Atleta (caso
+    d'uso A-04).\newline
+    \textbf{Nota 2:} gli elenchi di schede, appuntamenti e richieste
+    possono essere vuoti. In tal caso il sistema mostra la sezione
+    vuota, senza cambiare il flusso.\newline
+    \textbf{Nota 3:} il dettaglio mostra l'elenco delle schede
+    assegnate anche per un altro motivo: permette al PT di
+    verificare, prima di assegnarne una nuova con PT-05, che gli
+    intervalli temporali delle schede dell'atleta non si
+    sovrappongano.\newline
+    \textbf{Nota 4:} il PT vede solo i propri atleti. L'elenco
+    corrisponde agli atleti associati al PT autenticato.
+  } \\ \hline
+\end{xltabular}
+\end{document}

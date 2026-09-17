@@ -1,0 +1,47 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{PT-10} \\ \hline
+  \ucname{Modifica Scheda} \\ \hline
+  \ucactor{PT} \\ \hline
+  \ucdescription{Il PT modifica il nome e la descrizione di una
+    scheda che ha creato.} \\ \hline
+  \ucprecond{Il PT deve essere autenticato. Deve esistere almeno una
+    scheda da modificare.} \\ \hline
+  \ucpostcond{Il sistema aggiorna il nome e/o la descrizione della
+    scheda.} \\ \hline
+  \ucmainflow{
+    \item Il PT apre la pagina delle proprie schede.
+    \item Il sistema mostra l'elenco delle schede create dal PT.
+    \item Il PT preme il pulsante "Modifica" su una scheda
+      dell'elenco.
+    \item Il sistema mostra il form di modifica precompilato con il
+      nome e la descrizione correnti della scheda.
+    \item Il PT modifica il nome e/o la descrizione.
+    \item Il PT preme il pulsante "Salva Modifiche".
+    \item Il sistema verifica che, se il nome è cambiato, non sia
+      già usato da un'altra scheda del PT.
+    \item Il sistema salva le modifiche.
+    \item Il sistema mostra un messaggio di conferma.
+  } \\ \hline
+  \ucaltflow{
+    \textbf{7a. Nome già presente} \newline
+    - Il sistema mostra un messaggio di errore ("Esiste già una
+    scheda con questo nome"). \newline
+    - Il flusso riprende dal passo 4.
+  } \\ \hline
+  \ucnote{
+    Questo caso d'uso modifica solo il nome e la descrizione della
+    scheda. Le sessioni di allenamento si modificano con il caso
+    d'uso PT-04, indipendentemente dal fatto che la scheda abbia
+    assegnazioni attive o meno: il nome e la descrizione non hanno
+    effetto su ciò che gli atleti stanno seguendo, quindi non c'è
+    bisogno di restrizioni come quelle di PT-04.
+  } \\ \hline
+\end{xltabular}
+\end{document}

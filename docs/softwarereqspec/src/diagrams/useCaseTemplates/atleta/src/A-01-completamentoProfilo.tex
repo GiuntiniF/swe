@@ -1,0 +1,65 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{A-01} \\ \hline
+  \ucname{Completamento Profilo} \\ \hline
+  \ucactor{Atleta} \\ \hline
+  \ucdescription{Al primo accesso l'atleta sceglie una propria
+    password, in sostituzione di quella temporanea, e inserisce i
+    dati anagrafici e fisici che il PT non ha fornito al momento
+    della creazione dell'account.} \\ \hline
+  \ucprecond{L'atleta è autenticato (U-01) con la password
+    temporanea ricevuta via email. Il profilo dell'atleta è incompleto: il
+      PT ha
+    creato l'account (PT-02) fornendo solo nome, cognome ed
+    email.} \\ \hline
+  \ucpostcond{L'atleta ha una propria password e la password
+    temporanea non è più valida. Il profilo dell'atleta è completo e
+    l'atleta può usare tutte le funzioni dell'applicativo.} \\ \hline
+  \ucmainflow{
+    \item Il sistema rileva che il profilo dell'atleta è incompleto.
+    \item Il sistema mostra il form con i dati mancanti: la nuova
+      password e i dati anagrafici e fisici (data di nascita,
+      altezza, peso).
+    \item L'atleta inserisce i dati.
+    \item L'atleta preme il pulsante "Completa Registrazione".
+    \item Il sistema valida i dati inseriti.
+    \item Il sistema salva i dati nel database, sostituendo
+      l'impronta della password temporanea con quella della password
+      scelta dall'atleta.
+    \item Il sistema indirizza l'atleta alla propria area personale.
+  } \\ \hline
+  \ucaltflow{
+    \textbf{2a. L'atleta abbandona prima di completare:} \newline
+    - Il profilo resta incompleto e nessun dato viene salvato. La
+    password temporanea resta valida. \newline
+    - Al successivo accesso il sistema ripropone il flusso dal
+    punto 1. \newline
+    \textbf{5a. Dati non validi:} \newline
+    - Il sistema mostra un messaggio di errore ("Controllare i dati
+    inseriti") e indica i campi non validi (password che non rispetta
+    i requisiti minimi di lunghezza e composizione, data di nascita
+    futura, altezza o peso non positivi). \newline
+    - Il flusso riprende dal passo 2.
+  } \\ \hline
+  \ucnote{
+    Finché il profilo è incompleto, l'atleta non può accedere alle
+    altre funzioni dell'applicativo. I dati richiesti sono
+    obbligatori: la data di nascita alimenta l'operazione
+    \texttt{getAge()} di \texttt{Athlete}, mentre altezza e peso
+    servono al PT per stabilire i carichi. L'atleta potrà
+    modificare questi dati in seguito, con il caso d'uso A-04
+    (Modifica Dati Anagrafici). \newline
+    Il cambio della password sta qui e non in un caso d'uso separato
+    perché condivide la stessa precondizione: è l'unica cosa che
+    l'atleta può fare al primo accesso. La password temporanea
+    generata in PT-02 è nota a chiunque abbia letto l'email, quindi
+    va sostituita prima di dare all'atleta accesso ai propri dati.
+  } \\ \hline
+\end{xltabular}
+\end{document}

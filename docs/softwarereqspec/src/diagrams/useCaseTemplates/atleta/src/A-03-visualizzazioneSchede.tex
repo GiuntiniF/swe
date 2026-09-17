@@ -1,0 +1,59 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{A-03} \\ \hline
+  \ucname{Visualizzazione Schede Assegnate} \\ \hline
+  \ucactor{Atleta} \\ \hline
+  \ucdescription{L'atleta consulta le schede di allenamento che il
+    proprio PT gli ha assegnato, fino al dettaglio degli esercizi
+    previsti in ciascuna settimana.} \\ \hline
+  \ucprecond{L'atleta deve essere autenticato.} \\ \hline
+  \ucpostcond{L'atleta visualizza le sessioni di allenamento previste per la
+    settimana scelta.} \\ \hline
+  \ucmainflow{
+    \item L'atleta apre la pagina delle proprie schede.
+    \item Il sistema mostra l'elenco delle schede di allenamento
+      assegnate all'atleta, con nome, periodo di validità e stato.
+      L'elenco comprende le sole assegnazioni confermate (vedi
+      Nota 3).
+    \item L'atleta preme su una scheda dell'elenco.
+    \item Il sistema mostra il dettaglio della scheda assegnata:
+      nome, periodo di validità ed elenco delle settimane di
+      allenamento. Il sistema evidenzia la settimana corrente.
+    \item L'atleta preme su una settimana, scelta tra tutte quelle
+      della scheda, comprese quelle già trascorse (vedi Nota 2).
+    \item Il sistema mostra le sessioni di allenamento della
+      settimana con gli esercizi previsti e i valori prescritti a
+      quell'atleta (vedi Nota 1).
+  } \\ \hline
+  \ucaltflow{
+    \textbf{2a. Nessuna scheda assegnata} \newline
+    - Il sistema mostra un messaggio ("Nessuna scheda di allenamento
+    assegnata"). \newline
+    - Il flusso termina.
+  } \\ \hline
+  \ucnote{
+    \textbf{Nota 1:} i valori mostrati al passo 6 sono quelli
+    memorizzati sull'assegnazione: gli esercizi e le loro serie/ripetizioni
+      vengono dalle
+    sessioni di allenamento configurate nel blocco mensile (PT-04), i
+      carichi dai valori che il PT ha
+    inserito per quell'atleta al momento dell'assegnazione (PT-05),
+    con le personalizzazioni eventualmente introdotte in
+    seguito (PT-09).\newline
+    \textbf{Nota 2:} tutto ciò che questo caso d'uso mostra è in sola
+    lettura, comprese le settimane trascorse. A differenza del PT
+    (caso d'uso PT-09), l'atleta non modifica mai ciò che gli è
+    prescritto.\newline
+    \textbf{Nota 3:} le assegnazioni che il PT ha lasciato in bozza
+    non compaiono in questo elenco, perché i loro carichi sono
+    incompleti e l'atleta non deve allenarsi su una scheda che il PT
+    non ha ancora confermato (vedi Nota 5 del caso d'uso PT-05).
+  } \\ \hline
+\end{xltabular}
+\end{document}

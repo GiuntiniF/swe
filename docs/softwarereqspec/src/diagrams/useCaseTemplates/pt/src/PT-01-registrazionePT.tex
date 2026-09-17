@@ -1,0 +1,58 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{PT-01} \\ \hline
+  \ucname{Registrazione PT} \\ \hline
+  \ucactor{PT} \\ \hline
+  \ucdescription{Il PT crea da solo il proprio account per usare
+    l'applicativo.} \\ \hline
+  \ucprecond{L'utente non ha un account nel sistema.} \\ \hline
+  \ucpostcond{Il PT ha un account nell'applicativo. Può accedere
+    tramite il caso d'uso U-01. Non ha ancora nessun atleta
+    associato.} \\ \hline
+  \ucmainflow{
+    \item L'utente apre la pagina di registrazione.
+    \item Il sistema mostra il form di inserimento dati (nome,
+      cognome, email e password).
+    \item L'utente inserisce i dati.
+    \item L'utente preme il pulsante "Registrati".
+    \item Il sistema verifica che i dati siano validi e che l'email
+      non sia già presente nel database.
+    \item Il sistema crea l'account del PT, memorizzando l'impronta
+      della password e non la password stessa.
+    \item Il sistema mostra una pagina di conferma e indirizza
+      l'utente al caso d'uso U-01 (Login).
+  } \\ \hline
+  \ucaltflow{
+    \textbf{5a. Email già registrata:} \newline
+    - Il sistema mostra un messaggio di errore ("Email già
+    registrata"). \newline
+    - Il flusso riprende dal passo 2. \newline
+    \textbf{5b. Dati non validi:} \newline
+    - Il sistema mostra un messaggio di errore ("Controllare i dati
+    inseriti") e indica i campi non validi (email in formato non
+    valido, nome o cognome vuoti, password che non rispetta i
+    requisiti minimi di lunghezza e composizione). \newline
+    - Il flusso riprende dal passo 2.
+  } \\ \hline
+  \ucnote{
+    Il PT sceglie la propria password al momento della
+    registrazione. Il sistema non la memorizza in chiaro, ma solo la
+    sua impronta calcolata con una funzione di hash. \newline
+    Al termine della registrazione il sistema non autentica l'utente,
+    ma lo indirizza al login: le credenziali appena create vanno
+    usate tramite il caso d'uso U-01. \newline
+    Il messaggio di errore del flusso 5a è lo stesso in due casi:
+    quando l'email appartiene già a un altro PT, e quando appartiene
+    a un atleta già registrato dal proprio PT. Il campo
+    \texttt{email} di \texttt{User} è infatti univoco su tutta la
+    gerarchia degli utenti. Per questo motivo, uno stesso utente non
+    può avere sia il ruolo di PT sia quello di Atleta.
+  } \\ \hline
+\end{xltabular}
+\end{document}

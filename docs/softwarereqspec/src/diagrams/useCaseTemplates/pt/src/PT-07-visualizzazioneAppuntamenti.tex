@@ -1,0 +1,32 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{PT-07} \\ \hline
+  \ucname{Visualizzazione Appuntamenti} \\ \hline
+  \ucactor{PT} \\ \hline
+  \ucdescription{Il PT visualizza l'elenco degli
+    appuntamenti con i propri atleti.} \\ \hline
+  \ucprecond{Il PT deve essere autenticato.} \\ \hline
+  \ucpostcond{Il PT visualizza l'elenco degli
+    appuntamenti.} \\ \hline
+  \ucmainflow{
+    \item Il PT apre la pagina degli appuntamenti.
+    \item Il sistema mostra l'elenco degli appuntamenti con i propri
+      atleti, diviso per stato (confermati, in attesa, rifiutati).
+    \item Il PT può selezionare un appuntamento per visualizzarne i
+      dettagli.
+    \item Il sistema mostra i dettagli dell'appuntamento: atleta,
+      data, ora e motivazione.
+  } \\ \hline
+  \ucaltflow{
+    \textbf{3a. Nessun appuntamento presente} \newline
+    - Il sistema mostra un messaggio ("Nessun appuntamento"). \newline
+    - Il flusso termina.
+  } \\ \hline
+\end{xltabular}
+\end{document}

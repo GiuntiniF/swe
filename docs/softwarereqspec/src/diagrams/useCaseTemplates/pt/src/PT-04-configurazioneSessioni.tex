@@ -1,0 +1,78 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{PT-04} \\ \hline
+  \ucname{Configurazione Sessioni di Allenamento in una
+    Scheda} \\ \hline
+  \ucactor{PT} \\ \hline
+  \ucdescription{Il PT inserisce o modifica le sessioni di
+    allenamento presenti in una scheda.} \\ \hline
+  \ucprecond{Il PT deve essere autenticato. Deve esistere almeno una
+    scheda da modificare. La scheda non deve avere assegnazioni
+    attive.} \\ \hline
+  \ucpostcond{Il sistema configura le sessioni di allenamento
+    della scheda.} \\ \hline
+  \ucmainflow{
+    \item Il PT apre la pagina di configurazione delle
+      sessioni di allenamento.
+    \item Il sistema mostra la lista di sessioni di allenamento presenti.
+    \item Il PT preme su una delle sessioni di allenamento.
+    \item Il sistema mostra il dettaglio della sessione di allenamento
+      corrente.
+    \item Il PT preme il pulsante "Aggiungi Esercizio".
+    \item Il sistema mostra una lista di esercizi.
+    \item Il PT sceglie un esercizio dalla lista.
+    \item Il sistema mostra il form di inserimento dettagli esercizio.
+    \item Il PT configura l'esercizio inserendo:
+      \begin{itemize}
+        \item Numero di serie/ripetizioni.
+        \item Tempo di recupero tra una serie e l'altra (in secondi).
+        \item Variante di esecuzione se presente (superserie, dropset,
+          rest-pause etc...).
+        \item Altre note esecutive.
+      \end{itemize}
+      Il carico non viene chiesto qui: è specifico dell'atleta e
+      viene inserito al momento dell'assegnazione, nel caso d'uso
+      PT-05 (vedi le Note).
+    \item Il PT preme il pulsante "Aggiungi Esercizio".
+    \item Il sistema aggiunge l'esercizio alla sessione.
+    \item Il flusso riprende dal passo 4.
+  } \\ \hline
+  \ucaltflow{
+    \textbf{5a. Modifica esercizio} \newline
+    - Invece di aggiungere un nuovo esercizio, il PT preme su
+    un esercizio già presente e lo modifica. \newline
+    - Il flusso riprende dal passo 4. \newline
+    \textbf{5b. Modifica sessione scelta} \newline
+    - Il PT decide di modificare un'altra sessione di
+    allenamento invece di quella corrente.\newline
+    - Il flusso riprende dal passo 1.
+  } \\ \hline
+  \ucvariations{
+    \textbf{9a. Selezione variante di esecuzione} \newline
+    - Se il PT seleziona una variante, il sistema può chiedere dati
+    aggiuntivi. Ad esempio: altri esercizi da eseguire in superserie,
+    oppure il tempo di recupero tra una miniserie e l'altra nel
+    rest-pause.
+  } \\ \hline
+  \ucnote{
+    \textbf{Nota 1:} la scheda definisce \emph{quali} esercizi si
+    svolgono e \emph{come} si svolgono (serie/ripetizioni, recupero,
+    variante), ma non con quale peso. Il peso è specifico dell'atleta
+    e viene inserito al momento dell'assegnazione, nel caso d'uso
+    PT-05. È questo che permette di assegnare la stessa scheda a più
+    atleti, come richiede lo statement.\newline
+    \textbf{Nota 2:} la scheda non contiene alcuna regola di
+    progressione del carico. Il carico può variare da una sessione
+    all'altra perché il PT lo inserisce sessione per sessione in
+    PT-05, non perché il sistema lo calcoli. Questo è coerente con lo
+    statement, che ammette che il peso e le serie/ripetizioni variino
+    da una sessione di allenamento all'altra senza indicare come.
+  } \\ \hline
+\end{xltabular}
+\end{document}

@@ -1,0 +1,34 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{PT-03} \\ \hline
+  \ucname{Creazione nuova Scheda} \\ \hline
+  \ucactor{PT} \\ \hline
+  \ucdescription{Il PT crea una nuova scheda. Il contenuto della
+  scheda potrà essere assegnato a uno o più atleti.} \\ \hline
+  \ucprecond{Il PT deve essere autenticato.} \\ \hline
+  \ucpostcond{Il sistema crea una nuova Scheda.} \\ \hline
+  \ucmainflow{
+  \item Il PT apre la pagina di creazione nuova Scheda.
+  \item Il sistema mostra il form di inserimento dati della scheda
+    (nome e descrizione).
+  \item Il PT inserisce i dati della scheda.
+  \item Il PT preme il pulsante "Continua".
+  \item Il sistema verifica il nome nel database.
+  \item Il sistema mostra una pagina di conferma creazione.
+  \item Il sistema reindirizza il PT alla configurazione delle
+    sessioni di allenamento.
+  } \\ \hline
+  \ucaltflow{
+    \textbf{5a. Scheda con stesso nome già presente} \newline
+    - Il sistema mostra un messaggio di errore ("Esiste già una scheda
+    con questo nome"). \newline
+    - Il flusso riprende dal passo 2. \newline
+  } \\ \hline
+\end{xltabular}
+\end{document}

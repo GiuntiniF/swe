@@ -1,0 +1,57 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{U-01} \\ \hline
+  \ucname{Login} \\ \hline
+  \ucactor{Utente (PT o Atleta)} \\ \hline
+  \ucdescription{L'utente accede al sistema con la propria email e la
+    propria password.} \\ \hline
+  \ucprecond{L'utente deve essere registrato nel sistema.} \\ \hline
+  \ucpostcond{L'utente è autenticato e può usare le funzioni previste
+    per il proprio ruolo.} \\ \hline
+  \ucmainflow{
+    \item L'utente apre la pagina di login.
+    \item Il sistema mostra il form di inserimento di email e
+      password.
+    \item L'utente inserisce la propria email e la propria password.
+    \item L'utente preme il pulsante "Accedi".
+    \item Il sistema verifica le credenziali confrontando l'email con
+      il database e la password con il valore memorizzato (vedi le
+      Note).
+    \item Il sistema autentica l'utente e lo indirizza alla propria
+      area.
+  } \\ \hline
+  \ucaltflow{
+    \textbf{5a. Credenziali non valide:} \newline
+    - L'email non è registrata, oppure la password non corrisponde. \newline
+    - Il sistema mostra un unico messaggio di errore ("Email o
+    password non validi"), senza distinguere i due casi (vedi le
+    Note). \newline
+    - Il flusso riprende dal passo 2. \newline
+    \textbf{6a. Primo accesso dell'Atleta:} \newline
+    - L'utente autenticato è un Atleta che sta accedendo con la
+    password temporanea generata dal sistema in PT-02, e non ha
+    ancora scelto una propria password né inserito i propri dati
+    anagrafici e fisici. \newline
+    - Il sistema lo indirizza al caso d'uso A-01 (Completamento
+    Profilo) prima di dargli accesso alle altre funzioni.
+  } \\ \hline
+  \ucnote{
+    Il sistema non memorizza la password in chiaro, ma solo la sua
+    impronta calcolata con una funzione di hash. La verifica del
+    passo 5 confronta le impronte, non le password. \newline
+    Il messaggio di errore del flusso 5a è volutamente unico: se il
+    sistema distinguesse "email non registrata" da "password errata",
+    permetterebbe a chiunque di scoprire quali indirizzi email sono
+    registrati nel sistema. \newline
+    L'autenticazione è uguale per entrambi gli attori. Ciò che
+    cambia, dopo il login, sono le funzioni a cui l'utente ha
+    accesso.
+  } \\ \hline
+\end{xltabular}
+\end{document}
