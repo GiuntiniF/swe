@@ -198,11 +198,11 @@ Model e ne mostrano il diagramma delle classi, secondo le dipendenze
 mostrate nel package diagram.
 
 \subsubsection{User}
-Contiene gli utenti del sistema: la classe astratta \texttt{User},
-con i dati anagrafici e le credenziali comuni, e le sue
-specializzazioni \texttt{PT} e \texttt{Athlete}. Definisce inoltre
-\texttt{PTAssignment}, il legame che rappresenta la relazione di
-coaching tra un PT e un atleta che segue.
+Il package contiene gli utenti del sistema. La classe astratta
+\texttt{User} definisce i dati anagrafici e le credenziali comuni.
+Le classi \texttt{PT} e \texttt{Athlete} specializzano \texttt{User}.
+La classe \texttt{PTAssignment} rappresenta il legame di coaching tra
+un PT e un atleta.
 
 \begin{figure}[H]
   \centering
@@ -212,10 +212,11 @@ coaching tra un PT e un atleta che segue.
 \end{figure}
 
 \subsubsection{Gym}
-Contiene la palestra (\texttt{Gym}, con nome, indirizzo e telefono) e
-i due legami che un PT o un Atleta possono avere con essa:
-\texttt{StaffAssignment}, l'Associazione PT-Palestra, e
-\texttt{Membership}, l'Iscrizione dell'Atleta.
+Il package contiene la palestra. La classe \texttt{Gym} definisce il
+nome, l'indirizzo e il telefono della palestra. La classe
+\texttt{StaffAssignment} rappresenta l'Associazione PT-Palestra. La
+classe \texttt{Membership} rappresenta l'Iscrizione dell'Atleta alla
+palestra.
 
 \begin{figure}[H]
   \centering
@@ -225,10 +226,10 @@ i due legami che un PT o un Atleta possono avere con essa:
 \end{figure}
 
 \subsubsection{Coaching}
-Contiene la gestione degli appuntamenti tra PT e Atleta.
+Il package gestisce gli appuntamenti tra il PT e l'Atleta. La classe
 \texttt{Appointment} rappresenta sia la richiesta di appuntamento sia
-l'appuntamento confermato, distinti dallo stato
-(\texttt{BookingStatus}: in attesa, confermato o rifiutato).
+l'appuntamento confermato. L'attributo \texttt{BookingStatus} indica
+lo stato dell'appuntamento: in attesa, confermato o rifiutato.
 
 \begin{figure}[H]
   \centering
@@ -238,14 +239,16 @@ l'appuntamento confermato, distinti dallo stato
 \end{figure}
 
 \subsubsection{TrainingPlan}
-Contiene la struttura della scheda di allenamento
-(\texttt{TrainingPlan}), che raggruppa i blocchi mensili
-(\texttt{MonthlyBlock}) e le sessioni di allenamento
-(\texttt{TrainingSession}), e la sua assegnazione agli atleti
-(\texttt{PlanAssignment}), che si articola nelle settimane
-(\texttt{Week}) e negli esercizi assegnati
-(\texttt{AssignedExercise}), con cui il PT personalizza i valori
-prescritti per il singolo atleta senza modificare la scheda
+Il package contiene la struttura della scheda di allenamento. La
+classe \texttt{TrainingPlan} rappresenta la scheda. La scheda
+raggruppa i blocchi mensili (\texttt{MonthlyBlock}). Ogni blocco
+mensile raggruppa le sessioni di allenamento
+(\texttt{TrainingSession}). La classe \texttt{PlanAssignment}
+rappresenta l'assegnazione della scheda a un atleta. L'assegnazione
+si articola nelle settimane (\texttt{Week}). Ogni settimana contiene
+gli esercizi assegnati (\texttt{AssignedExercise}). Con
+\texttt{AssignedExercise} il PT personalizza i valori prescritti per
+il singolo atleta. La personalizzazione non modifica la scheda
 originale.
 
 \begin{figure}[H]
@@ -256,15 +259,16 @@ originale.
 \end{figure}
 
 \subsubsection{Exercises}
-Contiene il catalogo degli esercizi (\texttt{Exercise}, con il
-relativo \texttt{ExerciseType}) e le loro modalità di composizione ed
-esecuzione. L'interfaccia \texttt{WorkoutActivity} permette, tramite
-il pattern Composite, di raggruppare più esercizi in un superset
-(\texttt{Superset}) e, tramite il pattern Decorator, di applicare
-varianti di esecuzione come il dropset o il rest-pause. Definisce
-inoltre le diverse modalità con cui sono espresse le ripetizioni di
-un esercizio (\texttt{Reps}): un numero fisso, un intervallo o
-l'esecuzione al cedimento.
+Il package contiene il catalogo degli esercizi. La classe
+\texttt{Exercise} rappresenta l'esercizio e fa riferimento al
+relativo \texttt{ExerciseType}. L'interfaccia
+\texttt{WorkoutActivity} definisce le modalità di composizione ed
+esecuzione di un esercizio. Il pattern Composite permette di
+raggruppare più esercizi in un superset (\texttt{Superset}). Il
+pattern Decorator permette di applicare varianti di esecuzione, come
+il dropset o il rest-pause. L'interfaccia \texttt{Reps} definisce le
+modalità con cui sono espresse le ripetizioni di un esercizio: un
+numero fisso, un intervallo o l'esecuzione al cedimento.
 
 \begin{figure}[H]
   \centering
@@ -274,10 +278,10 @@ l'esecuzione al cedimento.
 \end{figure}
 
 \subsubsection{ValueType}
-Contiene i tipi di valore utilizzati dalle classi degli altri
-package: \texttt{Address}, l'indirizzo di una palestra, e
-\texttt{Weight}, il carico di un esercizio con la relativa unità di
-misura.
+Il package contiene i tipi di valore usati dalle classi degli altri
+package. La classe \texttt{Address} rappresenta l'indirizzo di una
+palestra. La classe \texttt{Weight} rappresenta il carico di un
+esercizio e la relativa unità di misura.
 
 \begin{figure}[H]
   \centering
