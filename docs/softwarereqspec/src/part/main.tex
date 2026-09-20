@@ -193,9 +193,16 @@ comuni, PT per il Personal Trainer, A per l'Atleta.
   \label{fig:packageDiagramDomainModel}
 \end{figure}
 
-Le figure seguenti mostrano il diagramma delle classi di ciascun
-package del Domain Model, secondo le dipendenze mostrate nel
-package diagram.
+Le sezioni seguenti descrivono brevemente ciascun package del Domain
+Model e ne mostrano il diagramma delle classi, secondo le dipendenze
+mostrate nel package diagram.
+
+\subsubsection{User}
+Contiene gli utenti del sistema: la classe astratta \texttt{User},
+con i dati anagrafici e le credenziali comuni, e le sue
+specializzazioni \texttt{PT} e \texttt{Athlete}. Definisce inoltre
+\texttt{PTAssignment}, il legame che rappresenta la relazione di
+coaching tra un PT e un atleta che segue.
 
 \begin{figure}[H]
   \centering
@@ -204,12 +211,24 @@ package diagram.
   \label{fig:userDomainModel}
 \end{figure}
 
+\subsubsection{Gym}
+Contiene la palestra (\texttt{Gym}, con nome, indirizzo e telefono) e
+i due legami che un PT o un Atleta possono avere con essa:
+\texttt{StaffAssignment}, l'Associazione PT-Palestra, e
+\texttt{Membership}, l'Iscrizione dell'Atleta.
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{diagrams/class/Gym.pdf}
   \caption{Diagramma delle classi del package Gym}
   \label{fig:gymDomainModel}
 \end{figure}
+
+\subsubsection{Coaching}
+Contiene la gestione degli appuntamenti tra PT e Atleta.
+\texttt{Appointment} rappresenta sia la richiesta di appuntamento sia
+l'appuntamento confermato, distinti dallo stato
+(\texttt{BookingStatus}: in attesa, confermato o rifiutato).
 
 \begin{figure}[H]
   \centering
@@ -218,6 +237,17 @@ package diagram.
   \label{fig:coachingDomainModel}
 \end{figure}
 
+\subsubsection{TrainingPlan}
+Contiene la struttura della scheda di allenamento
+(\texttt{TrainingPlan}), che raggruppa i blocchi mensili
+(\texttt{MonthlyBlock}) e le sessioni di allenamento
+(\texttt{TrainingSession}), e la sua assegnazione agli atleti
+(\texttt{PlanAssignment}), che si articola nelle settimane
+(\texttt{Week}) e negli esercizi assegnati
+(\texttt{AssignedExercise}), con cui il PT personalizza i valori
+prescritti per il singolo atleta senza modificare la scheda
+originale.
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{diagrams/class/TrainingPlan.pdf}
@@ -225,12 +255,29 @@ package diagram.
   \label{fig:trainingPlanDomainModel}
 \end{figure}
 
+\subsubsection{Exercises}
+Contiene il catalogo degli esercizi (\texttt{Exercise}, con il
+relativo \texttt{ExerciseType}) e le loro modalità di composizione ed
+esecuzione. L'interfaccia \texttt{WorkoutActivity} permette, tramite
+il pattern Composite, di raggruppare più esercizi in un superset
+(\texttt{Superset}) e, tramite il pattern Decorator, di applicare
+varianti di esecuzione come il dropset o il rest-pause. Definisce
+inoltre le diverse modalità con cui sono espresse le ripetizioni di
+un esercizio (\texttt{Reps}): un numero fisso, un intervallo o
+l'esecuzione al cedimento.
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{diagrams/class/Exercises-crop.pdf}
   \caption{Diagramma delle classi del package Exercises}
   \label{fig:exercisesDomainModel}
 \end{figure}
+
+\subsubsection{ValueType}
+Contiene i tipi di valore utilizzati dalle classi degli altri
+package: \texttt{Address}, l'indirizzo di una palestra, e
+\texttt{Weight}, il carico di un esercizio con la relativa unità di
+misura.
 
 \begin{figure}[H]
   \centering
