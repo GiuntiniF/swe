@@ -1,0 +1,40 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{PT-14} \\ \hline
+  \ucname{Visualizzazione Palestre} \\ \hline
+  \ucactor{PT} \\ \hline
+  \ucdescription{Il PT consulta l'elenco delle palestre a cui si è
+    associato, attive e passate.} \\ \hline
+  \ucprecond{Il PT deve essere autenticato.} \\ \hline
+  \ucpostcond{Il PT visualizza le proprie associazioni con le
+    palestre.} \\ \hline
+  \ucmainflow{
+    \item Il PT apre la pagina delle proprie palestre.
+    \item Il sistema mostra l'elenco delle palestre a cui il PT è o è
+      stato associato, con nome, indirizzo, data di inizio e stato
+      (attiva o terminata). Il sistema mostra prima le associazioni
+      attive.
+    \item Il PT preme su una palestra dell'elenco.
+    \item Il sistema mostra il dettaglio della palestra: nome,
+      indirizzo, telefono e date dell'associazione del PT.
+  } \\ \hline
+  \ucaltflow{
+    \textbf{2a. Nessuna palestra associata} \newline
+    - Il sistema mostra un messaggio ("Non sei associato a nessuna
+    palestra") e il pulsante per associarsi a una nuova palestra. Il
+    flusso continua eventualmente dal caso d'uso PT-13. \newline
+    - Il flusso termina.
+  } \\ \hline
+  \ucnote{
+    Tutte le informazioni di questo caso d'uso sono in sola lettura.
+    Per associarsi a una nuova palestra il PT usa il caso d'uso PT-13;
+    per terminare un'associazione attiva usa il caso d'uso PT-15.
+  } \\ \hline
+\end{xltabular}
+\end{document}

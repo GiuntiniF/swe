@@ -1,0 +1,32 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{A-06} \\ \hline
+  \ucname{Visualizzazione Palestre} \\ \hline
+  \ucactor{Atleta} \\ \hline
+  \ucdescription{L'atleta consulta l'elenco delle palestre a cui è
+    iscritto.} \\ \hline
+  \ucprecond{L'atleta deve essere autenticato.} \\ \hline
+  \ucpostcond{L'atleta visualizza le proprie iscrizioni alle
+    palestre.} \\ \hline
+  \ucmainflow{
+    \item L'atleta apre la pagina delle proprie palestre.
+    \item Il sistema mostra l'elenco delle palestre a cui l'atleta è
+      iscritto, con nome e indirizzo.
+    \item L'atleta preme su una palestra dell'elenco.
+    \item Il sistema mostra il dettaglio della palestra: nome,
+      indirizzo, telefono e data di iscrizione dell'atleta.
+  } \\ \hline
+  \ucnote{
+    Tutte le informazioni di questo caso d'uso sono in sola lettura.
+    L'atleta non gestisce da sé le proprie iscrizioni: le iscrizioni a
+    una palestra si creano solo quando il PT registra l'atleta (vedi
+    caso d'uso PT-02, Nota 3).
+  } \\ \hline
+\end{xltabular}
+\end{document}

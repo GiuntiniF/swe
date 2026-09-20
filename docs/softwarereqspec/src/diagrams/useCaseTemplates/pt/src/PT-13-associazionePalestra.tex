@@ -1,0 +1,60 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{PT-13} \\ \hline
+  \ucname{Associazione a una Palestra} \\ \hline
+  \ucactor{PT} \\ \hline
+  \ucdescription{Il PT si associa a una palestra in cui lavora,
+    indicando la data di inizio del rapporto.} \\ \hline
+  \ucprecond{Il PT deve essere autenticato. La palestra a cui il PT si
+    vuole associare deve essere già registrata (vedi caso d'uso
+    PT-12).} \\ \hline
+  \ucpostcond{Il sistema crea l'associazione tra il PT e la palestra,
+    con la data di inizio indicata (vedi Nota 1). L'associazione
+    compare nell'elenco del caso d'uso PT-14.} \\ \hline
+  \ucmainflow{
+    \item Il PT apre la pagina di ricerca palestra.
+    \item Il sistema mostra un campo di ricerca.
+    \item Il PT inserisce il nome della palestra a cui vuole
+      associarsi.
+    \item Il sistema mostra l'elenco delle palestre che corrispondono
+      alla ricerca, con nome e indirizzo.
+    \item Il PT preme su una palestra dell'elenco.
+    \item Il sistema mostra il form di associazione, con la data di
+      inizio precompilata alla data odierna.
+    \item Il PT conferma o modifica la data di inizio e preme il
+      pulsante "Associati".
+    \item Il sistema verifica i dati.
+    \item Il sistema crea l'associazione tra il PT e la palestra.
+    \item Il sistema mostra una pagina di conferma.
+  } \\ \hline
+  \ucaltflow{
+    \textbf{4a. Nessuna palestra trovata} \newline
+    - Il sistema mostra un messaggio ("Nessuna palestra trovata") e il
+    pulsante "Registra nuova Palestra". \newline
+    - Se il PT preme il pulsante, il flusso continua dal passo 3 del
+    caso d'uso PT-12; al termine, il flusso riprende dal passo 6 con la
+    palestra appena creata. \newline
+    \textbf{8a. Associazione già attiva} \newline
+    - Il sistema mostra un messaggio di errore ("Sei già associato a
+    questa palestra") e non crea l'associazione. \newline
+    - Il flusso termina. \newline
+    \textbf{8b. Data di inizio non valida} \newline
+    - Il sistema mostra un messaggio di errore ("La data di inizio non
+    può essere nel passato"). \newline
+    - Il flusso riprende dal passo 6.
+  } \\ \hline
+  \ucnote{
+    \textbf{Nota 1:} l'associazione resta attiva finché il PT non la
+    termina con il caso d'uso PT-15, che ne imposta la data di fine.
+    \newline
+    Il PT può essere associato a più palestre contemporaneamente: ogni
+    associazione è indipendente dalle altre.
+  } \\ \hline
+\end{xltabular}
+\end{document}

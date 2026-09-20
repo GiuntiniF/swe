@@ -10,16 +10,19 @@
   \ucname{Richiesta Appuntamento} \\ \hline
   \ucactor{Atleta} \\ \hline
   \ucdescription{L'atleta richiede un appuntamento con il PT.
-    L'atleta indica la data, l'ora e la motivazione.} \\ \hline
+    L'atleta indica la palestra, la data, l'ora e la motivazione.} \\
+    \hline
   \ucprecond{L'atleta deve essere autenticato.} \\ \hline
   \ucpostcond{Il sistema crea un appuntamento in attesa
     di conferma dal PT. Il PT riceve un'email di notifica.} \\ \hline
   \ucmainflow{
     \item L'atleta apre la pagina dei propri appuntamenti.
     \item L'atleta preme il pulsante "Richiedi Appuntamento".
-    \item Il sistema mostra il form di richiesta appuntamento.
-    \item L'atleta inserisce i dati necessari: la data e l'ora
-      dell'appuntamento e la motivazione.
+    \item Il sistema mostra il form di richiesta appuntamento, con
+      l'elenco delle palestre a cui l'atleta è iscritto (vedi Nota 1).
+    \item L'atleta inserisce i dati necessari: la palestra in cui
+      vuole allenarsi, la data e l'ora dell'appuntamento e la
+      motivazione.
     \item L'atleta preme il pulsante "Invia Richiesta".
     \item Il sistema verifica i dati nel database.
     \item Il sistema salva nel database la richiesta di appuntamento.
@@ -31,6 +34,11 @@
     - Il sistema mostra un messaggio di errore ("C'è già una richiesta
     di appuntamento in attesa di risposta."). \newline
     - Il flusso riprende dal passo 1. \newline
+  } \\ \hline
+  \ucnote{
+    \textbf{Nota 1:} se l'atleta è iscritto a una sola palestra, il
+    sistema la preseleziona e l'atleta può comunque confermarla o
+    cambiarla, se iscritto a più di una (vedi caso d'uso A-06).
   } \\ \hline
 \end{xltabular}
 \end{document}

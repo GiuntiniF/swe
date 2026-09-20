@@ -10,23 +10,31 @@
   \ucname{Registrazione nuovo Atleta} \\ \hline
   \ucactor{PT} \\ \hline
   \ucsecondaryactor{Atleta da Registrare} \\ \hline
-  \ucdescription{Il PT crea l'account di un nuovo atleta. Il sistema
-    invita l'atleta ad accedere all'applicativo.} \\ \hline
+  \ucdescription{Il PT crea l'account di un nuovo atleta e lo iscrive
+    a una o più palestre in cui il PT lavora. Il sistema invita
+    l'atleta ad accedere all'applicativo.} \\ \hline
   \ucprecond{Il PT deve essere autenticato. Il PT deve conoscere
-    l'email dell'atleta da registrare.} \\ \hline
-  \ucpostcond{L'atleta ha un account nell'applicativo. Il sistema lo
-    ha invitato ad accedervi. Il profilo dell'atleta resta incompleto
-    finché l'atleta non esegue il caso d'uso A-01.} \\ \hline
+    l'email dell'atleta da registrare. Il PT deve essere associato ad
+    almeno una palestra (vedi Nota 2).} \\ \hline
+  \ucpostcond{L'atleta ha un account nell'applicativo, iscritto ad
+    almeno una palestra. Il sistema lo ha invitato ad accedervi. Il
+    profilo dell'atleta resta incompleto finché l'atleta non esegue il
+    caso d'uso A-01.} \\ \hline
   \ucmainflow{
     \item Il PT apre la pagina di creazione nuovo atleta.
     \item Il sistema mostra il form di inserimento dati dell'atleta
-      (nome, cognome ed email).
-    \item Il PT inserisce i dati.
+      (nome, cognome ed email) e l'elenco delle palestre a cui il PT è
+      attualmente associato, con una casella di selezione per
+      ciascuna.
+    \item Il PT inserisce i dati e seleziona una o più palestre in cui
+      l'atleta si allena.
     \item Il PT preme il pulsante "Crea atleta".
-    \item Il sistema verifica che l'email sia valida e non sia già
-      presente nel database.
-    \item Il sistema crea l'account dell'atleta, lo associa al PT e
-      genera una password temporanea.
+    \item Il sistema verifica che l'email sia valida, non sia già
+      presente nel database e che sia selezionata almeno una
+      palestra.
+    \item Il sistema crea l'account dell'atleta, lo associa al PT,
+      crea l'iscrizione dell'atleta a ciascuna palestra selezionata
+      (vedi Nota 3) e genera una password temporanea.
     \item Il sistema mostra una pagina di conferma creazione.
     \item Il sistema invia un'email all'atleta con l'invito ad
       accedere all'applicativo, la password temporanea e le
@@ -40,17 +48,33 @@
     \textbf{5b. Email non valida} \newline
     - Il sistema mostra un messaggio di errore ("Email non
     valida"). \newline
+    - Il flusso riprende dal passo 2. \newline
+    \textbf{5c. Nessuna palestra selezionata} \newline
+    - Il sistema mostra un messaggio di errore ("Selezionare almeno
+    una palestra"). \newline
     - Il flusso riprende dal passo 2.
   } \\ \hline
   \ucnote{
-    Il PT non sceglie la password dell'atleta: la genera il sistema.
-    Il PT non la vede mai, perché l'email è inviata direttamente
-    all'atleta. \newline
+    \textbf{Nota 1:} il PT non sceglie la password dell'atleta: la
+    genera il sistema. Il PT non la vede mai, perché l'email è
+    inviata direttamente all'atleta. \newline
     La password temporanea serve solo al primo accesso. Con il caso
     d'uso U-01 l'atleta entra, e il sistema lo porta subito al caso
     d'uso A-01, dove sceglie una propria password e completa il
     profilo. Finché non l'ha fatto, l'account resta inutilizzabile
-    per qualsiasi altra funzione.
+    per qualsiasi altra funzione. \newline
+    \textbf{Nota 2:} se il PT non è associato a nessuna palestra, il
+    sistema non mostra questo caso d'uso: il PT deve prima associarsi
+    a una palestra con il caso d'uso PT-13. \newline
+    \textbf{Nota 3:} l'iscrizione dell'atleta a una palestra (passo 6)
+    è indipendente dal rapporto tra il PT e quella palestra: se in
+    seguito il PT termina la propria associazione con la palestra
+    (PT-15), l'iscrizione dell'atleta non viene toccata. Le iscrizioni
+    a una palestra si creano solo in questo caso d'uso, al momento
+    della registrazione dell'atleta: la specifica non prevede né un
+    caso d'uso per aggiungere un'iscrizione a un atleta già
+    registrato, né un modo per l'atleta di gestire da sé le proprie
+    iscrizioni.
   } \\ \hline
 \end{xltabular}
 \end{document}

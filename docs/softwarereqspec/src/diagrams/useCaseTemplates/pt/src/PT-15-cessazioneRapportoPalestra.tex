@@ -1,0 +1,45 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{PT-15} \\ \hline
+  \ucname{Cessazione Rapporto con una Palestra} \\ \hline
+  \ucactor{PT} \\ \hline
+  \ucdescription{Il PT termina un'associazione attiva con una
+    palestra in cui non lavora più.} \\ \hline
+  \ucprecond{Il PT deve essere autenticato. Deve esistere almeno
+    un'associazione attiva del PT con una palestra.} \\ \hline
+  \ucpostcond{Il sistema imposta la data di fine sull'associazione tra
+    il PT e la palestra. L'associazione non è più attiva.} \\ \hline
+  \ucmainflow{
+    \item Il PT apre la pagina delle proprie palestre.
+    \item Il sistema mostra l'elenco delle palestre a cui il PT è
+      associato (caso d'uso PT-14).
+    \item Il PT preme il pulsante "Termina Rapporto" su una palestra
+      con associazione attiva.
+    \item Il sistema chiede conferma, avvisando che l'operazione non è
+      reversibile.
+    \item Il PT preme il pulsante "Conferma".
+    \item Il sistema imposta la data di fine dell'associazione alla
+      data odierna.
+    \item Il sistema mostra un messaggio di conferma e aggiorna
+      l'elenco delle palestre.
+  } \\ \hline
+  \ucaltflow{
+    \textbf{4a. Il PT annulla} \newline
+    - Il PT preme il pulsante "Annulla" invece di confermare. \newline
+    - Il sistema non modifica nulla. \newline
+    - Il flusso termina.
+  } \\ \hline
+  \ucnote{
+    Terminare l'associazione con una palestra non elimina né la
+    palestra né gli atleti che il PT segue: riguarda solo il rapporto
+    tra il PT e quella specifica palestra. Gli appuntamenti già presi
+    in quella palestra restano invariati.
+  } \\ \hline
+\end{xltabular}
+\end{document}

@@ -2,24 +2,26 @@
 
 \section{Introduzione}
 \subsection{Scopo del documento}
-Questo documento specifica i requisiti di [Nome], il backend di un
+Questo documento specifica i requisiti di [Nome Applicativo], il backend di un
 applicativo per Personal Trainer. Il documento descrive gli attori del
 sistema, i concetti del dominio e i casi d'uso.
 
 \subsection{Descrizione del progetto}
 L'applicativo digitalizza la gestione degli atleti di un Personal
-Trainer. Il PT crea le schede di allenamento e le assegna ai propri
-atleti. Il PT e i suoi atleti fissano inoltre gli appuntamenti di
-allenamento in comune.
+Trainer, che opera in una o più palestre. Il PT crea le schede di
+allenamento e le assegna ai propri atleti. Il PT e i suoi atleti
+fissano inoltre gli appuntamenti di allenamento in comune, presso una
+delle palestre a cui l'atleta è iscritto.
 
 Il sistema ha due attori:
 \begin{itemize}
-  \item \textbf{PT}: offre il servizio. Registra i propri atleti. Crea
-    le schede e le assegna agli atleti. Gestisce le richieste di
+  \item \textbf{PT}: offre il servizio. Si associa alle palestre in
+    cui lavora. Registra i propri atleti e li iscrive alle palestre.
+    Crea le schede e le assegna agli atleti. Gestisce le richieste di
     appuntamento che riceve dagli atleti.
-  \item \textbf{Atleta}: riceve il servizio dal PT. Consulta le schede
-    che il PT gli ha assegnato. Richiede gli appuntamenti con
-    il PT.
+  \item \textbf{Atleta}: riceve il servizio dal PT, presso una o più
+    palestre a cui è iscritto. Consulta le schede che il PT gli ha
+    assegnato. Richiede gli appuntamenti con il PT.
 \end{itemize}
 
 % \subsubsection{Struttura di una scheda}
@@ -75,6 +77,15 @@ Il sistema ha due attori:
   \item[Appuntamento] L'allenamento in comune tra il PT e l'Atleta, in
     una data e a un'ora stabilite. Nasce da una richiesta di
     appuntamento confermata.
+  \item[Palestra] Il luogo fisico in cui il PT lavora e in cui
+    l'Atleta si allena. Un PT può essere associato a più palestre e
+    un Atleta può essere iscritto a più palestre.
+  \item[Associazione PT-Palestra] Il legame tra un PT e una palestra
+    in cui lavora. Contiene la data di inizio e, se terminata, la
+    data di fine.
+  \item[Iscrizione] Il legame tra un Atleta e una palestra a cui è
+    iscritto. Contiene la data di inizio e, se terminata, la data di
+    fine.
 \end{description}
 
 \newpage
@@ -89,10 +100,11 @@ gli attori che li eseguono.
 %   \label{fig:diagrammacasiduso}
 % \end{figure}
 
-Il diagramma raggruppa i casi d'uso per attore primario. Il caso d'uso
-U-01 (Login) è comune ai due attori. I casi d'uso PT-07 e A-05 hanno lo
-stesso scopo, ma mostrano a ciascun attore i soli appuntamenti che lo
-riguardano.
+Il diagramma raggruppa i casi d'uso per attore primario. I casi d'uso
+U-01 (Login) e U-02 (Recupero Password) sono comuni ai due attori. Le
+coppie PT-07/A-05 e PT-14/A-06 hanno rispettivamente lo stesso scopo,
+ma mostrano a ciascun attore solo gli appuntamenti o le palestre che
+lo riguardano.
 
 Le sezioni seguenti descrivono ciascun caso d'uso con un template. Il
 codice del caso d'uso indica l'attore primario: U per i casi d'uso
@@ -139,6 +151,18 @@ comuni, PT per il Personal Trainer, A per l'Atleta.
 \subsubsection{PT-11: Cancellazione Scheda}
 \subfile{../diagrams/useCaseTemplates/pt/src/PT-11-cancellazioneScheda}
 
+\subsubsection{PT-12: Registrazione Palestra}
+\subfile{../diagrams/useCaseTemplates/pt/src/PT-12-registrazionePalestra}
+
+\subsubsection{PT-13: Associazione a una Palestra}
+\subfile{../diagrams/useCaseTemplates/pt/src/PT-13-associazionePalestra}
+
+\subsubsection{PT-14: Visualizzazione Palestre}
+\subfile{../diagrams/useCaseTemplates/pt/src/PT-14-visualizzazionePalestre}
+
+\subsubsection{PT-15: Cessazione Rapporto con una Palestra}
+\subfile{../diagrams/useCaseTemplates/pt/src/PT-15-cessazioneRapportoPalestra}
+
 \subsection{Template dei casi d'uso dell'Atleta}
 \subsubsection{A-01: Completamento Profilo}
 \subfile{../diagrams/useCaseTemplates/atleta/src/A-01-completamentoProfilo}
@@ -154,3 +178,63 @@ comuni, PT per il Personal Trainer, A per l'Atleta.
 
 \subsubsection{A-05: Visualizzazione Appuntamenti}
 \subfile{../diagrams/useCaseTemplates/atleta/src/A-05-visualizzazioneAppuntamenti}
+
+\subsubsection{A-06: Visualizzazione Palestre}
+\subfile{../diagrams/useCaseTemplates/atleta/src/A-06-visualizzazionePalestre}
+
+\newpage
+\section{Implementazione}
+\subsection{Domain Model}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{diagrams/class/Package_Diagram_of_Domain_Model.pdf}
+  \caption{Package Diagram del Domain Model}
+  \label{fig:packageDiagramDomainModel}
+\end{figure}
+
+Le figure seguenti mostrano il diagramma delle classi di ciascun
+package del Domain Model, secondo le dipendenze mostrate nel
+package diagram.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/class/User.pdf}
+  \caption{Diagramma delle classi del package User}
+  \label{fig:userDomainModel}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/class/Gym.pdf}
+  \caption{Diagramma delle classi del package Gym}
+  \label{fig:gymDomainModel}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/class/Coaching.pdf}
+  \caption{Diagramma delle classi del package Coaching}
+  \label{fig:coachingDomainModel}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/class/TrainingPlan.pdf}
+  \caption{Diagramma delle classi del package TrainingPlan}
+  \label{fig:trainingPlanDomainModel}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/class/Exercises-crop.pdf}
+  \caption{Diagramma delle classi del package Exercises}
+  \label{fig:exercisesDomainModel}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{diagrams/class/ValueType.pdf}
+  \caption{Diagramma delle classi del package ValueType}
+  \label{fig:valueTypeDomainModel}
+\end{figure}
