@@ -1,0 +1,19 @@
+# File generati dalla compilazione LaTeX (latexmk/pdflatex).
+# Si applicano ovunque: sia alla compilazione del documento
+# principale, sia alle compilazioni standalone dei singoli
+# template dei casi d'uso (subfiles).
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+
+# I PDF sono per lo più output di compilazione, quindi ignorati di
+# default. Fanno eccezione i PDF che sono sorgenti/risorse a tutti
+# gli effetti: i diagrammi delle classi esportati da Gaphor (usati
+# come figure nel documento) e la traccia del progetto.
+*.pdf
+!docs/softwarereqspec/src/diagrams/class/*.pdf
+!docs/statement/*.pdf
