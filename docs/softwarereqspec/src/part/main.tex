@@ -93,12 +93,12 @@ Il sistema ha due attori:
 \subsection{Diagramma dei casi d'uso}
 La figura \ref{fig:diagrammacasiduso} mostra i casi d'uso del sistema e
 gli attori che li eseguono.
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.5\textwidth]{diagrams/useCaseDiagram.png}
-%   \caption{Diagramma dei casi d'uso}
-%   \label{fig:diagrammacasiduso}
-% \end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{diagrams/useCaseDiagram.pdf}
+  \caption{Diagramma dei casi d'uso}
+  \label{fig:diagrammacasiduso}
+\end{figure}
 
 Il diagramma raggruppa i casi d'uso per attore primario. I casi d'uso
 U-01 (Login) e U-02 (Recupero Password) sono comuni ai due attori. Le
@@ -184,8 +184,37 @@ comuni, PT per il Personal Trainer, A per l'Atleta.
 
 \newpage
 \section{Implementazione}
-\subsection{Domain Model}
+\subsection{Architettura di Sistema}
+La figura \ref{fig:systemArchitecture} mostra l'architettura del sistema. Il
+sistema è diviso in package. Ogni package rappresenta uno strato
+dell'architettura. Le frecce tratteggiate indicano le dipendenze tra i
+package.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{diagrams/SystemArchitecture.pdf}
+  \caption{Architettura di Sistema}
+  \label{fig:systemArchitecture}
+\end{figure}
 
+Il package \texttt{Controllers} riceve le richieste e le inoltra al package
+\texttt{Business Logic}.
+
+Il package \texttt{Business Logic} contiene la logica applicativa. Implementa
+i casi d'uso del sistema. Dipende dal package \texttt{Domain Model} e dal
+package \texttt{DAO}.
+
+Il package \texttt{Domain Model} contiene le classi che rappresentano
+le entità del sistema e le regole di dominio.
+Non dipende da nessun altro package. La sezione \ref{sec:domainModel} lo
+descrive in dettaglio.
+
+Il package \texttt{DAO} (Data Access Object) gestisce l'accesso ai dati.
+Dipende dal package \texttt{Domain Model} per costruire gli oggetti di
+dominio a partire dai dati letti. Comunica con il database (\texttt{DB}) per
+leggere e scrivere i dati.
+
+\subsection{Domain Model}
+\label{sec:domainModel}
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.5\textwidth]{diagrams/class/Package_Diagram_of_Domain_Model.pdf}
@@ -195,7 +224,8 @@ comuni, PT per il Personal Trainer, A per l'Atleta.
 
 Le sezioni seguenti descrivono brevemente ciascun package del Domain
 Model e ne mostrano il diagramma delle classi, secondo le dipendenze
-mostrate nel package diagram.
+mostrate nel package diagram. Per semplicità si sono omessi i metodi
+get e set degli attributi delle classi.
 
 \subsubsection{User}
 Il package contiene gli utenti del sistema. La classe astratta
@@ -289,3 +319,12 @@ esercizio e la relativa unità di misura.
   \caption{Diagramma delle classi del package ValueType}
   \label{fig:valueTypeDomainModel}
 \end{figure}
+
+\newpage
+\section{Utilizzo dell'IA nel progetto}
+Questo progetto usa Claude Code, un agente di intelligenza
+artificiale a riga di comando. Claude Code aiuta con l'impaginazione
+questo documento e lo riformula in Italiano Tecnico Semplificato. Claude Code
+controlla inoltre il documento per individuare eventuali errori. Dopo
+aver applicato le modifiche il documento viene
+sottoposto a revisione manuale da parte mia.

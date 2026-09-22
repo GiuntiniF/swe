@@ -10,37 +10,37 @@
   \ucname{Assegnazione Scheda ad un Atleta} \\ \hline
   \ucactor{PT} \\ \hline
   \ucdescription{Il PT assegna ad un atleta una scheda
-    già presente nel sistema.} \\ \hline
+  già presente nel sistema.} \\ \hline
   \ucprecond{Il PT deve essere autenticato. Deve esistere almeno una
-    scheda configurata.} \\ \hline
+  scheda configurata.} \\ \hline
   \ucpostcond{La scheda scelta è assegnata all'atleta e
     l'assegnazione è confermata. I carichi di tutte le sessioni della
     scheda sono specifici per quell'atleta. Se il PT ha interrotto la
     compilazione, l'assegnazione resta in bozza e non è visibile
-    all'atleta (vedi Nota 5).} \\ \hline
+  all'atleta (vedi Nota 5).} \\ \hline
   \ucmainflow{
-    \item Il PT si trova sulla pagina di dettaglio di un atleta,
-      raggiunta tramite il caso d'uso PT-08.
-    \item Il PT preme il pulsante "Assegna nuova Scheda".
-    \item Il sistema mostra la lista delle schede presenti nel sistema.
-    \item Il PT preme sulla scheda che vuole usare.
-    \item Il sistema mostra il form dei dati aggiuntivi necessari: la
-      data di inizio della scheda e la durata della scheda, derivata
-      dal numero di blocchi mensili configurati in PT-04. Dopo che il
-      PT inserisce la data di inizio, il sistema mostra anche la data
-      di fine (vedi le Note).
-    \item Il PT inserisce i dati e preme il pulsante "Continua".
-    \item Il sistema mostra il form dei carichi degli esercizi,
-      sessione per sessione, per tutte le sessioni di tutti i blocchi
-      mensili della scheda (vedi le Note).
-    \item Il PT inserisce i dati nel form e preme il pulsante
-      "Assegna Scheda".
-    \item Il sistema verifica che ogni esercizio di ogni sessione
-      abbia un carico e che l'intervallo di date non si sovrapponga a
-      quello di un'altra assegnazione confermata dell'atleta.
-    \item Il sistema conferma l'assegnazione della Scheda all'Atleta.
-    \item Il sistema invia un'email di notifica all'Atleta per
-      informarlo che c'è una nuova scheda assegnata.
+  \item Il PT si trova sulla pagina di dettaglio di un atleta,
+    raggiunta tramite il caso d'uso PT-08.
+  \item Il PT preme il pulsante "Assegna nuova Scheda".
+  \item Il sistema mostra la lista delle schede presenti nel sistema.
+  \item Il PT preme sulla scheda che vuole usare.
+  \item Il sistema mostra il form dei dati aggiuntivi necessari: la
+    data di inizio della scheda e la durata della scheda, derivata
+    dal numero di blocchi mensili configurati in PT-04. Dopo che il
+    PT inserisce la data di inizio, il sistema mostra anche la data
+    di fine (vedi le Note).
+  \item Il PT inserisce i dati e preme il pulsante "Continua".
+  \item Il sistema mostra il form dei carichi degli esercizi,
+    sessione per sessione, per tutte le sessioni di tutti i blocchi
+    mensili della scheda (vedi le Note).
+  \item Il PT inserisce i dati nel form e preme il pulsante
+    "Assegna Scheda".
+  \item Il sistema verifica che ogni esercizio di ogni sessione
+    abbia un carico e che l'intervallo di date non si sovrapponga a
+    quello di un'altra assegnazione confermata dell'atleta.
+  \item Il sistema conferma l'assegnazione della Scheda all'Atleta.
+  \item Il sistema invia un'email di notifica all'Atleta per
+    informarlo che c'è una nuova scheda assegnata.
   } \\ \hline
   \ucaltflow{
     \textbf{4a. Creazione scheda ad hoc} \newline
@@ -106,7 +106,7 @@
     nella variante.\newline
     \textbf{Nota 3:} l'intervallo di date di un'assegnazione va dalla
     data di inizio all'ultimo giorno dell'ultimo blocco mensile. Ogni
-    blocco dura 4 settimane (28 giorni). La data di fine è quindi
+    blocco dura un certo numero di settimane. La data di fine è quindi
     determinata dalla data di inizio e dal numero di blocchi: il
     sistema non la chiede al PT. Due assegnazioni contigue, in cui
     una termina il giorno prima che l'altra inizi, non si sovrappongono

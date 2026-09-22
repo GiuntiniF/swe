@@ -8,42 +8,70 @@
   \hline
   \ucid{PT-04} \\ \hline
   \ucname{Configurazione Sessioni di Allenamento in una
-    Scheda} \\ \hline
+  Scheda} \\ \hline
   \ucactor{PT} \\ \hline
-  \ucdescription{Il PT inserisce o modifica le sessioni di
-    allenamento presenti in una scheda.} \\ \hline
+  \ucdescription{Il PT inserisce o modifica i blocchi mensili e le
+  sessioni di allenamento presenti in una scheda.} \\ \hline
   \ucprecond{Il PT deve essere autenticato. Deve esistere almeno una
     scheda da modificare. La scheda non deve avere assegnazioni
-    attive.} \\ \hline
-  \ucpostcond{Il sistema configura le sessioni di allenamento
-    della scheda.} \\ \hline
+  attive.} \\ \hline
+  \ucpostcond{Il sistema configura i blocchi mensili e le sessioni
+  di allenamento della scheda.} \\ \hline
   \ucmainflow{
-    \item Il PT apre la pagina di configurazione delle
-      sessioni di allenamento.
-    \item Il sistema mostra la lista di sessioni di allenamento presenti.
-    \item Il PT preme su una delle sessioni di allenamento.
-    \item Il sistema mostra il dettaglio della sessione di allenamento
-      corrente.
-    \item Il PT preme il pulsante "Aggiungi Esercizio".
-    \item Il sistema mostra una lista di esercizi.
-    \item Il PT sceglie un esercizio dalla lista.
-    \item Il sistema mostra il form di inserimento dettagli esercizio.
-    \item Il PT configura l'esercizio inserendo:
-      \begin{itemize}
-        \item numero di serie/ripetizioni;
-        \item tempo di recupero tra una serie e l'altra (in secondi);
-        \item variante di esecuzione, se presente (superserie,
-          dropset, rest-pause, ecc.);
-        \item altre note esecutive.
-      \end{itemize}
-      Il carico non viene chiesto qui: è specifico dell'atleta e
-      viene inserito al momento dell'assegnazione, nel caso d'uso
-      PT-05 (vedi le Note).
-    \item Il PT preme il pulsante "Aggiungi Esercizio".
-    \item Il sistema aggiunge l'esercizio alla sessione.
-    \item Il flusso riprende dal passo 4.
+  \item Il PT apre la pagina di configurazione delle
+    sessioni di allenamento.
+  \item Il sistema mostra l'elenco dei blocchi mensili della
+    scheda. Per ciascun blocco mostra le sessioni di allenamento
+    che contiene (vedi Nota 3).
+  \item Il PT preme su una delle sessioni di allenamento.
+  \item Il sistema mostra il dettaglio della sessione di allenamento
+    corrente.
+  \item Il PT preme il pulsante "Aggiungi Esercizio".
+  \item Il sistema mostra una lista di esercizi.
+  \item Il PT sceglie un esercizio dalla lista.
+  \item Il sistema mostra il form di inserimento dettagli esercizio.
+  \item Il PT configura l'esercizio inserendo:
+    \begin{itemize}
+      \item numero di serie/ripetizioni;
+      \item tempo di recupero tra una serie e l'altra (in secondi);
+      \item variante di esecuzione, se presente (superserie,
+        dropset, rest-pause, ecc.);
+      \item altre note esecutive.
+    \end{itemize}
+    Il carico non viene chiesto qui: è specifico dell'atleta e
+    viene inserito al momento dell'assegnazione, nel caso d'uso
+    PT-05 (vedi le Note).
+  \item Il PT preme il pulsante "Aggiungi Esercizio".
+  \item Il sistema aggiunge l'esercizio alla sessione.
+  \item Il flusso riprende dal passo 4.
   } \\ \hline
   \ucaltflow{
+    \textbf{2a. Nessun blocco mensile presente} \newline
+    - La scheda non ha ancora nessun blocco mensile, per esempio
+    subito dopo la creazione con il caso d'uso PT-03. \newline
+    - Il PT preme il pulsante "Aggiungi Blocco Mensile". \newline
+    - Il sistema mostra il form di inserimento della durata del
+    blocco, in numero di settimane. \newline
+    - Il PT inserisce la durata e preme "Conferma". \newline
+    - Il sistema crea il blocco mensile, senza sessioni di
+    allenamento, e lo aggiunge in coda alla scheda. \newline
+    - Il flusso riprende dal passo 2. \newline
+    \newline
+    \textbf{2b. Aggiunta di un ulteriore blocco mensile} \newline
+    - Il PT preme il pulsante "Aggiungi Blocco Mensile" anche quando
+    la scheda ha già almeno un blocco. \newline
+    - Il flusso continua come nel flusso 2a, dal passo in cui il
+    sistema mostra il form di inserimento della durata. \newline
+    - Il flusso riprende dal passo 2. \newline
+    \newline
+    \textbf{2c. Aggiunta di una sessione di allenamento} \newline
+    - Il PT preme il pulsante "Aggiungi Sessione" su uno dei blocchi
+    mensili dell'elenco. \newline
+    - Il sistema crea una nuova sessione di allenamento, senza
+    esercizi, nel blocco scelto. \newline
+    - Il flusso continua dal passo 4, sulla sessione appena creata.
+    \newline
+    \newline
     \textbf{5a. Modifica esercizio} \newline
     - Invece di aggiungere un nuovo esercizio, il PT preme su
     un esercizio già presente e lo modifica. \newline
@@ -73,6 +101,13 @@
     PT-05, non perché il sistema lo calcoli. Questo è coerente con lo
     statement, che ammette che il peso e le serie/ripetizioni variino
     da una sessione di allenamento all'altra senza indicare come.
+    \newline
+    \textbf{Nota 3:} le sessioni di allenamento configurate in un
+    blocco mensile rappresentano un pattern settimanale: si ripetono
+    per ogni settimana della durata del blocco. Per esempio, un
+    blocco di 4 settimane con 3 sessioni configurate (lunedì,
+    mercoledì, venerdì) genera 12 sessioni di allenamento quando la
+    scheda viene assegnata a un atleta (caso d'uso PT-05).
   } \\ \hline
 \end{xltabular}
 \end{document}
