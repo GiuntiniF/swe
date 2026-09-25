@@ -1,0 +1,60 @@
+(*@\tprompt{domain}@*)Ho letto per intero gli 8 template che
+  nominano una scheda (A-03, PT-03, 04, 05, 08, 09, 10, 11) e ho
+  guardato lo statement. Gli altri template non citano mai la scheda.
+  Non ho modificato nulla.
+
+  1. Elenco di schede
+
+  - A-03 p.2 (Atleta, sola lettura): schede assegnate all'atleta, con
+  nome, periodo di validità e stato. Compaiono solo le assegnazioni
+  confermate. Se non ce ne sono, il sistema mostra un messaggio (flusso 2a).
+  - PT-08 p.4 (PT): schede assegnate a un atleta, con nome, periodo e
+  stato. Le bozze sono segnalate. La sezione sta nella pagina di
+  dettaglio dell'atleta, e da lì partono PT-05 (p.1 e 2a), PT-09
+  (p.1-2) e PT-08 5a/5b. Se è vuota, il sistema mostra la sezione vuota.
+  - PT-10 p.1-2 e PT-11 p.1-2 (PT): schede create dal PT. I campi
+  mostrati non sono specificati. PT-11 p.8 la aggiorna dopo l'eliminazione.
+  - PT-05 p.3 (PT): "schede presenti nel sistema", da cui scegliere
+  quale assegnare. I campi mostrati non sono specificati.
+
+  2. Dettaglio di una scheda assegnata (livello scheda)
+
+  - A-03 p.4 (Atleta, sola lettura): nome, periodo, elenco delle
+  settimane, settimana corrente evidenziata.
+  - PT-09 p.3 (PT): come sopra, più la segnalazione delle settimane
+  che contengono personalizzazioni.
+
+  3. Dettaglio di una settimana (sessioni ed esercizi con i valori dell'atleta)
+
+  - A-03 p.6 (Atleta, sola lettura): vale per qualsiasi settimana,
+  anche già trascorsa.
+  - PT-09 p.5 (PT): solo settimana corrente e successive. Da qui il
+  PT passa al form del punto 5b.
+
+  4. Struttura della scheda (senza atleta, senza carichi)
+
+  - PT-04 p.2 (PT): blocchi mensili con le loro sessioni. Vale anche
+  per i flussi 2a, 2b e 2c, dopo aver aggiunto un blocco o una sessione.
+  - PT-04 p.4 e 5a (PT): dettaglio di una sessione, con esercizi,
+  serie/ripetizioni, recupero, variante e note.
+
+  5. Form precompilati (modificabili)
+
+  - 5a. PT-10 p.4: nome e descrizione correnti della scheda.
+  - 5b. PT-09 p.7 e 7a: peso, serie/ripetizioni e recupero di un
+  esercizio. Se l'esercizio è personalizzato, compare "Ripristina".
+  - 5c. PT-05 p.7, 2a e 9a: carichi di tutte le sessioni di tutti i
+  blocchi. Sono precompilati con quelli della sessione precedente
+  (Nota 1). Riprendendo una bozza, sono precompilati con i carichi
+  già inseriti e segnalano quelli mancanti. Alla conferma, le
+  sessioni incomplete sono segnalate.
+  - 5d. PT-05 p.5: data di inizio, durata derivata dai blocchi e data
+  di fine calcolata.
+
+  6. Riepilogo di una scheda dentro un messaggio di errore
+
+  - PT-05 6a e 9b: nome e intervallo di date della scheda in conflitto.
+
+  Ho escluso due casi. PT-03 p.2 e p.6 riguardano una scheda che non
+  esiste ancora (form vuoto e conferma di creazione). PT-04 p.6
+  mostra il catalogo degli esercizi, non una scheda.

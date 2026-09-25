@@ -336,3 +336,28 @@ Per esempio si sono fatte domande come: \texttt{Fammi
   scheda assegnata nei template dei casi d'uso presenti nella SRS
   @./SoftwareRequirementsSpecification.tex, raggruppando i risultati
 per modalità di visualizzazione}, alle quali il modello ha risposto:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{./resources/promptAnswer.png}
+  \caption{Risposta di Claude}
+  \label{fig:promptAnswer}
+\end{figure}
+Grazie alla risposta, si sono identificati i seguenti metodi da
+aggiungere alla Business Logic del package \texttt{TrainingPlan}:
+\texttt{
+  \begin{itemize}
+    \item TrainingPlanService
+      \begin{itemize}
+        \item getPlan(planId: UUID): TrainingPlan
+        \item getPlanListByPT(ptId: UUID): TrainingPlan[0..*]
+      \end{itemize}
+    \item PlanAssignmentService:
+      \begin{itemize}
+        \item getAssignmentsByAthlete(in athleteId: UUID): PlanAssignment[0..*]
+        \item getAssignmentsByAthleteAndPT(in athleteId: UUID, in ptId:
+          UUID): PlanAssignment[0..*]
+        \item getAssignment(in assignmentId: UUID): PlanAssignment
+        \item getAssignmentWeek(in UUID): Week
+        \item getPlanListByPT(ptId: UUID): TrainingPlan[0..*]
+      \end{itemize}
+\end{itemize}}
