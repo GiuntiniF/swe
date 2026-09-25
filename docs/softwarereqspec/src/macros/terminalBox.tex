@@ -1,0 +1,91 @@
+% Box in stile terminale.
+% Riproduce il terminale in uso: foot con il tema Omarchy attivo
+% (colori in ~/.local/state/omarchy/current/theme/foot.ini).
+% Richiede: tcolorbox, xcolor, listings (gia' caricati nel preambolo).
+%
+% NOTA: il terminale usa JetBrains Mono, che funziona solo con
+% XeLaTeX/LuaLaTeX. Il documento usa pdfLaTeX, quindi si usa Fira Mono
+% (stessa larghezza dei caratteri, forme simili).
+%
+% Uso:
+%   \begin{terminalbox}
+%   (*@\tprompt[main]{domain}@*)git status
+%   On branch main
+%   (*@\textcolor{termred}{errore in rosso}@*)
+%   (*@\tprompt[main]{domain}@*)(*@\tcursor@*)
+%   \end{terminalbox}
+% Il testo e' verbatim. Per i colori si scrive LaTeX tra (*@ e @*).
+
+\tcbuselibrary{skins,breakable,listings}
+
+% T1 serve a Fira Mono per i simboli < > | _. OT1 resta l'encoding
+% di default perche' e' l'ultima opzione.
+\usepackage[T1,OT1]{fontenc}
+
+% Fira Mono cambia \ttdefault: si salva il valore originale (Courier)
+% e lo si ripristina, cosi' \texttt nel resto del documento non cambia.
+\let\termoldttdefault\ttdefault
+\usepackage[lining]{FiraMono}
+\let\ttdefault\termoldttdefault
+
+% Colori del tema (foot.ini)
+\definecolor{termbg}{HTML}{111C18}
+\definecolor{termfg}{HTML}{C1C497}
+\definecolor{termbright}{HTML}{F7E8B2}
+\definecolor{termaccent}{HTML}{509475}
+\definecolor{termcyan}{HTML}{2DD5B7}
+\definecolor{termmuted}{HTML}{53685B}
+\definecolor{termred}{HTML}{FF5345}
+\definecolor{termgreen}{HTML}{63B07A}
+\definecolor{termyellow}{HTML}{E5C736}
+
+% Font del terminale: 8 pt con interlinea 10.5 pt, circa 78 colonne
+% nella larghezza del testo.
+\newcommand{\termfont}{%
+  \fontencoding{T1}\fontfamily{FiraMono-TLF}\fontsize{8}{10.5}\selectfont}
+
+\newtcblisting{terminalbox}[1][]{%
+  enhanced,
+  breakable,
+  listing only,
+  sharp corners,
+  colback=termbg,
+  colframe=termaccent,
+  boxrule=1.5pt,
+  boxsep=0pt,
+  left=10pt, right=10pt, top=10pt, bottom=5pt,
+  listing options={%
+    basicstyle=\termfont\color{termfg},
+    columns=fixed,
+    keepspaces=true,
+    showstringspaces=false,
+    breaklines=true,
+    breakindent=0pt,
+    breakautoindent=false,
+    upquote=true,
+    escapeinside={(*@}{@*)},
+    % listings non legge l'UTF-8: ogni carattere non ASCII usato nei
+    % box va elencato qui.
+    extendedchars=true,
+    literate=%
+      {à}{{\`a}}1 {è}{{\`e}}1 {é}{{\'e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+      {À}{{\`A}}1 {È}{{\`E}}1 {É}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+      {’}{{\textquoteright}}1 {‘}{{\textquoteleft}}1
+      {“}{{\textquotedblleft}}1 {”}{{\textquotedblright}}1,
+  },
+  #1
+}
+
+% Prompt come starship: directory, branch (facoltativo) e simbolo.
+% Uso: \tprompt{domain} oppure \tprompt[main]{domain}
+\newcommand{\tprompt}[2][]{%
+  \textcolor{termcyan}{\textbf{#2}}%
+  \if\relax\detokenize{#1}\relax\else\ \textcolor{termcyan}{\textit{#1}}\fi
+  \ \textcolor{termcyan}{\textbf{>}}\ }
+
+% Cursore a blocco, largo un carattere e alto una riga.
+\newcommand{\tcursor}{%
+  {\color{termbright}\rule[-0.3\baselineskip]{0.6em}{\baselineskip}}}
+
+% Testo spento (come l'output "dim" del terminale).
+\newcommand{\tdim}[1]{\textcolor{termmuted}{#1}}
