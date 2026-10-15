@@ -443,7 +443,7 @@ line {
 </presentation>
 <supplierDependency>
 <reflist>
-<ref refid="a57832ec-b6cd-11f1-9c43-a0b339ffe565"/>
+<ref refid="779b318c-c8a0-11f1-bfae-a0b339ffe565"/>
 </reflist>
 </supplierDependency>
 </UML:Class>
@@ -830,7 +830,7 @@ line {
 </UML:GeneralizationItem>
 <UML:Property id="8a6df3a6-39b4-11f1-8d6c-a0b339ffe565">
 <name>
-<val>dropRepsWeightMultiplier</val>
+<val>weightMultiplier</val>
 </name>
 <structuredClassifier>
 <ref refid="1236c430-39b4-11f1-8d6c-a0b339ffe565"/>
@@ -2207,6 +2207,7 @@ line {
 <reflist>
 <ref refid="ad941e56-39ae-11f1-8d6c-a0b339ffe565"/>
 <ref refid="f2d83754-39b3-11f1-8d6c-a0b339ffe565"/>
+<ref refid="1236c430-39b4-11f1-8d6c-a0b339ffe565"/>
 <ref refid="26d8133a-39b4-11f1-8d6c-a0b339ffe565"/>
 <ref refid="2fdaa154-39b5-11f1-8d6c-a0b339ffe565"/>
 <ref refid="72801340-39b5-11f1-8d6c-a0b339ffe565"/>
@@ -2224,6 +2225,9 @@ line {
 <ref refid="03f1fc20-a618-11f1-8128-a0b339ffe565"/>
 <ref refid="134d8dd8-a7ad-11f1-9bed-a0b339ffe565"/>
 <ref refid="a8f0fdbc-bc1a-11f1-b8f7-a0b339ffe565"/>
+<ref refid="66eeff46-a620-11f1-8128-a0b339ffe565"/>
+<ref refid="0f3bd530-a481-11f1-9420-a0b339ffe565"/>
+<ref refid="217f43cc-bcef-11f1-a512-a0b339ffe565"/>
 <ref refid="c40398d4-3d95-11f1-88ad-f222ba1cf21d"/>
 <ref refid="c0a524aa-3d95-11f1-88ad-f222ba1cf21d"/>
 <ref refid="c7858026-3d95-11f1-88ad-f222ba1cf21d"/>
@@ -2231,11 +2235,7 @@ line {
 <ref refid="2aab928a-bc1c-11f1-81f4-a0b339ffe565"/>
 <ref refid="62923af0-bc1c-11f1-81f4-a0b339ffe565"/>
 <ref refid="76900d2a-bc1c-11f1-81f4-a0b339ffe565"/>
-<ref refid="66eeff46-a620-11f1-8128-a0b339ffe565"/>
-<ref refid="0f3bd530-a481-11f1-9420-a0b339ffe565"/>
-<ref refid="217f43cc-bcef-11f1-a512-a0b339ffe565"/>
 <ref refid="9e3babc0-bcf0-11f1-a512-a0b339ffe565"/>
-<ref refid="1236c430-39b4-11f1-8d6c-a0b339ffe565"/>
 </reflist>
 </packagedElement>
 <presentation>
@@ -4504,7 +4504,7 @@ line {
 </presentation>
 <supplierDependency>
 <reflist>
-<ref refid="7703fc62-bcee-11f1-a512-a0b339ffe565"/>
+<ref refid="89ffaa10-c8a0-11f1-bfae-a0b339ffe565"/>
 </reflist>
 </supplierDependency>
 </UML:Class>
@@ -5990,20 +5990,6 @@ line {
 <ref refid="dc9fc1f0-b366-11f1-ba41-a0b339ffe565"/>
 <ref refid="cc4a2dcc-b366-11f1-ba41-a0b339ffe565"/>
 <ref refid="f647a56e-b366-11f1-ba41-a0b339ffe565"/>
-<ref refid="9d698488-a869-11f1-9a14-a0b339ffe565"/>
-<ref refid="9d6cbf4a-a869-11f1-9a14-a0b339ffe565"/>
-<ref refid="9d6fe990-a869-11f1-9a14-a0b339ffe565"/>
-<ref refid="9d783726-a869-11f1-9a14-a0b339ffe565"/>
-<ref refid="9d7df512-a869-11f1-9a14-a0b339ffe565"/>
-<ref refid="28b4773a-bc1c-11f1-81f4-a0b339ffe565"/>
-<ref refid="61ac10ca-bc1c-11f1-81f4-a0b339ffe565"/>
-<ref refid="756f63c8-bc1c-11f1-81f4-a0b339ffe565"/>
-<ref refid="fb8fd9ea-b36d-11f1-9198-a0b339ffe565"/>
-<ref refid="1cc56288-b36e-11f1-9198-a0b339ffe565"/>
-<ref refid="e3be7204-b36d-11f1-9198-a0b339ffe565"/>
-<ref refid="9d7ad5e4-a869-11f1-9a14-a0b339ffe565"/>
-<ref refid="9d758486-a869-11f1-9a14-a0b339ffe565"/>
-<ref refid="9d71af64-a869-11f1-9a14-a0b339ffe565"/>
 <ref refid="9d61cd56-a869-11f1-9a14-a0b339ffe565"/>
 <ref refid="9d63f64e-a869-11f1-9a14-a0b339ffe565"/>
 <ref refid="9d66ce00-a869-11f1-9a14-a0b339ffe565"/>
@@ -6017,6 +6003,20 @@ line {
 <ref refid="9d7f191a-a869-11f1-9a14-a0b339ffe565"/>
 <ref refid="1a985304-ade6-11f1-90ad-a0b339ffe565"/>
 <ref refid="5cf4b530-ade6-11f1-90ad-a0b339ffe565"/>
+<ref refid="9d698488-a869-11f1-9a14-a0b339ffe565"/>
+<ref refid="9d6cbf4a-a869-11f1-9a14-a0b339ffe565"/>
+<ref refid="9d6fe990-a869-11f1-9a14-a0b339ffe565"/>
+<ref refid="9d71af64-a869-11f1-9a14-a0b339ffe565"/>
+<ref refid="9d758486-a869-11f1-9a14-a0b339ffe565"/>
+<ref refid="9d783726-a869-11f1-9a14-a0b339ffe565"/>
+<ref refid="9d7ad5e4-a869-11f1-9a14-a0b339ffe565"/>
+<ref refid="9d7df512-a869-11f1-9a14-a0b339ffe565"/>
+<ref refid="e3be7204-b36d-11f1-9198-a0b339ffe565"/>
+<ref refid="fb8fd9ea-b36d-11f1-9198-a0b339ffe565"/>
+<ref refid="1cc56288-b36e-11f1-9198-a0b339ffe565"/>
+<ref refid="28b4773a-bc1c-11f1-81f4-a0b339ffe565"/>
+<ref refid="61ac10ca-bc1c-11f1-81f4-a0b339ffe565"/>
+<ref refid="756f63c8-bc1c-11f1-81f4-a0b339ffe565"/>
 <ref refid="c2408570-bc1b-11f1-81f4-a0b339ffe565"/>
 <ref refid="9d7a6816-a869-11f1-9a14-a0b339ffe565"/>
 </reflist>
@@ -6085,7 +6085,7 @@ line {
 <val>(1.0, 0.0, 0.0, 1.0, -3572.7953532975625, -3000.3929007296524)</val>
 </matrix>
 <points>
-<val>[(1815.5071772742951, 253.9338088850459), (1815.5071772742951, 217.4351431150819), (1803.1277044307096, 217.4351431150819), (1803.1277044307094, 179.41607996913172)]</val>
+<val>[(1815.5071772742951, 253.9338088850459), (1815.5071772742951, 217.4351431150819), (1724.5285473371764, 217.4351431150819), (1724.5285473371764, 179.41607996913172)]</val>
 </points>
 <head-connection>
 <ref refid="9d6480c8-a869-11f1-9a14-a0b339ffe565"/>
@@ -6180,7 +6180,7 @@ line {
 <val>(1.0, 0.0, 0.0, 1.0, -3571.4379152575516, -2987.5962669175015)</val>
 </matrix>
 <points>
-<val>[(1145.7048493828506, 241.13717507289402), (1145.7048493828506, 204.63850930293074), (1801.770266390699, 204.63850930293074), (1801.770266390699, 166.61944615698076)]</val>
+<val>[(1145.7048493828506, 241.13717507289402), (1145.7048493828506, 204.63850930293074), (1723.1711092971652, 204.63850930293074), (1723.1711092971652, 166.61944615698076)]</val>
 </points>
 <head-connection>
 <ref refid="9d685716-a869-11f1-9a14-a0b339ffe565"/>
@@ -6573,7 +6573,7 @@ line {
 <val>(1.0, 0.0, 0.0, 1.0, 1474.2130635664041, 689.1631014072234)</val>
 </matrix>
 <points>
-<val>[(543.5945220918509, -112.31533363193239), (588.3481389928145, -104.37628601288446), (588.3481389928145, -309.4784760673552), (481.34813899281494, -311.8349924000677)]</val>
+<val>[(543.5945220918509, -112.31533363193239), (588.3481389928144, -112.31533363193239), (588.3481389928145, -309.4784760673552), (481.34813899281494, -311.8349924000677)]</val>
 </points>
 <head-connection>
 <ref refid="9d764b46-a869-11f1-9a14-a0b339ffe565"/>
@@ -10998,10 +10998,13 @@ line {
 <ref refid="9d6d29ee-a869-11f1-9a14-a0b339ffe565"/>
 <ref refid="9d6fe990-a869-11f1-9a14-a0b339ffe565"/>
 <ref refid="9d7053c6-a869-11f1-9a14-a0b339ffe565"/>
+<ref refid="9d71af64-a869-11f1-9a14-a0b339ffe565"/>
 <ref refid="9d727c6e-a869-11f1-9a14-a0b339ffe565"/>
+<ref refid="9d758486-a869-11f1-9a14-a0b339ffe565"/>
 <ref refid="9d764b46-a869-11f1-9a14-a0b339ffe565"/>
 <ref refid="9d783726-a869-11f1-9a14-a0b339ffe565"/>
 <ref refid="9d78c38a-a869-11f1-9a14-a0b339ffe565"/>
+<ref refid="9d7ad5e4-a869-11f1-9a14-a0b339ffe565"/>
 <ref refid="9d7df512-a869-11f1-9a14-a0b339ffe565"/>
 <ref refid="9d6b7a36-a869-11f1-9a14-a0b339ffe565"/>
 <ref refid="a8f17422-bc1a-11f1-b8f7-a0b339ffe565"/>
@@ -11011,9 +11014,6 @@ line {
 <ref refid="fb8fd9ea-b36d-11f1-9198-a0b339ffe565"/>
 <ref refid="1cc56288-b36e-11f1-9198-a0b339ffe565"/>
 <ref refid="e3be7204-b36d-11f1-9198-a0b339ffe565"/>
-<ref refid="9d7ad5e4-a869-11f1-9a14-a0b339ffe565"/>
-<ref refid="9d758486-a869-11f1-9a14-a0b339ffe565"/>
-<ref refid="9d71af64-a869-11f1-9a14-a0b339ffe565"/>
 <ref refid="217fd102-bcef-11f1-a512-a0b339ffe565"/>
 </reflist>
 </children>
@@ -11447,7 +11447,7 @@ endDate = planAssignment.startDate + (weekNumber * 7) - 1</val>
 </UML:EnumerationLiteral>
 <UML:PackageItem id="c1204f48-b36c-11f1-9198-a0b339ffe565">
 <matrix>
-<val>(1.0, 0.0, 0.0, 1.0, 2.767862582293418, -3099.6493222573886)</val>
+<val>(1.0, 0.0, 0.0, 1.0, -290.64847140955106, -3097.292805924677)</val>
 </matrix>
 <top-left>
 <val>(0.0, 0.0)</val>
@@ -11673,7 +11673,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>(1.0, 0.0, 0.0, 1.0, 2565.8066777320955, 480.13459869378823)</val>
 </matrix>
 <points>
-<val>[(66.94148977986583, 16.315630091321054), (-172.52553934250363, 27.235360538694522), (-172.52553934250363, -341.6941977746045), (-1360.9611695212693, -341.6941977746045), (-1360.96116952127, -309.120304478065)]</val>
+<val>[(-226.47484421197865, 18.672146424034054), (-389.7245871695046, 19.738316558708163), (-389.7245871695046, -341.6941977746045), (-1360.9611695212693, -341.6941977746045), (-1360.96116952127, -309.120304478065)]</val>
 </points>
 <head-connection>
 <ref refid="e9387992-b36c-11f1-9198-a0b339ffe565"/>
@@ -11711,7 +11711,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>(1.0, 0.0, 0.0, 1.0, 2504.3346526605515, 379.5693151023374)</val>
 </matrix>
 <points>
-<val>[(122.41351485140994, 179.93497034384245), (-143.61139113561148, 182.89443379766453), (-143.61139113561148, -118.15999546460742), (-809.6693779958649, -118.15999546460739), (-809.6693779958649, 80.39464314914449)]</val>
+<val>[(-171.00281914043455, 182.2914866765541), (-359.78581831218094, 182.29148667655403), (-359.78581831218094, -116.55502088661387), (-809.6693779958649, -118.15999546460739), (-809.6693779958649, 80.39464314914449)]</val>
 </points>
 <head-connection>
 <ref refid="ed74d3ac-b36c-11f1-9198-a0b339ffe565"/>
@@ -11749,7 +11749,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>(1.0, 0.0, 0.0, 1.0, 2521.8180357946494, 571.3931743620581)</val>
 </matrix>
 <points>
-<val>[(104.930131717312, 19.27682130237872), (-161.09477426970932, 22.55289569921524), (-161.09477426970943, 171.28230390560066), (-827.1527611299631, 171.28230390560066), (-827.152761129963, 214.5482052874877)]</val>
+<val>[(-188.4862022745325, 21.633337635090356), (-377.2692014462789, 21.633337635090356), (-377.2692014462789, 171.28230390560077), (-827.1527611299631, 171.28230390560066), (-827.152761129963, 214.5482052874877)]</val>
 </points>
 <head-connection>
 <ref refid="ed74d3ac-b36c-11f1-9198-a0b339ffe565"/>
@@ -16325,14 +16325,15 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="165ad70c-b698-11f1-a653-a0b339ffe565"/>
 <ref refid="685e58be-b6a0-11f1-a653-a0b339ffe565"/>
 <ref refid="219a240c-bc23-11f1-ac0c-a0b339ffe565"/>
-<ref refid="a57832ec-b6cd-11f1-9c43-a0b339ffe565"/>
 <ref refid="bc02dcc4-b6cd-11f1-9c43-a0b339ffe565"/>
 <ref refid="70246b22-b76a-11f1-85be-a0b339ffe565"/>
 <ref refid="81fe21da-b76a-11f1-85be-a0b339ffe565"/>
 <ref refid="f9e03f3c-b8ee-11f1-a1cc-a0b339ffe565"/>
 <ref refid="a03a81a4-bc22-11f1-81f4-a0b339ffe565"/>
 <ref refid="40cefe9e-bcee-11f1-a512-a0b339ffe565"/>
-<ref refid="7703fc62-bcee-11f1-a512-a0b339ffe565"/>
+<ref refid="779b318c-c8a0-11f1-bfae-a0b339ffe565"/>
+<ref refid="89ffaa10-c8a0-11f1-bfae-a0b339ffe565"/>
+<ref refid="bbb784ba-c8a0-11f1-bfae-a0b339ffe565"/>
 </reflist>
 </packagedElement>
 <presentation>
@@ -16370,12 +16371,12 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="12382cce-b6ca-11f1-9c43-a0b339ffe565"/>
 <ref refid="32cbe96a-bcee-11f1-a512-a0b339ffe565"/>
 <ref refid="37d14554-bcee-11f1-a512-a0b339ffe565"/>
-<ref refid="959a2994-b85c-11f1-a759-13d61318abaa"/>
-<ref refid="4fee91f6-b6cb-11f1-9c43-a0b339ffe565"/>
+<ref refid="acc8eaa2-c8a0-11f1-bfae-a0b339ffe565"/>
+<ref refid="aaea5552-b6cd-11f1-9c43-a0b339ffe565"/>
 <ref refid="c8d06930-b6c8-11f1-86a5-a0b339ffe565"/>
 <ref refid="65eb1206-b6c9-11f1-86a5-a0b339ffe565"/>
+<ref refid="4fee91f6-b6cb-11f1-9c43-a0b339ffe565"/>
 <ref refid="a2919c4e-b6cd-11f1-9c43-a0b339ffe565"/>
-<ref refid="aaea5552-b6cd-11f1-9c43-a0b339ffe565"/>
 <ref refid="cc968662-b6cd-11f1-9c43-a0b339ffe565"/>
 <ref refid="7bdcbe02-b6ce-11f1-9c43-a0b339ffe565"/>
 <ref refid="6a84cab8-b76a-11f1-85be-a0b339ffe565"/>
@@ -16383,15 +16384,18 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="efab91f6-b8ee-11f1-a1cc-a0b339ffe565"/>
 <ref refid="20cb8dfe-bc23-11f1-ac0c-a0b339ffe565"/>
 <ref refid="3f1f3b22-bcee-11f1-a512-a0b339ffe565"/>
+<ref refid="88eb41c0-c8a0-11f1-bfae-a0b339ffe565"/>
+<ref refid="b7c5765a-c8a0-11f1-bfae-a0b339ffe565"/>
 </reflist>
 </ownedPresentation>
 </UML:ClassDiagram>
 <UML:Class id="165ad70c-b698-11f1-a653-a0b339ffe565">
 <clientDependency>
 <reflist>
-<ref refid="a57832ec-b6cd-11f1-9c43-a0b339ffe565"/>
 <ref refid="bc02dcc4-b6cd-11f1-9c43-a0b339ffe565"/>
 <ref refid="40cefe9e-bcee-11f1-a512-a0b339ffe565"/>
+<ref refid="779b318c-c8a0-11f1-bfae-a0b339ffe565"/>
+<ref refid="bbb784ba-c8a0-11f1-bfae-a0b339ffe565"/>
 </reflist>
 </clientDependency>
 <comment>
@@ -16806,7 +16810,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="5d175560-b69f-11f1-a653-a0b339ffe565"/>
 <ref refid="51b084ac-b6a0-11f1-a653-a0b339ffe565"/>
 <ref refid="51b273b6-b6a0-11f1-a653-a0b339ffe565"/>
-<ref refid="c36776a2-bced-11f1-a512-a0b339ffe565"/>
+<ref refid="30b5f0aa-c89f-11f1-bfae-a0b339ffe565"/>
 </reflist>
 </ownedParameter>
 </UML:Operation>
@@ -16823,7 +16827,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 </UML:Parameter>
 <UML:Parameter id="5d175560-b69f-11f1-a653-a0b339ffe565">
 <name>
-<val>activityId</val>
+<val>sessionId</val>
 </name>
 <ownerFormalParam>
 <ref refid="b6da1598-b69e-11f1-a653-a0b339ffe565"/>
@@ -16905,7 +16909,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 </UML:Parameter>
 <UML:Parameter id="51b084ac-b6a0-11f1-a653-a0b339ffe565">
 <name>
-<val>sessionID</val>
+<val>blockId</val>
 </name>
 <ownerFormalParam>
 <ref refid="b6da1598-b69e-11f1-a653-a0b339ffe565"/>
@@ -16942,6 +16946,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="70246b22-b76a-11f1-85be-a0b339ffe565"/>
 <ref refid="81fe21da-b76a-11f1-85be-a0b339ffe565"/>
 <ref refid="f9e03f3c-b8ee-11f1-a1cc-a0b339ffe565"/>
+<ref refid="89ffaa10-c8a0-11f1-bfae-a0b339ffe565"/>
 </reflist>
 </clientDependency>
 <name>
@@ -17176,7 +17181,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 </UML:Parameter>
 <UML:Parameter id="7b787802-b6a1-11f1-a653-a0b339ffe565">
 <name>
-<val>weeiId</val>
+<val>weekId</val>
 </name>
 <ownerFormalParam>
 <ref refid="76903f14-b6a1-11f1-a653-a0b339ffe565"/>
@@ -17256,7 +17261,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <reflist>
 <ref refid="165b24e6-b698-11f1-a653-a0b339ffe565"/>
 <ref refid="685e955e-b6a0-11f1-a653-a0b339ffe565"/>
-<ref refid="959a2994-b85c-11f1-a759-13d61318abaa"/>
+<ref refid="aaea5552-b6cd-11f1-9c43-a0b339ffe565"/>
 </reflist>
 </children>
 <diagram>
@@ -17805,13 +17810,13 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>False</val>
 </orthogonal>
 <subject>
-<ref refid="a57832ec-b6cd-11f1-9c43-a0b339ffe565"/>
+<ref refid="779b318c-c8a0-11f1-bfae-a0b339ffe565"/>
 </subject>
 <matrix>
 <val>(1.0, 0.0, 0.0, 1.0, -43.39037400571891, -48.28005223522169)</val>
 </matrix>
 <points>
-<val>[(173.45977420407277, 432.42831052746567), (3.4536442407517143, 432.4283105274658), (3.4536442407516574, 18.853295043235647)]</val>
+<val>[(173.45977420407277, 432.42831052746567), (28.484950495024464, 431.9311820248948), (28.484950495024464, 18.853295043235676)]</val>
 </points>
 <head-connection>
 <ref refid="ce37eab2-b6cb-11f1-9c43-a0b339ffe565"/>
@@ -17820,26 +17825,6 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="165b24e6-b698-11f1-a653-a0b339ffe565"/>
 </tail-connection>
 </UML:DependencyItem>
-<UML:Dependency id="a57832ec-b6cd-11f1-9c43-a0b339ffe565">
-<client>
-<reflist>
-<ref refid="165ad70c-b698-11f1-a653-a0b339ffe565"/>
-</reflist>
-</client>
-<owningPackage>
-<ref refid="fc0b7712-b697-11f1-a653-a0b339ffe565"/>
-</owningPackage>
-<presentation>
-<reflist>
-<ref refid="a2919c4e-b6cd-11f1-9c43-a0b339ffe565"/>
-</reflist>
-</presentation>
-<supplier>
-<reflist>
-<ref refid="47e0c2b8-39a3-11f1-8d6c-a0b339ffe565"/>
-</reflist>
-</supplier>
-</UML:Dependency>
 <UML:DependencyItem id="aaea5552-b6cd-11f1-9c43-a0b339ffe565">
 <diagram>
 <ref refid="01678458-b698-11f1-a653-a0b339ffe565"/>
@@ -17850,14 +17835,17 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <orthogonal>
 <val>False</val>
 </orthogonal>
+<parent>
+<ref refid="aa761498-b6c9-11f1-86a5-a0b339ffe565"/>
+</parent>
 <subject>
 <ref refid="bc02dcc4-b6cd-11f1-9c43-a0b339ffe565"/>
 </subject>
 <matrix>
-<val>(1.0, 0.0, 0.0, 1.0, -91.0575086099766, -46.26805432973032)</val>
+<val>(1.0, 0.0, 0.0, 1.0, 158.3919854341579, 437.499122960853)</val>
 </matrix>
 <points>
-<val>[(213.45365545299356, 497.1867821282612), (51.1209460721262, 497.18678212826126), (51.12094607212626, 16.841297137744277)]</val>
+<val>[(214.18000864337478, 449.9841905451922), (51.12094607212623, 449.98419054519184), (51.12094607212623, -30.36129444532503)]</val>
 </points>
 <head-connection>
 <ref refid="d7e81f1e-b6cb-11f1-9c43-a0b339ffe565"/>
@@ -17883,7 +17871,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>(1.0, 0.0, 0.0, 1.0, -81.28638576829911, -44.079155066890564)</val>
 </matrix>
 <points>
-<val>[(201.35578596665312, 567.2004744484905), (41.34965600333193, 567.2004744484905), (41.34982324664243, -136841647.71629936)]</val>
+<val>[(201.35578596665312, 567.2004744484905), (41.34965600333193, 567.2004744484905), (40.62347007245495, -136841647.7162994)]</val>
 </points>
 <head-connection>
 <ref refid="e3bf0d66-b6cb-11f1-9c43-a0b339ffe565"/>
@@ -18088,7 +18076,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>(1.0, 0.0, 0.0, 1.0, 710.7927584388971, -140.95532131988156)</val>
 </matrix>
 <points>
-<val>[(-254.26790854247201, 524.6064511095548), (-12.580421840257031, 524.6064511095548), (-12.580421840257031, 67.37075086891016)]</val>
+<val>[(-254.26790854247201, 524.6064511095548), (-70.2784165499686, 524.6064511095547), (-70.2784165499686, 67.37075086891016)]</val>
 </points>
 <head-connection>
 <ref refid="2b3bacd8-b6ce-11f1-9c43-a0b339ffe565"/>
@@ -18259,35 +18247,6 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="e51b62aa-a559-11f1-b7df-a0b339ffe565"/>
 </subject>
 </UML:ClassItem>
-<UML:DependencyItem id="959a2994-b85c-11f1-a759-13d61318abaa">
-<diagram>
-<ref refid="01678458-b698-11f1-a653-a0b339ffe565"/>
-</diagram>
-<horizontal>
-<val>False</val>
-</horizontal>
-<orthogonal>
-<val>False</val>
-</orthogonal>
-<parent>
-<ref refid="aa761498-b6c9-11f1-86a5-a0b339ffe565"/>
-</parent>
-<subject>
-<ref refid="7703fc62-bcee-11f1-a512-a0b339ffe565"/>
-</subject>
-<matrix>
-<val>(1.0, 0.0, 0.0, 1.0, 925.6446850407333, 295.0449366524402)</val>
-</matrix>
-<points>
-<val>[(-213.44398790979267, 592.438376853605), (22.743498792422372, 592.4383768536051), (22.743498792422315, 67.93507860410244)]</val>
-</points>
-<head-connection>
-<ref refid="888fd94c-b85c-11f1-a759-13d61318abaa"/>
-</head-connection>
-<tail-connection>
-<ref refid="efab91f6-b8ee-11f1-a1cc-a0b339ffe565"/>
-</tail-connection>
-</UML:DependencyItem>
 <UML:Package id="7a433bb2-b85d-11f1-a759-13d61318abaa">
 <name>
 <val>Exercise</val>
@@ -18316,8 +18275,8 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="8bfaac46-b85d-11f1-a759-13d61318abaa"/>
 <ref refid="993b13bc-ba76-11f1-9472-47376f9ba520"/>
 <ref refid="6d150744-bc23-11f1-ac0c-a0b339ffe565"/>
-<ref refid="7d870ee2-bc23-11f1-ac0c-a0b339ffe565"/>
 <ref refid="79f3b9b0-bcf0-11f1-a512-a0b339ffe565"/>
+<ref refid="7d870ee2-bc23-11f1-ac0c-a0b339ffe565"/>
 </reflist>
 </packagedElement>
 <presentation>
@@ -18387,6 +18346,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="a9cd593e-bc23-11f1-ac0c-a0b339ffe565"/>
 <ref refid="33deee28-b9b1-11f1-a88c-6d2d752e514d"/>
 <ref refid="d641888e-bc1c-11f1-81f4-a0b339ffe565"/>
+<ref refid="d75dd45a-c89e-11f1-bfae-a0b339ffe565"/>
 </reflist>
 </ownedOperation>
 <owningPackage>
@@ -18398,8 +18358,14 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <presentation>
 <reflist>
 <ref refid="8bfb88c8-b85d-11f1-a759-13d61318abaa"/>
+<ref refid="acc8eaa2-c8a0-11f1-bfae-a0b339ffe565"/>
 </reflist>
 </presentation>
+<supplierDependency>
+<reflist>
+<ref refid="bbb784ba-c8a0-11f1-bfae-a0b339ffe565"/>
+</reflist>
+</supplierDependency>
 </UML:Class>
 <UML:ClassItem id="8bfb88c8-b85d-11f1-a759-13d61318abaa">
 <matrix>
@@ -18412,7 +18378,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>368.0</val>
 </width>
 <height>
-<val>120.0</val>
+<val>136.0</val>
 </height>
 <diagram>
 <ref refid="862cc970-b85d-11f1-a759-13d61318abaa"/>
@@ -19230,7 +19196,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>(1.0, 0.0, 0.0, 1.0, 669.95071713103, -76.94077004649458)</val>
 </matrix>
 <points>
-<val>[(-223.42586723460488, 593.54285286338), (28.26161946760999, 593.5428528633798), (28.26161946760999, 3.3561995955231794)]</val>
+<val>[(-223.42586723460488, 593.54285286338), (21.9096340892105, 593.54285286338), (21.9096340892105, 3.3561995955231794)]</val>
 </points>
 <head-connection>
 <ref refid="d7b6acfc-b8ee-11f1-a1cc-a0b339ffe565"/>
@@ -19615,11 +19581,6 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="284fdd9c-bc1d-11f1-81f4-a0b339ffe565"/>
 </reflist>
 </ownedAttribute>
-<ownedOperation>
-<reflist>
-<ref refid="949c28c8-bcf1-11f1-a512-a0b339ffe565"/>
-</reflist>
-</ownedOperation>
 <owningPackage>
 <ref refid="7a433bb2-b85d-11f1-a759-13d61318abaa"/>
 </owningPackage>
@@ -19709,7 +19670,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>(0.0, 0.0)</val>
 </top-left>
 <width>
-<val>595.0</val>
+<val>603.0</val>
 </width>
 <height>
 <val>152.0</val>
@@ -19770,7 +19731,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="b9f39df4-bc1a-11f1-b8f7-a0b339ffe565"/>
 </ownerFormalParam>
 <typeValue>
-<val>stringDuration</val>
+<val>Duration</val>
 </typeValue>
 </UML:Parameter>
 <UML:Parameter id="dd4f83a8-bc1a-11f1-b8f7-a0b339ffe565">
@@ -19780,6 +19741,9 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ownerFormalParam>
 <ref refid="b9f39df4-bc1a-11f1-b8f7-a0b339ffe565"/>
 </ownerFormalParam>
+<typeValue>
+<val>string</val>
+</typeValue>
 </UML:Parameter>
 <UML:Operation id="f8f48a0e-bc1a-11f1-b8f7-a0b339ffe565">
 <class_>
@@ -19889,7 +19853,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>(1.0, 0.0, 0.0, 1.0, -1294.6624246425918, -2465.806197287075)</val>
 </matrix>
 <points>
-<val>[(158.82156690968532, -315.93120132915146), (158.82156690968543, -31.156662911571516), (-48.20532603851734, -30.722186213249643)]</val>
+<val>[(158.82156690968532, -315.93120132915146), (158.82156690968543, -31.156662911571516), (-40.20532603851734, -30.722186213249643)]</val>
 </points>
 <head-connection>
 <ref refid="9d764b46-a869-11f1-9a14-a0b339ffe565"/>
@@ -19941,7 +19905,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>(1.0, 0.0, 0.0, 1.0, 19.818781536385135, 987.054507559548)</val>
 </matrix>
 <points>
-<val>[(-207.89303975561234, -185.31224253644723), (-232.85984989132703, -191.81224253644734), (-232.85984989132697, -10.316010890485813), (561.9722754379795, -10.316010890485813)]</val>
+<val>[(-207.89303975561234, -185.31224253644723), (-232.85984989132697, -185.31224253644712), (-232.85984989132697, -10.316010890485813), (561.9722754379795, -10.316010890485813)]</val>
 </points>
 <head-connection>
 <ref refid="9d685716-a869-11f1-9a14-a0b339ffe565"/>
@@ -20283,10 +20247,10 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 </UML:LiteralUnlimitedNatural>
 <UML:Property id="225c86e2-bc1d-11f1-81f4-a0b339ffe565">
 <lowerValue>
-<ref refid="2266120c-bc1d-11f1-81f4-a0b339ffe565"/>
+<ref refid="d5881cca-c89f-11f1-bfae-a0b339ffe565"/>
 </lowerValue>
 <name>
-<val>dropSetMultiplier</val>
+<val>weightMultiplier</val>
 </name>
 <structuredClassifier>
 <ref refid="993b13bc-ba76-11f1-9472-47376f9ba520"/>
@@ -20295,34 +20259,12 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>float</val>
 </typeValue>
 <upperValue>
-<ref refid="2266f2da-bc1d-11f1-81f4-a0b339ffe565"/>
+<ref refid="d58adc80-c89f-11f1-bfae-a0b339ffe565"/>
 </upperValue>
 <visibility>
 <val>private</val>
 </visibility>
 </UML:Property>
-<UML:LiteralInteger id="2266120c-bc1d-11f1-81f4-a0b339ffe565">
-<name>
-<val>0</val>
-</name>
-<owningLower>
-<ref refid="225c86e2-bc1d-11f1-81f4-a0b339ffe565"/>
-</owningLower>
-<value>
-<val>0</val>
-</value>
-</UML:LiteralInteger>
-<UML:LiteralUnlimitedNatural id="2266f2da-bc1d-11f1-81f4-a0b339ffe565">
-<name>
-<val>1</val>
-</name>
-<owningUpper>
-<ref refid="225c86e2-bc1d-11f1-81f4-a0b339ffe565"/>
-</owningUpper>
-<value>
-<val>1</val>
-</value>
-</UML:LiteralUnlimitedNatural>
 <UML:Property id="2553d116-bc1d-11f1-81f4-a0b339ffe565">
 <lowerValue>
 <ref refid="255b812c-bc1d-11f1-81f4-a0b339ffe565"/>
@@ -20556,7 +20498,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>(1.0, 0.0, 0.0, 1.0, 22.542845677857315, 33.81364048897592)</val>
 </matrix>
 <points>
-<val>[(109.34897081240342, -4.310761456308281), (334.67690813360014, -4.310761456308285), (334.67690813360014, -40.19773390769774)]</val>
+<val>[(109.34897081240342, -4.310761456308281), (334.67690813360014, -4.310761456308285), (334.6769081336, -24.19773390769774)]</val>
 </points>
 <head-connection>
 <ref refid="7b2f3124-bc1e-11f1-81f4-a0b339ffe565"/>
@@ -20579,7 +20521,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>(1.0, 0.0, 0.0, 1.0, 201.5753500222397, -83.58494500206325)</val>
 </matrix>
 <points>
-<val>[(-218.92340567121332, -44.4408764004846), (-91.93513656225912, -45.437756980793466), (-91.93513656225934, 10.390588717475339), (-12.986505718862531, 10.390588717475367)]</val>
+<val>[(-218.92340567121332, -44.4408764004846), (-91.93513656225912, -45.437756980793466), (-91.935136562259, 17.482553668693186), (-12.986505718862531, 17.482553668693242)]</val>
 </points>
 <head-connection>
 <ref refid="663e53e4-bc1e-11f1-81f4-a0b339ffe565"/>
@@ -20625,23 +20567,24 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="4f3eb572-bc22-11f1-81f4-a0b339ffe565"/>
 <ref refid="4f419a62-bc22-11f1-81f4-a0b339ffe565"/>
 <ref refid="4f448236-bc22-11f1-81f4-a0b339ffe565"/>
+<ref refid="3ab5a8ac-c89f-11f1-bfae-a0b339ffe565"/>
 </reflist>
 </ownedParameter>
 </UML:Operation>
 <UML:Parameter id="4f3b6ebc-bc22-11f1-81f4-a0b339ffe565">
 <name>
-<val>activityId</val>
+<val>spec</val>
 </name>
 <ownerFormalParam>
 <ref refid="4f33786a-bc22-11f1-81f4-a0b339ffe565"/>
 </ownerFormalParam>
 <typeValue>
-<val>UUID</val>
+<val>ActivitySpec</val>
 </typeValue>
 </UML:Parameter>
 <UML:Parameter id="4f3eb572-bc22-11f1-81f4-a0b339ffe565">
 <name>
-<val>sessionId</val>
+<val>activityId</val>
 </name>
 <ownerFormalParam>
 <ref refid="4f33786a-bc22-11f1-81f4-a0b339ffe565"/>
@@ -20952,7 +20895,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>(1.0, 0.0, 0.0, 1.0, 367.54645279840804, 239.23028216413132)</val>
 </matrix>
 <points>
-<val>[(30.0038343740722, 1.3297434283533534), (52.725625548064784, 1.3297434283533107), (52.725625548064784, -51.859993705780596), (463.9656620788353, -51.859993705780596)]</val>
+<val>[(30.0038343740722, 8.421708379571214), (52.72562554806473, 8.421708379571157), (52.725625548064784, -51.859993705780596), (463.9656620788353, -51.859993705780596)]</val>
 </points>
 <head-connection>
 <ref refid="8bfb88c8-b85d-11f1-a759-13d61318abaa"/>
@@ -21079,7 +21022,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 </UML:Parameter>
 <UML:Parameter id="a9d8cd82-bc23-11f1-ac0c-a0b339ffe565">
 <name>
-<val>exerciseTypeID</val>
+<val>exerciseTypeId</val>
 </name>
 <ownerFormalParam>
 <ref refid="a9cd593e-bc23-11f1-ac0c-a0b339ffe565"/>
@@ -21150,7 +21093,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 </general:Line>
 <UML:Parameter id="4f448236-bc22-11f1-81f4-a0b339ffe565">
 <name>
-<val>planId</val>
+<val>blockId</val>
 </name>
 <ownerFormalParam>
 <ref refid="4f33786a-bc22-11f1-81f4-a0b339ffe565"/>
@@ -21161,7 +21104,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 </UML:Parameter>
 <UML:Parameter id="4f419a62-bc22-11f1-81f4-a0b339ffe565">
 <name>
-<val>blockId</val>
+<val>sessionId</val>
 </name>
 <ownerFormalParam>
 <ref refid="4f33786a-bc22-11f1-81f4-a0b339ffe565"/>
@@ -21171,17 +21114,6 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 </typeValue>
 </UML:Parameter>
 <UML:Parameter id="51b273b6-b6a0-11f1-a653-a0b339ffe565">
-<name>
-<val>blockId</val>
-</name>
-<ownerFormalParam>
-<ref refid="b6da1598-b69e-11f1-a653-a0b339ffe565"/>
-</ownerFormalParam>
-<typeValue>
-<val>UUID</val>
-</typeValue>
-</UML:Parameter>
-<UML:Parameter id="c36776a2-bced-11f1-a512-a0b339ffe565">
 <name>
 <val>planId</val>
 </name>
@@ -21222,7 +21154,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 </UML:Parameter>
 <UML:Parameter id="f286cdfc-bced-11f1-a512-a0b339ffe565">
 <name>
-<val>sessionI</val>
+<val>sessionId</val>
 </name>
 <ownerFormalParam>
 <ref refid="f2727a46-bced-11f1-a512-a0b339ffe565"/>
@@ -21272,14 +21204,15 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>(0.0, 0.0)</val>
 </top-left>
 <width>
-<val>240.16642849063635</val>
+<val>239.25682524979152</val>
 </width>
 <height>
-<val>196.73489746985933</val>
+<val>281.97337994828786</val>
 </height>
 <children>
 <reflist>
 <ref refid="37d14554-bcee-11f1-a512-a0b339ffe565"/>
+<ref refid="acc8eaa2-c8a0-11f1-bfae-a0b339ffe565"/>
 </reflist>
 </children>
 <diagram>
@@ -21335,7 +21268,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>(1.0, 0.0, 0.0, 1.0, -175.59229562703513, -212.01091228991072)</val>
 </matrix>
 <points>
-<val>[(-177.46246320921045, 7.401095483539166), (3.9540068074309147, 7.401095483539166)]</val>
+<val>[(-177.46246320921045, 7.401095483539166), (3.9540068074309147, 7.901095483539166)]</val>
 </points>
 <head-connection>
 <ref refid="37d14554-bcee-11f1-a512-a0b339ffe565"/>
@@ -21381,11 +21314,6 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="685e58be-b6a0-11f1-a653-a0b339ffe565"/>
 </reflist>
 </client>
-<clientDependency>
-<reflist>
-<ref refid="7703fc62-bcee-11f1-a512-a0b339ffe565"/>
-</reflist>
-</clientDependency>
 <owningPackage>
 <ref refid="fc0b7712-b697-11f1-a653-a0b339ffe565"/>
 </owningPackage>
@@ -21397,26 +21325,6 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <supplier>
 <reflist>
 <ref refid="4f05ea06-ae87-11f1-ac14-a0b339ffe565"/>
-</reflist>
-</supplier>
-</UML:Dependency>
-<UML:Dependency id="7703fc62-bcee-11f1-a512-a0b339ffe565">
-<client>
-<reflist>
-<ref refid="f9e03f3c-b8ee-11f1-a1cc-a0b339ffe565"/>
-</reflist>
-</client>
-<owningPackage>
-<ref refid="fc0b7712-b697-11f1-a653-a0b339ffe565"/>
-</owningPackage>
-<presentation>
-<reflist>
-<ref refid="959a2994-b85c-11f1-a759-13d61318abaa"/>
-</reflist>
-</presentation>
-<supplier>
-<reflist>
-<ref refid="e51b62aa-a559-11f1-b7df-a0b339ffe565"/>
 </reflist>
 </supplier>
 </UML:Dependency>
@@ -21468,7 +21376,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>(0.0, 0.0)</val>
 </top-left>
 <width>
-<val>319.0</val>
+<val>327.0</val>
 </width>
 <height>
 <val>128.0</val>
@@ -21669,7 +21577,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>(0.0, 0.0)</val>
 </top-left>
 <width>
-<val>319.0</val>
+<val>327.0</val>
 </width>
 <height>
 <val>128.0</val>
@@ -21710,6 +21618,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="54576660-bcf1-11f1-a512-a0b339ffe565"/>
 <ref refid="70241e42-bcf1-11f1-a512-a0b339ffe565"/>
 <ref refid="77931f3e-bcf1-11f1-a512-a0b339ffe565"/>
+<ref refid="f0f60c48-c89e-11f1-bfae-a0b339ffe565"/>
 </reflist>
 </ownedOperation>
 <owningPackage>
@@ -21740,7 +21649,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>327.0</val>
 </width>
 <height>
-<val>120.0</val>
+<val>136.0</val>
 </height>
 <diagram>
 <ref refid="862cc970-b85d-11f1-a759-13d61318abaa"/>
@@ -21772,7 +21681,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>(1.0, 0.0, 0.0, 1.0, -351.21125960302777, 193.96930522770748)</val>
 </matrix>
 <points>
-<val>[(117.2660230681114, 2.7786543452540684), (117.2660230681114, 153.4019000531556), (865.0766954849726, 153.40190005315566), (865.0766954849726, 179.14359787162994)]</val>
+<val>[(124.33423048801663, 2.7786543452540684), (124.33423048801663, 153.4019000531556), (865.0766954849726, 153.40190005315566), (865.0766954849726, 179.14359787162994)]</val>
 </points>
 <head-connection>
 <ref refid="2fc4fd18-bcf0-11f1-a512-a0b339ffe565"/>
@@ -21871,7 +21780,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>True</val>
 </isAbstract>
 <name>
-<val>visitRestPase</val>
+<val>visitRestPause</val>
 </name>
 <ownedParameter>
 <reflist>
@@ -21986,33 +21895,6 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>RestPauseDecorator</val>
 </typeValue>
 </UML:Parameter>
-<UML:Operation id="949c28c8-bcf1-11f1-a512-a0b339ffe565">
-<class_>
-<ref refid="993b13bc-ba76-11f1-9472-47376f9ba520"/>
-</class_>
-<isAbstract>
-<val>False</val>
-</isAbstract>
-<name>
-<val>toSpec</val>
-</name>
-<ownedParameter>
-<reflist>
-<ref refid="a696fe2c-bcf1-11f1-a512-a0b339ffe565"/>
-</reflist>
-</ownedParameter>
-</UML:Operation>
-<UML:Parameter id="a696fe2c-bcf1-11f1-a512-a0b339ffe565">
-<name>
-<val>activity</val>
-</name>
-<ownerFormalParam>
-<ref refid="949c28c8-bcf1-11f1-a512-a0b339ffe565"/>
-</ownerFormalParam>
-<typeValue>
-<val>Activity</val>
-</typeValue>
-</UML:Parameter>
 <general:Ellipse id="83c96d98-bcf2-11f1-a512-a0b339ffe565">
 <matrix>
 <val>(1.0, 0.0, 0.0, 1.0, -54.8373506119404, 136.34224154351924)</val>
@@ -22073,7 +21955,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <val>(1.0, 0.0, 0.0, 1.0, 173.59079927483103, 238.60714198586354)</val>
 </matrix>
 <points>
-<val>[(-63.95058581485051, -41.76108625142035), (169.6253516992047, -42.264900442344356)]</val>
+<val>[(-63.95058581485051, -41.76108625142035), (169.62535169920454, -41.76108625142024)]</val>
 </points>
 <head-connection>
 <ref refid="83c96d98-bcf2-11f1-a512-a0b339ffe565"/>
@@ -22333,5 +22215,250 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="83c96d98-bcf2-11f1-a512-a0b339ffe565"/>
 </head-connection>
 </general:Line>
+<UML:Operation id="d75dd45a-c89e-11f1-bfae-a0b339ffe565">
+<class_>
+<ref refid="8bfaac46-b85d-11f1-a759-13d61318abaa"/>
+</class_>
+<name>
+<val>toSpec</val>
+</name>
+<ownedParameter>
+<reflist>
+<ref refid="d763fa6a-c89e-11f1-bfae-a0b339ffe565"/>
+<ref refid="3f923eac-c8a0-11f1-bfae-a0b339ffe565"/>
+</reflist>
+</ownedParameter>
+</UML:Operation>
+<UML:Parameter id="d763fa6a-c89e-11f1-bfae-a0b339ffe565">
+<name>
+<val>activity</val>
+</name>
+<ownerFormalParam>
+<ref refid="d75dd45a-c89e-11f1-bfae-a0b339ffe565"/>
+</ownerFormalParam>
+<typeValue>
+<val>WorkoutActivity</val>
+</typeValue>
+</UML:Parameter>
+<UML:Operation id="f0f60c48-c89e-11f1-bfae-a0b339ffe565">
+<class_>
+<ref refid="79f3b9b0-bcf0-11f1-a512-a0b339ffe565"/>
+</class_>
+<name>
+<val>getResult</val>
+</name>
+<ownedParameter>
+<reflist>
+<ref refid="f0fcf72e-c89e-11f1-bfae-a0b339ffe565"/>
+</reflist>
+</ownedParameter>
+</UML:Operation>
+<UML:Parameter id="f0fcf72e-c89e-11f1-bfae-a0b339ffe565">
+<direction>
+<val>return</val>
+</direction>
+<ownerFormalParam>
+<ref refid="f0f60c48-c89e-11f1-bfae-a0b339ffe565"/>
+</ownerFormalParam>
+<typeValue>
+<val>ActivitySpec</val>
+</typeValue>
+</UML:Parameter>
+<UML:Parameter id="30b5f0aa-c89f-11f1-bfae-a0b339ffe565">
+<direction>
+<val>return</val>
+</direction>
+<ownerFormalParam>
+<ref refid="b6da1598-b69e-11f1-a653-a0b339ffe565"/>
+</ownerFormalParam>
+<typeValue>
+<val>WorkoutActivity</val>
+</typeValue>
+</UML:Parameter>
+<UML:Parameter id="3ab5a8ac-c89f-11f1-bfae-a0b339ffe565">
+<name>
+<val>planId</val>
+</name>
+<ownerFormalParam>
+<ref refid="4f33786a-bc22-11f1-81f4-a0b339ffe565"/>
+</ownerFormalParam>
+<typeValue>
+<val>UUID</val>
+</typeValue>
+</UML:Parameter>
+<UML:LiteralInteger id="d5881cca-c89f-11f1-bfae-a0b339ffe565">
+<name>
+<val>0</val>
+</name>
+<owningLower>
+<ref refid="225c86e2-bc1d-11f1-81f4-a0b339ffe565"/>
+</owningLower>
+<value>
+<val>0</val>
+</value>
+</UML:LiteralInteger>
+<UML:LiteralUnlimitedNatural id="d58adc80-c89f-11f1-bfae-a0b339ffe565">
+<name>
+<val>1</val>
+</name>
+<owningUpper>
+<ref refid="225c86e2-bc1d-11f1-81f4-a0b339ffe565"/>
+</owningUpper>
+<value>
+<val>1</val>
+</value>
+</UML:LiteralUnlimitedNatural>
+<UML:Parameter id="3f923eac-c8a0-11f1-bfae-a0b339ffe565">
+<direction>
+<val>return</val>
+</direction>
+<ownerFormalParam>
+<ref refid="d75dd45a-c89e-11f1-bfae-a0b339ffe565"/>
+</ownerFormalParam>
+<typeValue>
+<val>ActivitySpec</val>
+</typeValue>
+</UML:Parameter>
+<UML:Dependency id="779b318c-c8a0-11f1-bfae-a0b339ffe565">
+<client>
+<reflist>
+<ref refid="165ad70c-b698-11f1-a653-a0b339ffe565"/>
+</reflist>
+</client>
+<owningPackage>
+<ref refid="fc0b7712-b697-11f1-a653-a0b339ffe565"/>
+</owningPackage>
+<presentation>
+<reflist>
+<ref refid="a2919c4e-b6cd-11f1-9c43-a0b339ffe565"/>
+</reflist>
+</presentation>
+<supplier>
+<reflist>
+<ref refid="47e0c2b8-39a3-11f1-8d6c-a0b339ffe565"/>
+</reflist>
+</supplier>
+</UML:Dependency>
+<UML:DependencyItem id="88eb41c0-c8a0-11f1-bfae-a0b339ffe565">
+<diagram>
+<ref refid="01678458-b698-11f1-a653-a0b339ffe565"/>
+</diagram>
+<horizontal>
+<val>False</val>
+</horizontal>
+<orthogonal>
+<val>False</val>
+</orthogonal>
+<subject>
+<ref refid="89ffaa10-c8a0-11f1-bfae-a0b339ffe565"/>
+</subject>
+<matrix>
+<val>(1.0, 0.0, 0.0, 1.0, 665.0364348092623, -75.13358948993294)</val>
+</matrix>
+<points>
+<val>[(-203.0115849128373, 526.0523172884638), (0.0, 526.0523172884638), (0.0, 1.5490190389615464)]</val>
+</points>
+<head-connection>
+<ref refid="888fd94c-b85c-11f1-a759-13d61318abaa"/>
+</head-connection>
+<tail-connection>
+<ref refid="685e955e-b6a0-11f1-a653-a0b339ffe565"/>
+</tail-connection>
+</UML:DependencyItem>
+<UML:Dependency id="89ffaa10-c8a0-11f1-bfae-a0b339ffe565">
+<client>
+<reflist>
+<ref refid="685e58be-b6a0-11f1-a653-a0b339ffe565"/>
+</reflist>
+</client>
+<owningPackage>
+<ref refid="fc0b7712-b697-11f1-a653-a0b339ffe565"/>
+</owningPackage>
+<presentation>
+<reflist>
+<ref refid="88eb41c0-c8a0-11f1-bfae-a0b339ffe565"/>
+</reflist>
+</presentation>
+<supplier>
+<reflist>
+<ref refid="e51b62aa-a559-11f1-b7df-a0b339ffe565"/>
+</reflist>
+</supplier>
+</UML:Dependency>
+<UML:ClassItem id="acc8eaa2-c8a0-11f1-bfae-a0b339ffe565">
+<matrix>
+<val>(1.0, 0.0, 0.0, 1.0, 61.628412624895695, 185.12534581623916)</val>
+</matrix>
+<top-left>
+<val>(0.0, 0.0)</val>
+</top-left>
+<width>
+<val>116.0</val>
+</width>
+<height>
+<val>50.0</val>
+</height>
+<diagram>
+<ref refid="01678458-b698-11f1-a653-a0b339ffe565"/>
+</diagram>
+<parent>
+<ref refid="32cbe96a-bcee-11f1-a512-a0b339ffe565"/>
+</parent>
+<show_attributes>
+<val>0</val>
+</show_attributes>
+<show_operations>
+<val>0</val>
+</show_operations>
+<subject>
+<ref refid="8bfaac46-b85d-11f1-a759-13d61318abaa"/>
+</subject>
+</UML:ClassItem>
+<UML:DependencyItem id="b7c5765a-c8a0-11f1-bfae-a0b339ffe565">
+<diagram>
+<ref refid="01678458-b698-11f1-a653-a0b339ffe565"/>
+</diagram>
+<horizontal>
+<val>False</val>
+</horizontal>
+<orthogonal>
+<val>False</val>
+</orthogonal>
+<subject>
+<ref refid="bbb784ba-c8a0-11f1-bfae-a0b339ffe565"/>
+</subject>
+<matrix>
+<val>(1.0, 0.0, 0.0, 1.0, -176.13638755820148, -130.26385164394424)</val>
+</matrix>
+<points>
+<val>[(-206.51921223184564, 4.694616303074895), (4.498098738597264, 5.194616303074923)]</val>
+</points>
+<head-connection>
+<ref refid="acc8eaa2-c8a0-11f1-bfae-a0b339ffe565"/>
+</head-connection>
+<tail-connection>
+<ref refid="165b24e6-b698-11f1-a653-a0b339ffe565"/>
+</tail-connection>
+</UML:DependencyItem>
+<UML:Dependency id="bbb784ba-c8a0-11f1-bfae-a0b339ffe565">
+<client>
+<reflist>
+<ref refid="165ad70c-b698-11f1-a653-a0b339ffe565"/>
+</reflist>
+</client>
+<owningPackage>
+<ref refid="fc0b7712-b697-11f1-a653-a0b339ffe565"/>
+</owningPackage>
+<presentation>
+<reflist>
+<ref refid="b7c5765a-c8a0-11f1-bfae-a0b339ffe565"/>
+</reflist>
+</presentation>
+<supplier>
+<reflist>
+<ref refid="8bfaac46-b85d-11f1-a759-13d61318abaa"/>
+</reflist>
+</supplier>
+</UML:Dependency>
 </model>
 </gaphor>
