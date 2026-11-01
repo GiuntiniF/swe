@@ -163,6 +163,9 @@ comuni, PT per il Personal Trainer, A per l'Atleta.
 \subsubsection{PT-15: Cessazione Rapporto con una Palestra}
 \subfile{../diagrams/useCaseTemplates/pt/src/PT-15-cessazioneRapportoPalestra}
 
+\subsubsection{PT-16: Duplicazione Scheda}
+\subfile{../diagrams/useCaseTemplates/pt/src/PT-16-duplicazioneScheda}
+
 \subsection{Template dei casi d'uso dell'Atleta}
 \subsubsection{A-01: Completamento Profilo}
 \subfile{../diagrams/useCaseTemplates/atleta/src/A-01-completamentoProfilo}
@@ -342,22 +345,84 @@ per modalità di visualizzazione}, alle quali il modello ha risposto:
   \caption{Risposta di Claude}
   \label{fig:promptAnswer}
 \end{figure}
-Grazie alla risposta, si sono identificati i seguenti metodi da
-aggiungere alla Business Logic del package \texttt{TrainingPlan}:
-\texttt{
+Grazie alla risposta, si sono identificati i seguenti metodi di lettura
+da aggiungere alla Business Logic del package \texttt{TrainingPlan}:
+\texttt{\raggedright
   \begin{itemize}
     \item TrainingPlanService
       \begin{itemize}
-        \item getPlan(planId: UUID): TrainingPlan
-        \item getPlanListByPT(ptId: UUID): TrainingPlan[0..*]
+        \item getPlan( in planId: UUID ): TrainingPlan
+        \item getPlanListByPT( in ptId: UUID ): TrainingPlan[0..*]
       \end{itemize}
-    \item PlanAssignmentService:
+    \item PlanAssignmentService
       \begin{itemize}
-        \item getAssignmentsByAthlete(in athleteId: UUID): PlanAssignment[0..*]
-        \item getAssignmentsByAthleteAndPT(in athleteId: UUID, in ptId:
-          UUID): PlanAssignment[0..*]
-        \item getAssignment(in assignmentId: UUID): PlanAssignment
-        \item getAssignmentWeek(in UUID): Week
-        \item getPlanListByPT(ptId: UUID): TrainingPlan[0..*]
+        \item getConfirmedAssignmentsByAthlete( in athleteId: UUID ):
+          PlanAssignment[0..*]
+        \item getAssignmentsByAthleteAndPT( in athleteId: UUID,
+          in ptId: UUID ): PlanAssignment[0..*]
+        \item getAssignment( in assignmentId: UUID ): PlanAssignment
+        \item getAssignmentWeek( in assignmentId: UUID,
+          in weekId: UUID ): Week
       \end{itemize}
-\end{itemize}}
+  \end{itemize}}
+
+Gli altri casi d'uso del package \texttt{TrainingPlan} richiedono i
+metodi seguenti, che modificano la scheda o l'assegnazione.
+Tra parentesi il caso d'uso che li usa.
+\texttt{\raggedright
+  \begin{itemize}
+    \item TrainingPlanService
+      \begin{itemize}
+        \item addPlan( in ptId: UUID, in name: string,
+          in description: string ): TrainingPlan (PT-03)
+        \item editPlan( in ptId: UUID, in planId: UUID,
+          in name: string, in description: string ): TrainingPlan
+          (PT-10)
+        \item deletePlan( in planId: UUID ): bool (PT-11)
+        \item duplicatePlan( in planId: UUID ): TrainingPlan (PT-16)
+        \item isStructureEditable( in planId: UUID ): bool
+          (PT-04, PT-11)
+        \item addMonthlyBlock( in planId: UUID, in weeksCount: int ):
+          MonthlyBlock (PT-04)
+        \item editMonthlyBlock( in blockId: UUID, in planId: UUID,
+          in weeksCount: int ) (PT-04)
+        \item deleteMonthlyBlock( in blockId: UUID,
+          in planId: UUID ) (PT-04)
+        \item addTrainingSession( in blockId: UUID,
+          in planId: UUID ): TrainingSession (PT-04)
+        \item deleteTrainingSession( in sessionId: UUID,
+          in blockId: UUID, in planId: UUID ): bool (PT-04)
+        \item addActivityToSession( in spec: ActivitySpec,
+          in sessionId: UUID, in blockId: UUID, in planId: UUID ):
+          WorkoutActivity (PT-04)
+        \item editActivityOfSession( in spec: ActivitySpec,
+          in activityId: UUID, in sessionId: UUID, in blockId: UUID,
+          in planId: UUID ) (PT-04)
+        \item removeActivityFromSession( in activityId: UUID,
+          in sessionId: UUID, in blockId: UUID, in planId: UUID )
+          (PT-04)
+        \item getActivitySpec( in activityId: UUID,
+          in sessionId: UUID, in blockId: UUID, in planId: UUID ):
+          ActivitySpec (PT-04)
+      \end{itemize}
+    \item PlanAssignmentService
+      \begin{itemize}
+        \item addAssignment( in athleteId: UUID, in planId: UUID,
+          in startDate: LocalDate ): PlanAssignment (PT-05)
+        \item findOverlappingAssignment( in athleteId: UUID,
+          in startDate: LocalDate, in endDate: LocalDate,
+          in excludedAssignmentId: UUID ): PlanAssignment (PT-05)
+        \item saveDraft( in assignmentId: UUID,
+          in weights: WeightEntry ): PlanAssignment (PT-05)
+        \item discardDraft( in assignmentId: UUID ): bool (PT-05)
+        \item confirmAssignment( in assignmentId: UUID,
+          in weights: WeightEntry ): PlanAssignment (PT-05)
+        \item moveAssignment( in assignmentId: UUID,
+          in newStartDate: LocalDate ): PlanAssignment (PT-05)
+        \item customizeAssignedExercise(
+          in assignedExerciseId: UUID, in weight: Weight,
+          in reps: Reps, in restTime: Duration ) (PT-09)
+        \item resetAssignedExercise( in assignedExerciseId: UUID )
+          (PT-09)
+      \end{itemize}
+  \end{itemize}}

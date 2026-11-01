@@ -10,11 +10,11 @@
   \ucname{Configurazione Sessioni di Allenamento in una
   Scheda} \\ \hline
   \ucactor{PT} \\ \hline
-  \ucdescription{Il PT inserisce o modifica i blocchi mensili e le
-  sessioni di allenamento presenti in una scheda.} \\ \hline
+  \ucdescription{Il PT inserisce, modifica o elimina i blocchi mensili,
+  le sessioni di allenamento e gli esercizi presenti in una scheda.} \\ \hline
   \ucprecond{Il PT deve essere autenticato. Deve esistere almeno una
-    scheda da modificare. La scheda non deve avere assegnazioni
-  attive.} \\ \hline
+    scheda da modificare. La scheda non deve avere assegnazioni, in
+  nessuno stato.} \\ \hline
   \ucpostcond{Il sistema configura i blocchi mensili e le sessioni
   di allenamento della scheda.} \\ \hline
   \ucmainflow{
@@ -46,6 +46,16 @@
   \item Il flusso riprende dal passo 4.
   } \\ \hline
   \ucaltflow{
+    \textbf{1a. Scheda già assegnata} \newline
+    - La scheda ha almeno un'assegnazione, in qualunque stato.
+    \newline
+    - Il sistema mostra la scheda in sola lettura, con un messaggio
+    ("La scheda è assegnata ad almeno un atleta: per modificarla,
+    duplicala"). \newline
+    - Il PT può premere il pulsante "Duplica Scheda". Il flusso
+    continua dal passo 4 del caso d'uso PT-16. \newline
+    - Altrimenti il flusso termina. \newline
+    \newline
     \textbf{2a. Nessun blocco mensile presente} \newline
     - La scheda non ha ancora nessun blocco mensile, per esempio
     subito dopo la creazione con il caso d'uso PT-03. \newline
@@ -72,6 +82,43 @@
     - Il flusso continua dal passo 4, sulla sessione appena creata.
     \newline
     \newline
+    \textbf{2d. Modifica della durata di un blocco mensile}
+    \newline
+    - Il PT preme il pulsante "Modifica Durata" su uno dei blocchi
+    mensili dell'elenco. \newline
+    - Il sistema mostra il form con la durata corrente del blocco, in
+    numero di settimane. \newline
+    - Il PT inserisce la nuova durata e preme "Conferma". \newline
+    - Il sistema aggiorna la durata. Le sessioni di allenamento del
+    blocco non cambiano (vedi Nota 3). \newline
+    - Il flusso riprende dal passo 2. \newline
+    \newline
+    \textbf{2e. Eliminazione di un blocco mensile} \newline
+    - Il PT preme il pulsante "Elimina Blocco" su uno dei blocchi
+    mensili dell'elenco. \newline
+    - Il sistema chiede conferma, avvisando che il blocco sarà
+    eliminato con tutte le sessioni di allenamento e gli esercizi
+    che contiene, e che l'operazione non è reversibile. \newline
+    - Il PT preme il pulsante "Conferma Eliminazione". Se preme
+    "Annulla", il sistema non elimina nulla. \newline
+    - Il sistema elimina il blocco. I blocchi successivi scalano di
+    una posizione. \newline
+    - Il flusso riprende dal passo 2.
+  } \\ \hline
+  \ucaltflowcont{
+    \textbf{4a. Eliminazione di una sessione di allenamento}
+    \newline
+    - Il PT preme il pulsante "Elimina Sessione" nel dettaglio della
+    sessione. \newline
+    - Il sistema chiede conferma, avvisando che la sessione sarà
+    eliminata con tutti gli esercizi che contiene, e che
+    l'operazione non è reversibile. \newline
+    - Il PT preme il pulsante "Conferma Eliminazione". Se preme
+    "Annulla", il sistema non elimina nulla e il flusso riprende dal
+    passo 4. \newline
+    - Il sistema elimina la sessione. \newline
+    - Il flusso riprende dal passo 2. \newline
+    \newline
     \textbf{5a. Modifica esercizio} \newline
     - Invece di aggiungere un nuovo esercizio, il PT preme su
     un esercizio già presente e lo modifica. \newline
@@ -80,6 +127,18 @@
     - Il PT decide di modificare un'altra sessione di
     allenamento invece di quella corrente.\newline
     - Il flusso riprende dal passo 1.
+    \newline
+    \newline
+    \textbf{5c. Rimozione di un esercizio} \newline
+    - Invece di aggiungere un nuovo esercizio, il PT preme il
+    pulsante "Rimuovi" su un esercizio già presente. \newline
+    - Il sistema chiede conferma. Se l'esercizio fa parte di una
+    superserie o ha una variante di esecuzione, il sistema avvisa
+    che saranno rimossi anche questi elementi. \newline
+    - Il PT preme il pulsante "Conferma". Se preme "Annulla", il
+    sistema non rimuove nulla. \newline
+    - Il sistema rimuove l'esercizio dalla sessione. \newline
+    - Il flusso riprende dal passo 4.
   } \\ \hline
   \ucvariations{
     \textbf{9a. Selezione variante di esecuzione} \newline

@@ -1,0 +1,51 @@
+\documentclass[../../../../SoftwareRequirementsSpecification.tex]{subfiles}
+\begin{document}
+% Richiede le macro definite in src/macros/useCaseMacros.tex
+% (incluse nel preambolo di SoftwareRequirementsSpecification.tex)
+
+\ucstart
+\begin{xltabular}{\textwidth}{|l|X|}
+  \hline
+  \ucid{PT-16} \\ \hline
+  \ucname{Duplicazione Scheda} \\ \hline
+  \ucactor{PT} \\ \hline
+  \ucdescription{Il PT crea una copia di una scheda che ha creato.
+    Il PT può modificare la copia anche se la scheda originale ha
+    assegnazioni.} \\ \hline
+  \ucprecond{Il PT deve essere autenticato. Deve esistere almeno una
+    scheda creata dal PT.} \\ \hline
+  \ucpostcond{Il sistema crea una nuova scheda senza assegnazioni.
+    La nuova scheda ha gli stessi blocchi mensili, le stesse sessioni
+    di allenamento e gli stessi esercizi della scheda originale. La
+    scheda originale non cambia.} \\ \hline
+  \ucmainflow{
+    \item Il PT apre la pagina delle proprie schede.
+    \item Il sistema mostra l'elenco delle schede create dal PT.
+    \item Il PT preme il pulsante "Duplica" su una scheda
+      dell'elenco.
+    \item Il sistema mostra il form con il nome della copia,
+      precompilato con il nome della scheda originale seguito da
+      "(copia)".
+    \item Il PT modifica il nome, se vuole, e preme il pulsante
+      "Conferma".
+    \item Il sistema verifica che il nome non sia già usato da
+      un'altra scheda del PT.
+    \item Il sistema crea la copia della scheda.
+    \item Il sistema reindirizza il PT alla configurazione delle
+      sessioni di allenamento della copia (caso d'uso PT-04).
+  } \\ \hline
+  \ucaltflow{
+    \textbf{6a. Nome già presente} \newline
+    - Il sistema mostra un messaggio di errore ("Esiste già una
+    scheda con questo nome"). \newline
+    - Il flusso riprende dal passo 4.
+  } \\ \hline
+  \ucnote{
+    La copia non ha assegnazioni, quindi il PT può modificarne i
+    blocchi mensili, le sessioni di allenamento e gli esercizi con il
+    caso d'uso PT-04. Le assegnazioni della scheda originale non
+    cambiano: gli atleti che la seguono continuano a vedere la scheda
+    originale (caso d'uso A-03).
+  } \\ \hline
+\end{xltabular}
+\end{document}
