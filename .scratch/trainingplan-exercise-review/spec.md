@@ -127,7 +127,7 @@ ultima la SRS, che descrive entrambi.
 
 ### C. Business Logic
 
-- [ ] **C1. `ActivitySpec`** (package `BusinessLogic/Exercise`)
+- [x] **C1. `ActivitySpec`** (package `BusinessLogic/Exercise`)
   - Nuova enumerazione `ActivityKind` con i valori `Exercise`, `Superset`,
     `DropSet` e `RestPause`.
   - Aggiungi `kind: ActivityKind`.
@@ -136,7 +136,7 @@ ultima la SRS, che descrive entrambi.
     `RestPause`: `restPauseTime` e un figlio. `Superset`: due o più figli."
   - `ActivitySpecVisitor` costruisce l'albero; `createActivity` lo ricostruisce
     con il builder.
-- [ ] **C2. `TrainingPlanService`**
+- [x] **C2. `TrainingPlanService`**
   - Associazione verso `PlanAssignmentDAO`. `isStructureEditable` la usa (la nota
     esistente lo dice già).
   - `ptId` in tutti i metodi che ricevono `planId`, per esempio
@@ -146,7 +146,7 @@ ultima la SRS, che descrive entrambi.
   - `addTrainingSession` rifiuta l'ottava sessione (`MonthlyBlock.canAddSession()`).
   - Nota: "Ogni metodo controlla che la scheda appartenga al PT `ptId`. Il nome di
     una scheda è unico tra le schede dello stesso PT (PT-03 5a, PT-10 7a, PT-16 6a)."
-- [ ] **C3. `PlanAssignmentService`**
+- [x] **C3. `PlanAssignmentService`**
   - Dipendenze verso `TrainingPlanService` e `UserService`.
   - Metodi del PT, con `ptId`:
     - `addAssignment(in athleteId, in planId, in ptId, in startDate)`
@@ -167,9 +167,8 @@ ultima la SRS, che descrive entrambi.
       `Week.isEditable(today)`."
     - "`confirmAssignment` e `customizeAssignedExercise` notificano l'atleta con il
       `NotificationService` (da definire; può essere simulato)."
-- [ ] **C4. Vista della settimana** (package `BusinessLogic/TrainingPlan`)
-  - `AssignedActivityVisitor implements WorkoutActivityVisitor`. Riceve la `Week` e
-    percorre l'albero di ogni `TrainingSession`.
+- [x] **C4. Vista della settimana** (package `BusinessLogic/TrainingPlan`)
+  - `AssignedActivityVisitor implements WorkoutActivityVisitor`. Riceve la `Week` e percorre l'albero di ogni `TrainingSession`.
   - DTO `AssignedSessionView`: `sessionId: UUID`,
     `activities: AssignedActivityView [0..*]`.
   - DTO `AssignedActivityView`:
