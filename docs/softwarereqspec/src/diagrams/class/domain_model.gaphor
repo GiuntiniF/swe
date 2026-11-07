@@ -8259,6 +8259,7 @@ line {
 <ref refid="825bf786-da8a-11f1-a87d-a0b339ffe565"/>
 <ref refid="5f7db54a-b377-11f1-9198-a0b339ffe565"/>
 <ref refid="94c8b60a-b377-11f1-9198-a0b339ffe565"/>
+<ref refid="77aa9954-da8b-11f1-a87d-a0b339ffe565"/>
 <ref refid="aeaf16cc-b377-11f1-9198-a0b339ffe565"/>
 <ref refid="a98f787e-b0ef-11f1-a4f9-a0b339ffe565"/>
 <ref refid="a9a46810-b0ef-11f1-a4f9-a0b339ffe565"/>
@@ -8270,6 +8271,7 @@ line {
 <ref refid="13d0e188-b365-11f1-ba41-a0b339ffe565"/>
 <ref refid="0b2cf554-b378-11f1-9198-a0b339ffe565"/>
 <ref refid="c4c3ba3c-da8a-11f1-a87d-a0b339ffe565"/>
+<ref refid="8044ff3c-da8b-11f1-a87d-a0b339ffe565"/>
 </reflist>
 </ownedPresentation>
 </UML:ClassDiagram>
@@ -27072,6 +27074,11 @@ DropSet: weightMultiplier e un figlio. RestPause: restPauseTime e un figlio. Sup
 </supplier>
 </UML:Dependency>
 <UML:Class id="825ba7cc-da8a-11f1-a87d-a0b339ffe565">
+<comment>
+<reflist>
+<ref refid="77aa9332-da8b-11f1-a87d-a0b339ffe565"/>
+</reflist>
+</comment>
 <name>
 <val>PasswordResetToken</val>
 </name>
@@ -27539,5 +27546,63 @@ DropSet: weightMultiplier e un figlio. RestPause: restPauseTime e un figlio. Sup
 </reflist>
 </supplier>
 </UML:Dependency>
+<UML:Comment id="77aa9332-da8b-11f1-a87d-a0b339ffe565">
+<annotatedElement>
+<reflist>
+<ref refid="825ba7cc-da8a-11f1-a87d-a0b339ffe565"/>
+</reflist>
+</annotatedElement>
+<body>
+<val> Il token vale un'ora dalla sua creazione. Il sistema calcola expiresAt come l'ora della richiesta più un'ora. Dopo questo limite, isValid() restituisce false.</val>
+</body>
+<presentation>
+<reflist>
+<ref refid="77aa9954-da8b-11f1-a87d-a0b339ffe565"/>
+</reflist>
+</presentation>
+</UML:Comment>
+<UML:CommentItem id="77aa9954-da8b-11f1-a87d-a0b339ffe565">
+<matrix>
+<val>(1.0, 0.0, 0.0, 1.0, -278.1171351291274, 530.203436257553)</val>
+</matrix>
+<top-left>
+<val>(0.0, 0.0)</val>
+</top-left>
+<width>
+<val>198.81719940324342</val>
+</width>
+<height>
+<val>104.0</val>
+</height>
+<diagram>
+<ref refid="a6877c62-b0ef-11f1-a4f9-a0b339ffe565"/>
+</diagram>
+<subject>
+<ref refid="77aa9332-da8b-11f1-a87d-a0b339ffe565"/>
+</subject>
+</UML:CommentItem>
+<UML:CommentLineItem id="8044ff3c-da8b-11f1-a87d-a0b339ffe565">
+<diagram>
+<ref refid="a6877c62-b0ef-11f1-a4f9-a0b339ffe565"/>
+</diagram>
+<horizontal>
+<val>False</val>
+</horizontal>
+<orthogonal>
+<val>False</val>
+</orthogonal>
+<matrix>
+<val>(1.0, 0.0, 0.0, 1.0, -184.36734669691123, 484.8819233516239)</val>
+</matrix>
+<points>
+<val>[(0.0, 1.8296923553954798), (0.0, 45.32151290592907)]</val>
+</points>
+<head-connection>
+<ref refid="825bf786-da8a-11f1-a87d-a0b339ffe565"/>
+</head-connection>
+<tail-connection>
+<ref refid="77aa9954-da8b-11f1-a87d-a0b339ffe565"/>
+</tail-connection>
+</UML:CommentLineItem>
 </model>
 </gaphor>
