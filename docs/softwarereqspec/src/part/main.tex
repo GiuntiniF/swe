@@ -671,22 +671,69 @@ della \texttt{Week} ricevuta dal costruttore.
 
 \subsection{DAO}
 \label{sec:dao}
-% TODO: descrizione del package DAO
+% TODO: metodi delle classi DAO e diagrammi
+Il package \texttt{DAO} gestisce l'accesso al database. Il package ha
+un sottopackage per ogni area del dominio, come la Business Logic.
+Ogni classe DAO legge e salva un gruppo di entità del Domain Model.
+
+Solo i service della Business Logic usano le classi DAO. Un service
+usa solo le classi DAO del proprio sottopackage. Quando un service ha
+bisogno di un'entità di un'altra area, chiama il service di quell'area.
+Per esempio, \texttt{CoachingService} non legge le palestre con
+\texttt{GymDAO}, ma chiama \texttt{GymService}.
 
 \subsubsection{User}
-% TODO: UserDAO, PasswordResetTokenDAO
+Il package contiene due classi: \texttt{UserDAO} e
+\texttt{PasswordResetTokenDAO}. \texttt{UserDAO} gestisce gli utenti
+(\texttt{PT} e \texttt{Athlete}) e i \texttt{PTAssignment}.
+\texttt{PasswordResetTokenDAO} gestisce i \texttt{PasswordResetToken}
+del recupero password (U-02).
+
+Solo \texttt{UserService} usa le due classi. Gli altri service non
+leggono gli utenti dal database: ricevono gli oggetti \texttt{PT} e
+\texttt{Athlete} da \texttt{UserService} (vedi la regola id oppure
+oggetto, sezione \ref{sec:businessLogic}).
 
 \subsubsection{Gym}
-% TODO: GymDAO
+Il package contiene la classe \texttt{GymDAO}. La classe gestisce le
+palestre (\texttt{Gym}), le Associazioni PT-Palestra
+(\texttt{StaffAssignment}) e le Iscrizioni (\texttt{Membership}). Solo
+\texttt{GymService} usa \texttt{GymDAO}.
 
 \subsubsection{Coaching}
-% TODO: CoachingDAO
+Il package contiene la classe \texttt{CoachingDAO}. La classe gestisce
+gli appuntamenti (\texttt{Appointment}) e le richieste di
+appuntamento. Solo \texttt{CoachingService} usa \texttt{CoachingDAO}.
 
 \subsubsection{Exercise}
-% TODO: ExerciseDAO
+Il package contiene la classe \texttt{ExerciseDAO}. La classe legge il
+catalogo degli esercizi (\texttt{ExerciseType}). Il catalogo è
+predefinito e in sola lettura, quindi \texttt{ExerciseDAO} non salva
+dati. Solo \texttt{ExerciseService} usa \texttt{ExerciseDAO}.
+
+Le attività delle sessioni di allenamento non passano da
+\texttt{ExerciseDAO}. Fanno parte della scheda, quindi
+\texttt{TrainingPlanService} le salva con \texttt{TrainingPlanDAO}.
 
 \subsubsection{TrainingPlan}
-% TODO: TrainingPlanDAO, PlanAssignmentDAO
+Il package contiene due classi: \texttt{TrainingPlanDAO} e
+\texttt{PlanAssignmentDAO}. \texttt{TrainingPlanDAO} gestisce la
+scheda e la sua struttura: \texttt{TrainingPlan},
+\texttt{MonthlyBlock}, \texttt{TrainingSession} e le attività delle
+sessioni. \texttt{PlanAssignmentDAO} gestisce le assegnazioni:
+\texttt{PlanAssignment}, \texttt{Week} e \texttt{AssignedExercise}.
+
+\texttt{TrainingPlanService} e \texttt{PlanAssignmentService} usano
+entrambe le classi:
+\begin{itemize}
+  \item \texttt{TrainingPlanService} usa \texttt{PlanAssignmentDAO}
+    per \texttt{isStructureEditable}. Il metodo deve sapere se una
+    scheda ha assegnazioni. Nel Domain Model non si naviga da
+    \texttt{TrainingPlan} a \texttt{PlanAssignment}, quindi il service
+    cerca le assegnazioni con \texttt{PlanAssignmentDAO};
+  \item \texttt{PlanAssignmentService} usa \texttt{TrainingPlanDAO}
+    per leggere la scheda da assegnare.
+\end{itemize}
 \fussy
 
 \newpage
