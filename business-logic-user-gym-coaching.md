@@ -4,6 +4,32 @@ Proposta di metodi per i service dei tre package, ricavata dai template dei
 casi d'uso della SRS. Stile e notazione come `TrainingPlanService`. I getter
 e i setter delle relazioni sono dati per presenti e non sono elencati.
 
+## Regola: id oppure oggetto
+
+Un metodo riceve l'oggetto (`pt: PT`, `athlete: Athlete`) quando crea
+un'entità che ha un'associazione verso quell'oggetto. In tutti gli altri casi
+riceve l'id (`ptId`, `athleteId`).
+
+- **Oggetto.** Il metodo deve impostare l'associazione, quindi gli serve
+  l'istanza. Il controller la carica con `UserService.getPT` o
+  `UserService.getAthlete` e la passa al metodo. Così gli altri service non
+  dipendono da `UserDAO`.
+- **Id.** Il metodo usa l'id solo per un controllo di proprietà (per esempio
+  `plan.getPT().getId() == ptId`) o come filtro nella query del DAO. Un oggetto
+  costerebbe una query in più e non aggiungerebbe niente.
+
+La regola vale per:
+
+- `GymService.associatePT(in pt: PT, …)`, che crea uno `StaffAssignment`;
+- `GymService.enrollAthlete(in athlete: Athlete, …)`, che crea le `Membership`.
+  La chiama `UserService.registerAthlete` con l'atleta appena creato;
+- `TrainingPlanService.addPlan(in pt: PT, …)`, che crea una `TrainingPlan`;
+- `PlanAssignmentService.addAssignment(in athlete: Athlete, …)`, che crea un
+  `PlanAssignment`. Riceve ancora `ptId`, perché lo usa per controllare che la
+  scheda sia del PT.
+
+Per questo `UserService` ha anche `getPT(in ptId: UUID): PT`.
+
 ## UserService (package `User`)
 
 | Metodo | Casi d'uso |
