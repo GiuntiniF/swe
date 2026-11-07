@@ -351,6 +351,344 @@ esercizio e la relativa unità di misura.
   \label{fig:valueTypeDomainModel}
 \end{figure}
 
+% \sloppy manda a capo i nomi lunghi in \texttt, che altrimenti escono dal margine.
+\sloppy
+\subsection{Business Logic}
+\label{sec:businessLogic}
+Il package \texttt{Business Logic} implementa i casi d'uso del
+sistema. Il package ha un sottopackage per ogni area del dominio:
+\texttt{User}, \texttt{Gym}, \texttt{Coaching}, \texttt{Exercise} e
+\texttt{TrainingPlan}. Ogni sottopackage contiene uno o più service. Un
+service è una classe che raccoglie le operazioni di un'area del
+dominio. Il package \texttt{Controllers} chiama i metodi dei service.
+I service leggono e scrivono i dati con le classi del package
+\texttt{DAO}.
+
+\begin{figure}[H]
+  \centering
+  % TODO: inserire il diagramma
+  % \includegraphics[width=\textwidth]{}
+  \caption{Diagramma delle classi della Business Logic}
+  \label{fig:businessLogic}
+\end{figure}
+
+\subsubsection{Regole comuni}
+I service seguono le regole seguenti.
+
+\paragraph{Controllo di proprietà.} Un metodo che riceve l'id di
+un'entità e l'id di un utente (\texttt{ptId} o \texttt{athleteId})
+controlla che l'entità appartenga a quell'utente. Per esempio,
+\texttt{getPlan(ptId, planId)} restituisce la scheda solo se il PT è
+il suo autore. Così un utente non legge e non modifica i dati di un
+altro utente.
+
+\paragraph{Metodi per il PT e metodi per l'Atleta.} Il PT e l'Atleta
+leggono spesso la stessa entità. In questo caso il service ha due
+metodi. Il metodo per il PT riceve \texttt{ptId} e controlla che
+l'entità riguardi un suo atleta. Il metodo per l'Atleta riceve
+\texttt{athleteId} e controlla che l'entità appartenga all'atleta.
+Esempi: \texttt{getAppointment} e \texttt{getAppointmentForAthlete},
+\texttt{getAssignment} e \texttt{getAssignmentForAthlete}.
+
+\paragraph{Id oppure oggetto.} Un metodo riceve l'oggetto
+(\texttt{pt: PT} o \texttt{athlete: Athlete}) quando crea un'entità
+che ha un'associazione verso quell'oggetto. Negli altri casi il
+metodo riceve l'id. I metodi che ricevono l'oggetto sono:
+\begin{itemize}
+  \item \texttt{GymService.associatePT}, che crea uno
+    \texttt{StaffAssignment};
+  \item \texttt{GymService.enrollAthlete}, che crea le
+    \texttt{Membership};
+  \item \texttt{CoachingService.requestAppointment}, che crea un
+    \texttt{Appointment};
+  \item \texttt{TrainingPlanService.addPlan}, che crea una
+    \texttt{TrainingPlan};
+  \item \texttt{PlanAssignmentService.addAssignment}, che crea un
+    \texttt{PlanAssignment}.
+\end{itemize}
+Il chiamante carica l'oggetto con i metodi \texttt{getPT},
+\texttt{getAthlete} o \texttt{getActivePT} di \texttt{UserService}.
+Così solo \texttt{UserService} usa \texttt{UserDAO}. Quando il metodo
+usa l'id solo per un controllo o per filtrare i dati, l'id è
+sufficiente: un oggetto richiede una lettura in più e non aggiunge
+informazioni.
+
+\paragraph{Dipendenze tra i service.} Un service usa un altro service
+solo nei casi seguenti:
+\begin{itemize}
+  \item \texttt{UserService} usa \texttt{GymService} per iscrivere
+    alle palestre l'atleta appena registrato;
+  \item \texttt{CoachingService} usa \texttt{GymService} per
+    controllare le palestre dell'atleta;
+  \item \texttt{TrainingPlanService} usa \texttt{ExerciseService} per
+    costruire le attività di una sessione;
+  \item \texttt{PlanAssignmentService} usa \texttt{UserService} per
+    controllare che il PT segua l'atleta, cioè che esista un
+    \texttt{PTAssignment} attivo.
+\end{itemize}
+
+\subsubsection{User}
+Il package contiene la classe \texttt{UserService}. Il service
+gestisce l'accesso al sistema, la registrazione degli utenti e il
+profilo dell'atleta. Usa \texttt{UserDAO} e
+\texttt{PasswordResetTokenDAO}. I metodi sono:
+\begin{itemize}
+  \item \texttt{authenticate}: controlla email e password e
+    restituisce l'utente (U-01);
+  \item \texttt{requestPasswordReset}, \texttt{isResetLinkValid} e
+    \texttt{resetPassword}: gestiscono il recupero della password con
+    un \texttt{PasswordResetToken}. Il token vale un'ora (U-02);
+  \item \texttt{registerPT}: registra un nuovo PT (PT-01);
+  \item \texttt{registerAthlete}: crea l'atleta, il
+    \texttt{PTAssignment} con il PT e la password temporanea. Poi
+    iscrive l'atleta alle palestre con
+    \texttt{GymService.enrollAthlete} (PT-02);
+  \item \texttt{getAthletesByPT} e \texttt{getAthlete(athleteId,
+    ptId)}: restituiscono gli atleti del PT (PT-08);
+  \item \texttt{completeProfile}: completa il profilo dell'atleta al
+    primo accesso (A-01);
+  \item \texttt{getAthlete(athleteId)} e
+    \texttt{updatePersonalData}: leggono e modificano i dati
+    anagrafici dell'atleta (A-04);
+  \item \texttt{getPT} e \texttt{getActivePT}: restituiscono un PT.
+    \texttt{getActivePT} restituisce il PT che segue l'atleta. Gli
+    altri service ricevono questi oggetti come parametro.
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  % TODO: inserire il diagramma
+  % \includegraphics[width=\textwidth]{}
+  \caption{Diagramma delle classi della Business Logic del package User}
+  \label{fig:userBusinessLogic}
+\end{figure}
+
+\subsubsection{Gym}
+Il package contiene la classe \texttt{GymService}. Il service gestisce
+le palestre, le Associazioni PT-Palestra e le Iscrizioni. Usa
+\texttt{GymDAO}. I metodi sono:
+\begin{itemize}
+  \item \texttt{registerGym}: registra una nuova palestra (PT-12);
+  \item \texttt{searchGyms}: cerca le palestre per nome (PT-12,
+    PT-13);
+  \item \texttt{getGym}: restituisce una palestra;
+  \item \texttt{associatePT}: crea l'Associazione PT-Palestra
+    (PT-13);
+  \item \texttt{getStaffAssignmentsByPT} e
+    \texttt{getStaffAssignment}: restituiscono le associazioni del PT.
+    L'elenco mostra prima le associazioni attive (PT-14, PT-15);
+  \item \texttt{terminateStaffAssignment}: imposta la data di fine
+    dell'associazione alla data odierna. Il metodo accetta solo
+    un'associazione attiva (PT-15);
+  \item \texttt{getActiveGymsByPT}: restituisce le palestre in cui il
+    PT lavora oggi (PT-02);
+  \item \texttt{enrollAthlete}: crea le Iscrizioni dell'atleta. Lo
+    chiama \texttt{UserService.registerAthlete} (PT-02);
+  \item \texttt{getMembershipsByAthlete} e \texttt{getMembership}:
+    restituiscono le Iscrizioni dell'atleta (A-02, A-06).
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  % TODO: inserire il diagramma
+  % \includegraphics[width=\textwidth]{}
+  \caption{Diagramma delle classi della Business Logic del package Gym}
+  \label{fig:gymBusinessLogic}
+\end{figure}
+
+\subsubsection{Coaching}
+Il package contiene la classe \texttt{CoachingService}. Il service
+gestisce le richieste di appuntamento e gli appuntamenti. Usa
+\texttt{CoachingDAO} e \texttt{GymService}. I metodi sono:
+\begin{itemize}
+  \item \texttt{requestAppointment}: crea un \texttt{Appointment} in
+    attesa. Il PT è quello che segue l'atleta. Il metodo controlla che
+    l'atleta sia iscritto alla palestra scelta. Il metodo rifiuta la
+    richiesta se l'atleta ha già una richiesta in attesa (A-02);
+  \item \texttt{getAppointmentsByPT}: restituisce gli appuntamenti del
+    PT. Il parametro \texttt{status} è facoltativo e filtra gli
+    appuntamenti per stato. PT-06 chiede solo le richieste in attesa,
+    PT-07 chiede tutti gli appuntamenti;
+  \item \texttt{getAppointmentsByAthlete}: restituisce gli
+    appuntamenti dell'atleta (A-05);
+  \item \texttt{getAppointmentsByAthleteAndPT}: restituisce gli
+    appuntamenti tra un atleta e il suo PT (PT-08);
+  \item \texttt{getAppointment} e \texttt{getAppointmentForAthlete}:
+    restituiscono il dettaglio di un appuntamento al PT (PT-06, PT-07)
+    o all'atleta (A-05);
+  \item \texttt{confirmAppointment} e \texttt{rejectAppointment}:
+    confermano o rifiutano una richiesta. Il rifiuto richiede la
+    motivazione. I due metodi accettano solo una richiesta in attesa
+    (PT-06).
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  % TODO: inserire il diagramma
+  % \includegraphics[width=\textwidth]{}
+  \caption{Diagramma delle classi della Business Logic del package Coaching}
+  \label{fig:coachingBusinessLogic}
+\end{figure}
+
+\subsubsection{Exercise}
+Il package contiene la classe \texttt{ExerciseService}. Il service
+legge il catalogo degli esercizi e converte le attività. Usa
+\texttt{ExerciseDAO}. I metodi sono:
+\begin{itemize}
+  \item \texttt{getExerciseTypeList} e \texttt{getExerciseType}:
+    restituiscono gli esercizi del catalogo (PT-04);
+  \item \texttt{createActivity}: costruisce una
+    \texttt{WorkoutActivity} da un \texttt{ActivitySpec};
+  \item \texttt{toSpec}: costruisce l'\texttt{ActivitySpec} di una
+    \texttt{WorkoutActivity}.
+\end{itemize}
+
+La classe \texttt{ActivitySpec} descrive una \texttt{WorkoutActivity}
+senza costruirla. L'enumerazione \texttt{ActivityKind} indica il tipo
+di ogni nodo di \texttt{ActivitySpec}. La sezione
+\ref{sec:domainModel}, nel package Exercises, descrive i campi di
+ogni tipo. Il metodo \texttt{createActivity} usa il pattern Builder:
+\texttt{ExerciseService} ha il ruolo di Director e
+\texttt{WorkoutActivityBuilder} ha il ruolo di Builder. Il metodo
+\texttt{toSpec} usa il pattern Visitor: la classe
+\texttt{ActivitySpecVisitor} implementa
+\texttt{WorkoutActivityVisitor} e percorre l'albero della
+\texttt{WorkoutActivity}.
+
+\begin{figure}[H]
+  \centering
+  % TODO: inserire il diagramma
+  % \includegraphics[width=\textwidth]{}
+  \caption{Diagramma delle classi della Business Logic del package Exercise}
+  \label{fig:exerciseBusinessLogic}
+\end{figure}
+
+\subsubsection{TrainingPlan}
+Il package contiene due service: \texttt{TrainingPlanService} e
+\texttt{PlanAssignmentService}. Entrambi usano
+\texttt{TrainingPlanDAO} e \texttt{PlanAssignmentDAO}.
+
+\paragraph{TrainingPlanService.} Il service gestisce le schede e la
+loro struttura. Ogni metodo controlla che la scheda appartenga al PT
+\texttt{ptId}. Il nome di una scheda è unico tra le schede dello
+stesso PT (PT-03 5a, PT-10 7a, PT-16 6a). I metodi sono:
+\begin{itemize}
+  \item \texttt{addPlan}, \texttt{editPlan}, \texttt{deletePlan} e
+    \texttt{duplicatePlan}: creano, modificano, cancellano e duplicano
+    una scheda (PT-03, PT-10, PT-11, PT-16);
+  \item \texttt{getPlan} e \texttt{getPlanListByPT}: restituiscono le
+    schede del PT;
+  \item \texttt{addMonthlyBlock}, \texttt{editMonthlyBlock} e
+    \texttt{deleteMonthlyBlock}: gestiscono i blocchi mensili (PT-04);
+  \item \texttt{addTrainingSession} e
+    \texttt{deleteTrainingSession}: gestiscono le sessioni di
+    allenamento di un blocco (PT-04);
+  \item \texttt{addActivityToSession},
+    \texttt{editActivityOfSession}, \texttt{removeActivityFromSession}
+    e \texttt{getActivitySpec}: gestiscono le attività di una
+    sessione (PT-04). I metodi ricevono e restituiscono un
+    \texttt{ActivitySpec}. La conversione passa da
+    \texttt{ExerciseService};
+  \item \texttt{isStructureEditable}: indica se la struttura della
+    scheda è modificabile (PT-04, PT-11).
+\end{itemize}
+La struttura di una scheda è modificabile solo se la scheda non ha
+nessun \texttt{PlanAssignment}, in qualunque stato. I metodi che
+modificano blocchi, sessioni e attività controllano questa regola con
+\texttt{isStructureEditable}. Anche \texttt{deletePlan} la controlla.
+I metodi \texttt{editPlan} e \texttt{duplicatePlan} sono sempre
+permessi. Il controllo usa \texttt{PlanAssignmentDAO}, perché nel
+Domain Model non si naviga da \texttt{TrainingPlan} a
+\texttt{PlanAssignment}.
+
+\paragraph{PlanAssignmentService.} Il service gestisce le
+assegnazioni delle schede agli atleti. I metodi di scrittura sono:
+\begin{itemize}
+  \item \texttt{addAssignment}: crea un \texttt{PlanAssignment} in
+    stato Draft. Il sistema crea insieme tutti gli
+    \texttt{AssignedExercise} dell'assegnazione. Per questo il service
+    non ha metodi per aggiungerli (PT-05);
+  \item \texttt{saveDraft}: salva i carichi della bozza. Il metodo non
+    controlla che i carichi siano completi (PT-05 8a);
+  \item \texttt{discardDraft}: cancella un'assegnazione. Il metodo
+    accetta solo un'assegnazione in stato Draft (PT-05 2b);
+  \item \texttt{confirmAssignment}: salva i carichi e porta lo stato a
+    Confirmed. Prima controlla che ogni \texttt{AssignedExercise} abbia
+    un carico (PT-05 9a). Poi controlla che nessuna assegnazione
+    Confirmed si sovrapponga (PT-05 9b);
+  \item \texttt{moveAssignment}: cambia la data di inizio di una
+    bozza (PT-05 9b);
+  \item \texttt{findOverlappingAssignment}: cerca un'assegnazione
+    Confirmed dell'atleta che si sovrappone all'intervallo dato. Il
+    parametro facoltativo \texttt{excludedAssignmentId} esclude
+    un'assegnazione dalla ricerca (PT-05);
+  \item \texttt{customizeAssignedExercise} e
+    \texttt{resetAssignedExercise}: personalizzano un esercizio
+    assegnato o ripristinano i valori della scheda (PT-09).
+\end{itemize}
+I metodi \texttt{addAssignment} e \texttt{moveAssignment} rifiutano
+le date che si sovrappongono a un'assegnazione Confirmed (PT-05 6a).
+Il datatype \texttt{WeightEntry} associa un carico all'id di un
+\texttt{AssignedExercise}. I metodi \texttt{saveDraft} e
+\texttt{confirmAssignment} ricevono un elenco di \texttt{WeightEntry}.
+Il carico è facoltativo, perché una bozza può avere carichi mancanti.
+
+I metodi di lettura sono:
+\begin{itemize}
+  \item \texttt{getAssignmentsByAthleteAndPT},
+    \texttt{getAssignment} e \texttt{getAssignmentWeek}: restituiscono
+    al PT le assegnazioni di un suo atleta, anche in bozza (PT-05,
+    PT-08, PT-09);
+  \item \texttt{getConfirmedAssignmentsByAthlete},
+    \texttt{getAssignmentForAthlete} e
+    \texttt{getAssignmentWeekForAthlete}: restituiscono all'atleta le
+    proprie assegnazioni. L'atleta vede solo le assegnazioni Confirmed
+    (A-03).
+\end{itemize}
+
+I metodi \texttt{getAssignmentWeek} e
+\texttt{getAssignmentWeekForAthlete} restituiscono una settimana
+dell'assegnazione. Il risultato è un elenco di
+\texttt{AssignedSessionView}, uno per ogni sessione di allenamento.
+Ogni \texttt{AssignedSessionView} contiene un albero di
+\texttt{AssignedActivityView}. Una \texttt{AssignedActivityView} unisce
+i valori della scheda e i valori dell'atleta in quella settimana: il
+carico e le personalizzazioni. L'attributo \texttt{isCustomized} indica
+se il PT ha personalizzato l'esercizio. La classe
+\texttt{AssignedActivityVisitor} costruisce le
+\texttt{AssignedActivityView} con il pattern Visitor. La classe
+implementa \texttt{WorkoutActivityVisitor} e percorre le attività
+della sessione. Per ogni esercizio legge l'\texttt{AssignedExercise}
+della \texttt{Week} ricevuta dal costruttore.
+
+\begin{figure}[H]
+  \centering
+  % TODO: inserire il diagramma
+  % \includegraphics[width=\textwidth]{}
+  \caption{Diagramma delle classi della Business Logic del package TrainingPlan}
+  \label{fig:trainingPlanBusinessLogic}
+\end{figure}
+
+\subsection{DAO}
+\label{sec:dao}
+% TODO: descrizione del package DAO
+
+\subsubsection{User}
+% TODO: UserDAO, PasswordResetTokenDAO
+
+\subsubsection{Gym}
+% TODO: GymDAO
+
+\subsubsection{Coaching}
+% TODO: CoachingDAO
+
+\subsubsection{Exercise}
+% TODO: ExerciseDAO
+
+\subsubsection{TrainingPlan}
+% TODO: TrainingPlanDAO, PlanAssignmentDAO
+\fussy
+
 \newpage
 \section{Utilizzo dell'IA nel progetto}
 Questo progetto usa Claude Code, un agente di intelligenza
