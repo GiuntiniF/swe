@@ -53,9 +53,9 @@ Il sistema ha due attori:
   \item[Atleta] L'utente finale che riceve il servizio dal PT.
   \item[Scheda] Il piano di allenamento. Raggruppa uno o più blocchi
     mensili. Il PT può assegnare la stessa scheda a più atleti.
-  \item[Blocco mensile] Il mese di allenamento di una scheda. Dura
-    quattro settimane e contiene le sessioni di allenamento di quel
-    mese.
+  \item[Blocco mensile] Il mese di allenamento di una scheda. Dura un
+    numero di settimane scelto dal PT, di norma quattro. Contiene le
+    sessioni di allenamento di quel mese.
   \item[Sessione di allenamento] L'insieme di esercizi che l'atleta
     esegue in un giorno di allenamento.
   \item[Esercizio] Il singolo movimento che l'atleta esegue in una
@@ -293,15 +293,43 @@ originale.
 
 \subsubsection{Exercises}
 Il package contiene il catalogo degli esercizi. La classe
-\texttt{Exercise} rappresenta l'esercizio e fa riferimento al
-relativo \texttt{ExerciseType}. L'interfaccia
-\texttt{WorkoutActivity} definisce le modalità di composizione ed
-esecuzione di un esercizio. Il pattern Composite permette di
-raggruppare più esercizi in un superset (\texttt{Superset}). Il
-pattern Decorator permette di applicare varianti di esecuzione, come
-il dropset o il rest-pause. L'interfaccia \texttt{Reps} definisce le
-modalità con cui sono espresse le ripetizioni di un esercizio: un
-numero fisso, un intervallo o l'esecuzione al cedimento.
+\texttt{ExerciseType} rappresenta un esercizio del catalogo. Il
+catalogo è predefinito e in sola lettura. La classe
+\texttt{Exercise} rappresenta l'esercizio prescritto in una sessione
+di allenamento e fa riferimento al relativo \texttt{ExerciseType}.
+Un \texttt{Exercise} ha una \texttt{Reps} per ciascuna serie.
+L'interfaccia \texttt{WorkoutActivity} definisce le modalità di
+composizione ed esecuzione di un esercizio. Il pattern Composite
+permette di raggruppare più esercizi in un superset
+(\texttt{Superset}). Il pattern Decorator permette di applicare
+varianti di esecuzione, come il dropset
+(\texttt{DropSetDecorator}) o il rest-pause
+(\texttt{RestPauseDecorator}). Un dropset ha una sola discesa: per
+avere più discese si annidano più \texttt{DropSetDecorator}.
+L'interfaccia \texttt{Reps} definisce le modalità con cui sono
+espresse le ripetizioni di una serie: un numero fisso, un intervallo
+o l'esecuzione al cedimento. La classe
+\texttt{WorkoutActivityBuilder} costruisce una
+\texttt{WorkoutActivity}. L'interfaccia
+\texttt{WorkoutActivityVisitor} permette di percorrere una
+\texttt{WorkoutActivity} con il pattern Visitor.
+
+La Business Logic non riceve una \texttt{WorkoutActivity}, ma la sua
+descrizione: la classe \texttt{ActivitySpec}. Anche
+\texttt{ActivitySpec} è un albero. L'attributo \texttt{kind}, di
+tipo \texttt{ActivityKind}, indica il tipo del nodo. I campi
+valorizzati dipendono da \texttt{kind}:
+\begin{itemize}
+  \item \texttt{Exercise}: \texttt{exerciseTypeId}, \texttt{reps},
+    \texttt{restTime} e \texttt{notes};
+  \item \texttt{DropSet}: \texttt{weightMultiplier} e un figlio;
+  \item \texttt{RestPause}: \texttt{restPauseTime} e un figlio;
+  \item \texttt{Superset}: due o più figli.
+\end{itemize}
+Il metodo \texttt{createActivity} di \texttt{ExerciseService}
+costruisce la \texttt{WorkoutActivity} da un \texttt{ActivitySpec}
+con il \texttt{WorkoutActivityBuilder}. Il metodo \texttt{toSpec}
+esegue l'operazione inversa con \texttt{ActivitySpecVisitor}.
 
 \begin{figure}[H]
   \centering
@@ -351,7 +379,7 @@ da aggiungere alla Business Logic del package \texttt{TrainingPlan}:
   \begin{itemize}
     \item TrainingPlanService
       \begin{itemize}
-        \item getPlan( in planId: UUID ): TrainingPlan
+        \item getPlan( in ptId: UUID, in planId: UUID ): TrainingPlan
         \item getPlanListByPT( in ptId: UUID ): TrainingPlan[0..*]
       \end{itemize}
     \item PlanAssignmentService
@@ -360,9 +388,16 @@ da aggiungere alla Business Logic del package \texttt{TrainingPlan}:
           PlanAssignment[0..*]
         \item getAssignmentsByAthleteAndPT( in athleteId: UUID,
           in ptId: UUID ): PlanAssignment[0..*]
-        \item getAssignment( in assignmentId: UUID ): PlanAssignment
+        \item getAssignment( in assignmentId: UUID,
+          in ptId: UUID ): PlanAssignment
         \item getAssignmentWeek( in assignmentId: UUID,
-          in weekId: UUID ): Week
+          in weekId: UUID, in ptId: UUID ):
+          AssignedSessionView[0..*]
+        \item getAssignmentForAthlete( in assignmentId: UUID,
+          in athleteId: UUID ): PlanAssignment
+        \item getAssignmentWeekForAthlete( in assignmentId: UUID,
+          in weekId: UUID, in athleteId: UUID ):
+          AssignedSessionView[0..*]
       \end{itemize}
   \end{itemize}}
 
@@ -378,51 +413,59 @@ Tra parentesi il caso d'uso che li usa.
         \item editPlan( in ptId: UUID, in planId: UUID,
           in name: string, in description: string ): TrainingPlan
           (PT-10)
-        \item deletePlan( in planId: UUID ): bool (PT-11)
-        \item duplicatePlan( in planId: UUID ): TrainingPlan (PT-16)
+        \item deletePlan( in ptId: UUID, in planId: UUID ): bool
+          (PT-11)
+        \item duplicatePlan( in planId: UUID, in ptId: UUID,
+          in name: string ): TrainingPlan (PT-16)
         \item isStructureEditable( in planId: UUID ): bool
           (PT-04, PT-11)
-        \item addMonthlyBlock( in planId: UUID, in weeksCount: int ):
-          MonthlyBlock (PT-04)
-        \item editMonthlyBlock( in blockId: UUID, in planId: UUID,
-          in weeksCount: int ) (PT-04)
-        \item deleteMonthlyBlock( in blockId: UUID,
+        \item addMonthlyBlock( in ptId: UUID, in planId: UUID,
+          in weeksCount: int ): MonthlyBlock (PT-04)
+        \item editMonthlyBlock( in blockId: UUID, in ptId: UUID,
+          in planId: UUID, in weeksCount: int ) (PT-04)
+        \item deleteMonthlyBlock( in blockId: UUID, in ptId: UUID,
           in planId: UUID ) (PT-04)
-        \item addTrainingSession( in blockId: UUID,
+        \item addTrainingSession( in blockId: UUID, in ptId: UUID,
           in planId: UUID ): TrainingSession (PT-04)
         \item deleteTrainingSession( in sessionId: UUID,
-          in blockId: UUID, in planId: UUID ): bool (PT-04)
+          in blockId: UUID, in ptId: UUID, in planId: UUID ): bool
+          (PT-04)
         \item addActivityToSession( in spec: ActivitySpec,
-          in sessionId: UUID, in blockId: UUID, in planId: UUID ):
-          WorkoutActivity (PT-04)
+          in sessionId: UUID, in blockId: UUID, in ptId: UUID,
+          in planId: UUID ): WorkoutActivity (PT-04)
         \item editActivityOfSession( in spec: ActivitySpec,
           in activityId: UUID, in sessionId: UUID, in blockId: UUID,
-          in planId: UUID ) (PT-04)
+          in ptId: UUID, in planId: UUID ) (PT-04)
         \item removeActivityFromSession( in activityId: UUID,
-          in sessionId: UUID, in blockId: UUID, in planId: UUID )
-          (PT-04)
+          in sessionId: UUID, in blockId: UUID, in ptId: UUID,
+          in planId: UUID ) (PT-04)
         \item getActivitySpec( in activityId: UUID,
-          in sessionId: UUID, in blockId: UUID, in planId: UUID ):
-          ActivitySpec (PT-04)
+          in sessionId: UUID, in blockId: UUID, in ptId: UUID,
+          in planId: UUID ): ActivitySpec (PT-04)
       \end{itemize}
     \item PlanAssignmentService
       \begin{itemize}
         \item addAssignment( in athleteId: UUID, in planId: UUID,
-          in startDate: LocalDate ): PlanAssignment (PT-05)
+          in ptId: UUID, in startDate: LocalDate ): PlanAssignment
+          (PT-05)
         \item findOverlappingAssignment( in athleteId: UUID,
           in startDate: LocalDate, in endDate: LocalDate,
-          in excludedAssignmentId: UUID ): PlanAssignment (PT-05)
-        \item saveDraft( in assignmentId: UUID,
-          in weights: WeightEntry ): PlanAssignment (PT-05)
-        \item discardDraft( in assignmentId: UUID ): bool (PT-05)
+          in excludedAssignmentId: UUID[0..1] ):
+          PlanAssignment[0..1] (PT-05)
+        \item saveDraft( in assignmentId: UUID, in ptId: UUID,
+          in weights: WeightEntry[0..*] ): PlanAssignment (PT-05)
+        \item discardDraft( in assignmentId: UUID, in ptId: UUID ):
+          bool (PT-05)
         \item confirmAssignment( in assignmentId: UUID,
-          in weights: WeightEntry ): PlanAssignment (PT-05)
-        \item moveAssignment( in assignmentId: UUID,
+          in ptId: UUID, in weights: WeightEntry[0..*] ):
+          PlanAssignment (PT-05)
+        \item moveAssignment( in assignmentId: UUID, in ptId: UUID,
           in newStartDate: LocalDate ): PlanAssignment (PT-05)
         \item customizeAssignedExercise(
-          in assignedExerciseId: UUID, in weight: Weight,
-          in reps: Reps, in restTime: Duration ) (PT-09)
-        \item resetAssignedExercise( in assignedExerciseId: UUID )
-          (PT-09)
+          in assignedExerciseId: UUID, in ptId: UUID,
+          in weight: Weight, in reps: Reps[1..*],
+          in restTime: Duration ) (PT-09)
+        \item resetAssignedExercise( in assignedExerciseId: UUID,
+          in ptId: UUID ) (PT-09)
       \end{itemize}
   \end{itemize}}

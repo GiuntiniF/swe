@@ -76,7 +76,8 @@
     \newline
     \textbf{2c. Aggiunta di una sessione di allenamento} \newline
     - Il PT preme il pulsante "Aggiungi Sessione" su uno dei blocchi
-    mensili dell'elenco. \newline
+    mensili dell'elenco. Il pulsante è presente solo se il blocco ha
+    meno di 7 sessioni (vedi flusso 2f). \newline
     - Il sistema crea una nuova sessione di allenamento, senza
     esercizi, nel blocco scelto. \newline
     - Il flusso continua dal passo 4, sulla sessione appena creata.
@@ -103,6 +104,13 @@
     "Annulla", il sistema non elimina nulla. \newline
     - Il sistema elimina il blocco. I blocchi successivi scalano di
     una posizione. \newline
+    - Il flusso riprende dal passo 2. \newline
+    \newline
+    \textbf{2f. Numero massimo di sessioni raggiunto} \newline
+    - Il blocco ha già 7 sessioni di allenamento (vedi Nota 3).
+    \newline
+    - Il sistema non mostra il pulsante "Aggiungi Sessione" su quel
+    blocco. \newline
     - Il flusso riprende dal passo 2.
   } \\ \hline
   \ucaltflowcont{
@@ -164,9 +172,15 @@
     \textbf{Nota 3:} le sessioni di allenamento configurate in un
     blocco mensile rappresentano un pattern settimanale: si ripetono
     per ogni settimana della durata del blocco. Per esempio, un
-    blocco di 4 settimane con 3 sessioni configurate (lunedì,
-    mercoledì, venerdì) genera 12 sessioni di allenamento quando la
-    scheda viene assegnata a un atleta (caso d'uso PT-05).
+    blocco di 4 settimane con 3 sessioni configurate genera 12
+    sessioni di allenamento quando la scheda viene assegnata a un
+    atleta (caso d'uso PT-05). Una sessione non è legata a un giorno
+    della settimana: ha solo una posizione nel blocco. Un blocco
+    contiene al massimo 7 sessioni, una per ogni giorno della
+    settimana.\newline
+    \textbf{Nota 4:} il catalogo degli esercizi mostrato al passo 6 è
+    predefinito. Il PT sceglie gli esercizi dal catalogo, ma non può
+    aggiungere, modificare o eliminare gli esercizi del catalogo.
   } \\ \hline
 \end{xltabular}
 \end{document}

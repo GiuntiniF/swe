@@ -2458,12 +2458,12 @@ line {
 <ref refid="d009e022-b8e0-11f1-a1cc-a0b339ffe565"/>
 <ref refid="4f05ea06-ae87-11f1-ac14-a0b339ffe565"/>
 <ref refid="e7f5a46e-b8ef-11f1-a1cc-a0b339ffe565"/>
+<ref refid="4fcf3098-a557-11f1-b7df-a0b339ffe565"/>
 <ref refid="c045bc96-a7ac-11f1-9bed-a0b339ffe565"/>
 <ref refid="779b318c-c8a0-11f1-bfae-a0b339ffe565"/>
 <ref refid="6ab920e2-d86c-11f1-a8a8-a0b339ffe565"/>
 <ref refid="7127789c-d877-11f1-a8a8-a0b339ffe565"/>
 <ref refid="98b1269c-d877-11f1-a8a8-a0b339ffe565"/>
-<ref refid="4fcf3098-a557-11f1-b7df-a0b339ffe565"/>
 </reflist>
 </packagedElement>
 <presentation>
@@ -8378,10 +8378,6 @@ line {
 <ref refid="a5e3c7d6-d7a8-11f1-a26e-a0b339ffe565"/>
 <ref refid="696c3e84-d7ab-11f1-a26e-a0b339ffe565"/>
 <ref refid="73e2f3ae-d872-11f1-a8a8-a0b339ffe565"/>
-<ref refid="de286870-b0ef-11f1-a4f9-a0b339ffe565"/>
-<ref refid="de4ed6ea-b0ef-11f1-a4f9-a0b339ffe565"/>
-<ref refid="de5b8872-b0ef-11f1-a4f9-a0b339ffe565"/>
-<ref refid="ce5e1ea0-b8e0-11f1-a1cc-a0b339ffe565"/>
 <ref refid="de32a254-b0ef-11f1-a4f9-a0b339ffe565"/>
 <ref refid="de39bf9e-b0ef-11f1-a4f9-a0b339ffe565"/>
 <ref refid="de44ca6a-b0ef-11f1-a4f9-a0b339ffe565"/>
@@ -8392,6 +8388,10 @@ line {
 <ref refid="de5fd102-b0ef-11f1-a4f9-a0b339ffe565"/>
 <ref refid="de61b0c6-b0ef-11f1-a4f9-a0b339ffe565"/>
 <ref refid="c157ff0e-b2b0-11f1-bbc3-a0b339ffe565"/>
+<ref refid="de286870-b0ef-11f1-a4f9-a0b339ffe565"/>
+<ref refid="de4ed6ea-b0ef-11f1-a4f9-a0b339ffe565"/>
+<ref refid="de5b8872-b0ef-11f1-a4f9-a0b339ffe565"/>
+<ref refid="ce5e1ea0-b8e0-11f1-a1cc-a0b339ffe565"/>
 <ref refid="13f83f02-b36b-11f1-ba41-a0b339ffe565"/>
 <ref refid="384c8798-b8f0-11f1-a1cc-a0b339ffe565"/>
 <ref refid="d41cd09e-d7a7-11f1-a26e-a0b339ffe565"/>
@@ -16113,14 +16113,14 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="685e58be-b6a0-11f1-a653-a0b339ffe565"/>
 <ref refid="219a240c-bc23-11f1-ac0c-a0b339ffe565"/>
 <ref refid="c3443e46-ceed-11f1-9831-a0b339ffe565"/>
+<ref refid="5e8df00e-d871-11f1-a8a8-a0b339ffe565"/>
+<ref refid="e43666d0-d873-11f1-a8a8-a0b339ffe565"/>
+<ref refid="ac31b544-d875-11f1-a8a8-a0b339ffe565"/>
 <ref refid="70246b22-b76a-11f1-85be-a0b339ffe565"/>
 <ref refid="89ffaa10-c8a0-11f1-bfae-a0b339ffe565"/>
 <ref refid="6608631a-c8a3-11f1-bfae-a0b339ffe565"/>
 <ref refid="a59a537a-d86c-11f1-a8a8-a0b339ffe565"/>
-<ref refid="5e8df00e-d871-11f1-a8a8-a0b339ffe565"/>
-<ref refid="e43666d0-d873-11f1-a8a8-a0b339ffe565"/>
 <ref refid="611c1186-d874-11f1-a8a8-a0b339ffe565"/>
-<ref refid="ac31b544-d875-11f1-a8a8-a0b339ffe565"/>
 <ref refid="37292dbc-d876-11f1-a8a8-a0b339ffe565"/>
 <ref refid="628b3e78-d876-11f1-a8a8-a0b339ffe565"/>
 <ref refid="04833ba8-d878-11f1-a8a8-a0b339ffe565"/>
@@ -16155,9 +16155,9 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="ce37eab2-b6cb-11f1-9c43-a0b339ffe565"/>
 <ref refid="d7e81f1e-b6cb-11f1-9c43-a0b339ffe565"/>
 <ref refid="e3bf0d66-b6cb-11f1-9c43-a0b339ffe565"/>
+<ref refid="2b3bacd8-b6ce-11f1-9c43-a0b339ffe565"/>
 <ref refid="888fd94c-b85c-11f1-a759-13d61318abaa"/>
 <ref refid="d7b6acfc-b8ee-11f1-a1cc-a0b339ffe565"/>
-<ref refid="2b3bacd8-b6ce-11f1-9c43-a0b339ffe565"/>
 <ref refid="4e7274e8-b6ce-11f1-9c43-a0b339ffe565"/>
 <ref refid="5bbdead2-b76a-11f1-85be-a0b339ffe565"/>
 <ref refid="646aae22-b76a-11f1-85be-a0b339ffe565"/>
@@ -16171,14 +16171,14 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="f4937ca0-d870-11f1-a8a8-a0b339ffe565"/>
 <ref refid="04a52b20-d871-11f1-a8a8-a0b339ffe565"/>
 <ref refid="fe5a40c8-d872-11f1-a8a8-a0b339ffe565"/>
+<ref refid="c8d06930-b6c8-11f1-86a5-a0b339ffe565"/>
+<ref refid="65eb1206-b6c9-11f1-86a5-a0b339ffe565"/>
 <ref refid="cc968662-b6cd-11f1-9c43-a0b339ffe565"/>
+<ref refid="4fee91f6-b6cb-11f1-9c43-a0b339ffe565"/>
 <ref refid="a2919c4e-b6cd-11f1-9c43-a0b339ffe565"/>
 <ref refid="aaea5552-b6cd-11f1-9c43-a0b339ffe565"/>
 <ref refid="6d9558de-d877-11f1-a8a8-a0b339ffe565"/>
 <ref refid="94614e5a-d877-11f1-a8a8-a0b339ffe565"/>
-<ref refid="c8d06930-b6c8-11f1-86a5-a0b339ffe565"/>
-<ref refid="65eb1206-b6c9-11f1-86a5-a0b339ffe565"/>
-<ref refid="4fee91f6-b6cb-11f1-9c43-a0b339ffe565"/>
 <ref refid="7bdcbe02-b6ce-11f1-9c43-a0b339ffe565"/>
 <ref refid="6a84cab8-b76a-11f1-85be-a0b339ffe565"/>
 <ref refid="79ed2464-b76a-11f1-85be-a0b339ffe565"/>
@@ -17906,8 +17906,8 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="993b13bc-ba76-11f1-9472-47376f9ba520"/>
 <ref refid="6d150744-bc23-11f1-ac0c-a0b339ffe565"/>
 <ref refid="79f3b9b0-bcf0-11f1-a512-a0b339ffe565"/>
-<ref refid="7d870ee2-bc23-11f1-ac0c-a0b339ffe565"/>
 <ref refid="155875e0-d866-11f1-a8a8-a0b339ffe565"/>
+<ref refid="7d870ee2-bc23-11f1-ac0c-a0b339ffe565"/>
 </reflist>
 </packagedElement>
 <presentation>
@@ -21851,6 +21851,7 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 <ref refid="577dd26c-c8a3-11f1-bfae-a0b339ffe565"/>
 <ref refid="57837c4e-c8a3-11f1-bfae-a0b339ffe565"/>
 <ref refid="082d623e-d606-11f1-b54d-a0b339ffe565"/>
+<ref refid="9864b366-da89-11f1-a87d-a0b339ffe565"/>
 </reflist>
 </ownedParameter>
 </UML:Operation>
@@ -22515,13 +22516,13 @@ Ogni Reps appartiene ad un Exercise o ad un AssignedExercise</val>
 </UML:Parameter>
 <UML:Parameter id="082d623e-d606-11f1-b54d-a0b339ffe565">
 <name>
-<val>name</val>
+<val>ptId</val>
 </name>
 <ownerFormalParam>
 <ref refid="5776a6cc-c8a3-11f1-bfae-a0b339ffe565"/>
 </ownerFormalParam>
 <typeValue>
-<val>string</val>
+<val>UUID</val>
 </typeValue>
 </UML:Parameter>
 <UML:Package id="bba5aed4-d60b-11f1-b54d-a0b339ffe565">
@@ -24953,7 +24954,7 @@ DropSet: weightMultiplier e un figlio. RestPause: restPauseTime e un figlio. Sup
 </UML:Parameter>
 <UML:Parameter id="497a9b0e-d86c-11f1-a8a8-a0b339ffe565">
 <name>
-<val>planId</val>
+<val>ptId</val>
 </name>
 <ownerFormalParam>
 <ref refid="b6da1598-b69e-11f1-a653-a0b339ffe565"/>
@@ -24964,7 +24965,7 @@ DropSet: weightMultiplier e un figlio. RestPause: restPauseTime e un figlio. Sup
 </UML:Parameter>
 <UML:Parameter id="547fb836-d86c-11f1-a8a8-a0b339ffe565">
 <name>
-<val>planId</val>
+<val>ptId</val>
 </name>
 <ownerFormalParam>
 <ref refid="4f33786a-bc22-11f1-81f4-a0b339ffe565"/>
@@ -24975,7 +24976,7 @@ DropSet: weightMultiplier e un figlio. RestPause: restPauseTime e un figlio. Sup
 </UML:Parameter>
 <UML:Parameter id="5690db96-d86c-11f1-a8a8-a0b339ffe565">
 <name>
-<val>planId</val>
+<val>ptId</val>
 </name>
 <ownerFormalParam>
 <ref refid="696f8012-b69f-11f1-a653-a0b339ffe565"/>
@@ -24986,7 +24987,7 @@ DropSet: weightMultiplier e un figlio. RestPause: restPauseTime e un figlio. Sup
 </UML:Parameter>
 <UML:Parameter id="599c2a34-d86c-11f1-a8a8-a0b339ffe565">
 <name>
-<val>planId</val>
+<val>pitId</val>
 </name>
 <ownerFormalParam>
 <ref refid="f2727a46-bced-11f1-a512-a0b339ffe565"/>
@@ -25356,7 +25357,7 @@ DropSet: weightMultiplier e un figlio. RestPause: restPauseTime e un figlio. Sup
 <val>return</val>
 </direction>
 <lowerValue>
-<ref refid="d6e17f18-d875-11f1-a8a8-a0b339ffe565"/>
+<ref refid="a50ddb92-da89-11f1-a87d-a0b339ffe565"/>
 </lowerValue>
 <ownerFormalParam>
 <ref refid="f6439ee8-d86d-11f1-a8a8-a0b339ffe565"/>
@@ -25365,7 +25366,7 @@ DropSet: weightMultiplier e un figlio. RestPause: restPauseTime e un figlio. Sup
 <val>AssignedSessionView</val>
 </typeValue>
 <upperValue>
-<ref refid="d6e5b47a-d875-11f1-a8a8-a0b339ffe565"/>
+<ref refid="a50dfbea-da89-11f1-a87d-a0b339ffe565"/>
 </upperValue>
 </UML:Parameter>
 <UML:Parameter id="f65fa2dc-d86d-11f1-a8a8-a0b339ffe565">
@@ -25391,6 +25392,9 @@ DropSet: weightMultiplier e un figlio. RestPause: restPauseTime e un figlio. Sup
 <ownerFormalParam>
 <ref refid="f6439ee8-d86d-11f1-a8a8-a0b339ffe565"/>
 </ownerFormalParam>
+<typeValue>
+<val>UUID</val>
+</typeValue>
 </UML:Parameter>
 <UML:PackageItem id="f4937ca0-d870-11f1-a8a8-a0b339ffe565">
 <matrix>
@@ -26286,7 +26290,7 @@ DropSet: weightMultiplier e un figlio. RestPause: restPauseTime e un figlio. Sup
 </UML:Dependency>
 <UML:Class id="ac31b544-d875-11f1-a8a8-a0b339ffe565">
 <name>
-<val>ActivitySessionView</val>
+<val>AssignedSessionView</val>
 </name>
 <ownedAttribute>
 <reflist>
@@ -26433,29 +26437,10 @@ DropSet: weightMultiplier e un figlio. RestPause: restPauseTime e un figlio. Sup
 <ownerFormalParam>
 <ref refid="f0acc78e-d86d-11f1-a8a8-a0b339ffe565"/>
 </ownerFormalParam>
+<typeValue>
+<val>UUID</val>
+</typeValue>
 </UML:Parameter>
-<UML:LiteralInteger id="d6e17f18-d875-11f1-a8a8-a0b339ffe565">
-<name>
-<val>0</val>
-</name>
-<owningLower>
-<ref refid="f650b042-d86d-11f1-a8a8-a0b339ffe565"/>
-</owningLower>
-<value>
-<val>0</val>
-</value>
-</UML:LiteralInteger>
-<UML:LiteralUnlimitedNatural id="d6e5b47a-d875-11f1-a8a8-a0b339ffe565">
-<name>
-<val>*</val>
-</name>
-<owningUpper>
-<ref refid="f650b042-d86d-11f1-a8a8-a0b339ffe565"/>
-</owningUpper>
-<value>
-<val>*</val>
-</value>
-</UML:LiteralUnlimitedNatural>
 <UML:Property id="25b2749e-d876-11f1-a8a8-a0b339ffe565">
 <name>
 <val>sessionId</val>
@@ -26914,5 +26899,38 @@ DropSet: weightMultiplier e un figlio. RestPause: restPauseTime e un figlio. Sup
 <val>AssignedActivityVisitor</val>
 </typeValue>
 </UML:Parameter>
+<UML:Parameter id="9864b366-da89-11f1-a87d-a0b339ffe565">
+<name>
+<val>name</val>
+</name>
+<ownerFormalParam>
+<ref refid="5776a6cc-c8a3-11f1-bfae-a0b339ffe565"/>
+</ownerFormalParam>
+<typeValue>
+<val>string</val>
+</typeValue>
+</UML:Parameter>
+<UML:LiteralInteger id="a50ddb92-da89-11f1-a87d-a0b339ffe565">
+<name>
+<val>0</val>
+</name>
+<owningLower>
+<ref refid="f650b042-d86d-11f1-a8a8-a0b339ffe565"/>
+</owningLower>
+<value>
+<val>0</val>
+</value>
+</UML:LiteralInteger>
+<UML:LiteralUnlimitedNatural id="a50dfbea-da89-11f1-a87d-a0b339ffe565">
+<name>
+<val>*</val>
+</name>
+<owningUpper>
+<ref refid="f650b042-d86d-11f1-a8a8-a0b339ffe565"/>
+</owningUpper>
+<value>
+<val>*</val>
+</value>
+</UML:LiteralUnlimitedNatural>
 </model>
 </gaphor>

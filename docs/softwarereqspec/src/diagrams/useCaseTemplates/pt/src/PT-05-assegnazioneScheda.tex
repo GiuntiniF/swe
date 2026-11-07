@@ -23,7 +23,8 @@
     raggiunta tramite il caso d'uso PT-08.
   \item Il PT preme il pulsante "Assegna nuova Scheda".
   \item Il sistema mostra la lista delle schede presenti nel sistema
-    create dal PT.
+    create dal PT. Il sistema segnala le schede non configurate
+    (vedi Nota 6).
   \item Il PT preme sulla scheda che vuole usare.
   \item Il sistema mostra il form dei dati aggiuntivi necessari: la
     data di inizio della scheda e la durata della scheda, derivata
@@ -51,6 +52,14 @@
     passo 1 del caso d'uso PT-04. \newline
     - Dopo la creazione della scheda, il flusso riprende dal
     passo 5. \newline
+    \newline
+    \textbf{4b. Scheda non configurata} \newline
+    - Il PT preme su una scheda non configurata (vedi Nota 6).
+    \newline
+    - Il sistema non permette di sceglierla. Il sistema mostra un
+    messaggio ("La scheda non è configurata: completala con il caso
+    d'uso PT-04"). \newline
+    - Il flusso riprende dal passo 3. \newline
     \newline
     \textbf{6a. Sovrapposizione con una scheda già assegnata} \newline
     - Il sistema rileva che l'intervallo di date della nuova
@@ -113,7 +122,9 @@
     \textbf{Nota 2:} per gli esercizi con variante drop-set, il PT
     inserisce un solo carico. Il sistema ottiene il peso delle
     ripetizioni in drop applicando il moltiplicatore configurato
-    nella variante.\newline
+    nella variante. Un drop-set ha una sola discesa. Per avere più
+    discese, il PT applica più volte la variante drop-set allo stesso
+    esercizio (caso d'uso PT-04).\newline
     \textbf{Nota 3:} l'intervallo di date di un'assegnazione va dalla
     data di inizio all'ultimo giorno dell'ultimo blocco mensile. Ogni
     blocco dura un certo numero di settimane. La data di fine è quindi
@@ -148,7 +159,12 @@
     dell'assegnazione, non il periodo di allenamento. Se la scheda
     sia programmata, in corso o terminata dipende dalle sue date e
     dalla data odierna, ed è indipendente dal fatto che
-    l'assegnazione sia in bozza o confermata.
+    l'assegnazione sia in bozza o confermata.\newline
+    \textbf{Nota 6:} una scheda è \textbf{configurata} se ha almeno
+    un blocco mensile, ogni blocco ha almeno una sessione di
+    allenamento e ogni sessione ha almeno un esercizio. Il PT
+    configura la scheda con il caso d'uso PT-04. Il sistema mostra
+    anche le schede non configurate, ma non permette di assegnarle.
   } \\ \hline
 \end{xltabular}
 \end{document}

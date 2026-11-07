@@ -187,25 +187,25 @@ ultima la SRS, che descrive entrambi.
 
 ### D. SRS (Italiano Tecnico Semplificato)
 
-- [ ] **D1. Glossario, "Blocco mensile"**: "Dura un numero di settimane scelto dal
+- [x] **D1. Glossario, "Blocco mensile"**: "Dura un numero di settimane scelto dal
   PT, di norma quattro."
-- [ ] **D2. PT-04**
+- [x] **D2. PT-04**
   - Nuovo flusso alternativo: "Il blocco ha già 7 sessioni: il sistema non mostra
     il pulsante 'Aggiungi Sessione'."
   - Nota 3: togli l'esempio dei giorni, oppure scrivi che è solo indicativo.
   - Nuova nota: il catalogo degli esercizi è predefinito.
-- [ ] **D3. PT-05**
+- [x] **D3. PT-05**
   - Passo 3: il sistema segnala le schede non configurate.
   - Nuovo flusso alternativo: "Scheda non configurata: il sistema non permette di
     sceglierla."
   - Nota 2: il drop-set ha una sola discesa.
-- [ ] **D4. PT-09**
+- [x] **D4. PT-09**
   - Precondizione: "in corso o programmata".
   - Nota 1: i valori base (carico di PT-05, serie e recupero della scheda) e le
     personalizzazioni sono distinti.
   - 7a: il ripristino riporta anche il peso al carico inserito in PT-05.
-- [ ] **D5. A-03 Nota 1**: allineala alla Nota 1 di PT-09.
-- [ ] **D6. main.tex**: riallinea l'elenco dei metodi (sezione "Utilizzo dell'IA")
+- [x] **D5. A-03 Nota 1**: allineala alla Nota 1 di PT-09.
+- [x] **D6. main.tex**: riallinea l'elenco dei metodi (sezione "Utilizzo dell'IA")
   e la descrizione del package Exercises (`ActivitySpec` con `kind`) dopo le
   modifiche in Gaphor.
 

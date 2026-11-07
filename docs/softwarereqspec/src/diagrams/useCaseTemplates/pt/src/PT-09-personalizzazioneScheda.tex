@@ -10,12 +10,12 @@
   \ucname{Personalizzazione di una Scheda Assegnata} \\ \hline
   \ucactor{PT} \\ \hline
   \ucdescription{Il PT modifica le sessioni di allenamento di una
-    scheda che un atleta sta già seguendo. La modifica vale solo per
-    quell'atleta.} \\ \hline
+    scheda assegnata a un atleta, in corso o programmata. La modifica
+    vale solo per quell'atleta.} \\ \hline
   \ucprecond{Il PT deve essere autenticato. L'atleta scelto deve
-    avere almeno una scheda assegnata in corso, con assegnazione
-    confermata: le bozze non sono personalizzabili (vedi Nota 5 del
-    caso d'uso PT-05).} \\ \hline
+    avere almeno una scheda assegnata in corso o programmata, con
+    assegnazione confermata: le bozze non sono personalizzabili (vedi
+    Nota 5 del caso d'uso PT-05).} \\ \hline
   \ucpostcond{Le sessioni di allenamento prescritte a quell'atleta per
     la settimana scelta sono modificate. La scheda non cambia. Le
     sessioni di allenamento degli altri atleti che seguono la scheda
@@ -27,8 +27,9 @@
       assegnate.
     \item Il sistema mostra il dettaglio dell'assegnazione: nome
       della scheda, periodo di validità ed elenco delle settimane di
-      allenamento. Il sistema evidenzia la settimana corrente e
-      segnala le settimane che contengono personalizzazioni.
+      allenamento. Se la scheda è in corso, il sistema evidenzia la
+      settimana corrente. Il sistema segnala le settimane che
+      contengono personalizzazioni.
     \item Il PT preme su una settimana, scelta tra la settimana
       corrente e quelle successive (vedi Nota 2).
     \item Il sistema mostra le sessioni di allenamento della
@@ -64,21 +65,31 @@
     \textbf{7a. Ripristino del valore originale} \newline
     - Se l'esercizio è personalizzato, il sistema mostra
     accanto ai valori il pulsante "Ripristina". \newline
-    - Il PT preme il pulsante. Il sistema riporta l'esercizio ai valori
-    previsti dalla scheda. \newline
+    - Il PT preme il pulsante. Il sistema cancella le
+    personalizzazioni dell'esercizio e lo riporta ai valori base (vedi
+    Nota 1): il peso torna al carico inserito in PT-05, le
+    serie/ripetizioni e il tempo di recupero tornano a quelli della
+    scheda. \newline
     - Il flusso riprende dal passo 5.
   } \\ \hline
   \ucnote{
     \textbf{Nota 1:} quali esercizi l'atleta svolge è deciso dalle
     sessioni di allenamento configurate nel blocco mensile (PT-04) e
-    non è modificabile qui. Sono invece memorizzati sull'assegnazione,
-    per ciascun esercizio di ciascuna sessione: il carico, che il PT
-    inserisce al momento dell'assegnazione (PT-05), e le
-    serie/ripetizioni e il tempo di recupero, che restano quelli
-    della scheda finché il PT non li modifica con questo caso d'uso.
-    La modifica agisce sull'assegnazione e non sulla scheda: la
-    scheda resta invariata e gli altri atleti che la seguono non sono
-    toccati.\newline
+    non è modificabile qui. Per ciascun esercizio di ciascuna
+    sessione, il sistema distingue due gruppi di valori:
+    \begin{itemize}
+      \item i \textbf{valori base}: il carico che il PT inserisce al
+        momento dell'assegnazione (PT-05), le serie/ripetizioni e il
+        tempo di recupero della scheda (PT-04);
+      \item le \textbf{personalizzazioni}: i valori che il PT
+        modifica con questo caso d'uso.
+    \end{itemize}
+    Il sistema salva una personalizzazione solo per i valori diversi
+    dal valore base. Per ciascun valore, il sistema mostra la
+    personalizzazione, se presente, altrimenti il valore base. Le
+    personalizzazioni sono memorizzate sull'assegnazione e non sulla
+    scheda: la scheda resta invariata e gli altri atleti che la
+    seguono non sono toccati.\newline
     \textbf{Nota 2:} sono modificabili solo la settimana corrente e
     le settimane successive. Le settimane già trascorse sono in sola
     lettura, perché l'atleta si è già allenato su quanto vi era
