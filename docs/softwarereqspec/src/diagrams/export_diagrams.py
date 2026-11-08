@@ -1,18 +1,26 @@
 #!/usr/bin/env -S uv run
-"""Esporta da Gaphor i diagrammi usati nella SRS, pronti per \\includegraphics.
+"""Esporta da Gaphor tutti i diagrammi del modello, pronti per \\includegraphics.
 
-Per ogni diagramma della tabella DIAGRAMS:
+Per ogni diagramma non vuoto del modello:
   1. lo disegna in PDF senza la linguetta in alto a sinistra ("cls User",
      "pkg ...", "uc ...");
   2. ritaglia il PDF con `pdfcrop --margins "0 0 5 5"` (5pt solo a destra
      e in basso).
 
+Il file PDF prende il nome del diagramma e va nella cartella della sezione,
+cioè del primo package sotto la radice del modello (vedi output_path):
+    App PT/BusinessLogic/User/User         -> BusinessLogic/User.pdf
+    App PT/DAO/Shared/Shared               -> DAO/Shared.pdf
+    App PT/Domain Model/User/User          -> class/User.pdf
+    App PT/SystemArchitecture              -> SystemArchitecture.pdf
+I nuovi package e diagrammi vengono esportati senza modificare lo script.
 Il file .gaphor non viene modificato.
 
 Uso (da qualsiasi cartella dentro il repo; le dipendenze Python sono nel
 progetto uv alla radice, `pyproject.toml`):
     uv run docs/softwarereqspec/src/diagrams/export_diagrams.py
-    uv run docs/softwarereqspec/src/diagrams/export_diagrams.py User Gym
+    uv run docs/softwarereqspec/src/diagrams/export_diagrams.py BusinessLogic
+    uv run docs/softwarereqspec/src/diagrams/export_diagrams.py "Domain Model/User"
 
 Oltre al progetto uv serve `pdfcrop` (TeX Live), che non è un pacchetto Python.
 """
@@ -27,24 +35,16 @@ import cairo
 import gaphor.storage as storage
 from gaphor.application import Session
 from gaphor.core.modeling import Diagram
-from gaphor.diagram.export import render
+from gaphor.diagram.export import escape_filename, render
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_MODEL = HERE / "class" / "domain_model.gaphor"
 
-# Percorso del diagramma nel modello (package/.../nome) -> file PDF,
-# relativo a questa cartella. Per aggiungere un diagramma alla SRS basta
-# aggiungere una riga qui.
-DIAGRAMS = {
-    "App PT/Domain Model/Package Diagram of Domain Model": "class/Package_Diagram_of_Domain_Model.pdf",
-    "App PT/Domain Model/User/User": "class/User.pdf",
-    "App PT/Domain Model/Gym/Gym": "class/Gym.pdf",
-    "App PT/Domain Model/Coaching/Coaching": "class/Coaching.pdf",
-    "App PT/Domain Model/TrainingPlan/TrainingPlan": "class/TrainingPlan.pdf",
-    "App PT/Domain Model/Exercises/Exercises": "class/Exercises.pdf",
-    "App PT/Domain Model/ValueType/ValueType": "class/ValueType.pdf",
-    "App PT/Use Case Diagram/Use Case Diagram": "useCaseDiagram.pdf",
-    "App PT/SystemArchitecture": "SystemArchitecture.pdf",
+# Cartella di una sezione, se diversa dal nome del package.
+# "" = direttamente in questa cartella.
+SECTION_DIRS = {
+    "Domain Model": "class",
+    "Use Case Diagram": "",
 }
 
 PDFCROP_MARGINS = "0 0 5 5"  # sinistra sopra destra sotto, in pt
@@ -54,13 +54,29 @@ PDFCROP_MARGINS = "0 0 5 5"  # sinistra sopra destra sotto, in pt
 PT_PER_PX = 72 / 96
 
 
-def diagram_path(diagram):
-    parts = [diagram.name]
+def package_names(diagram):
+    """Nomi dei package che contengono il diagramma, dalla radice in giù."""
+    names = []
     package = diagram.owner
     while package:
-        parts.insert(0, package.name)
+        names.insert(0, package.name)
         package = package.owningPackage
-    return "/".join(parts)
+    return names
+
+
+def diagram_path(diagram):
+    return "/".join([*package_names(diagram), diagram.name])
+
+
+def output_path(diagram):
+    """Percorso del PDF, relativo a questa cartella."""
+    packages = package_names(diagram)
+    file_name = escape_filename(diagram.name) + ".pdf"
+    if len(packages) < 2:  # diagramma direttamente nella radice del modello
+        return Path(file_name)
+    section = packages[1]
+    folder = SECTION_DIRS.get(section, escape_filename(section))
+    return Path(folder) / file_name
 
 
 def load_diagrams(model):
@@ -76,7 +92,7 @@ def load_diagrams(model):
     factory = session.get_service("element_factory")
     with open(model, encoding="utf-8") as file_obj:
         storage.load(file_obj, factory, session.get_service("modeling_language"))
-    return {diagram_path(d): d for d in factory.select(Diagram)}
+    return sorted(factory.select(Diagram), key=diagram_path)
 
 
 def export_pdf(diagram, out):
@@ -98,9 +114,10 @@ def export_pdf(diagram, out):
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument(
-        "names",
+        "filters",
         nargs="*",
-        help="esporta solo i diagrammi con questo nome (es. User Gym); "
+        help="esporta solo i diagrammi il cui percorso nel modello contiene "
+        'uno di questi testi (es. BusinessLogic, "Domain Model/User"); '
         "senza argomenti li esporta tutti",
     )
     parser.add_argument(
@@ -111,28 +128,38 @@ def main():
     if not shutil.which("pdfcrop"):
         sys.exit("pdfcrop non trovato: installa TeX Live (texlive-binextra).")
 
-    selected = {
-        path: out
-        for path, out in DIAGRAMS.items()
-        if not args.names or path.rsplit("/", 1)[-1] in args.names
-    }
-    if not selected:
-        sys.exit(f"Nessun diagramma corrisponde a: {' '.join(args.names)}")
-
     diagrams = load_diagrams(args.model)
-    missing = [path for path in selected if path not in diagrams]
-    if missing:
+    filters = [f.lower() for f in args.filters]
+    selected = [
+        d
+        for d in diagrams
+        if not filters or any(f in diagram_path(d).lower() for f in filters)
+    ]
+    if not selected:
         sys.exit(
-            "Diagrammi non trovati nel modello (rinominati o spostati?):\n  "
-            + "\n  ".join(missing)
-            + "\nDiagrammi presenti:\n  "
-            + "\n  ".join(sorted(diagrams))
+            f"Nessun diagramma corrisponde a: {' '.join(args.filters)}\n"
+            "Diagrammi presenti:\n  " + "\n  ".join(map(diagram_path, diagrams))
         )
 
-    for path, out in selected.items():
-        target = HERE / out
-        export_pdf(diagrams[path], target)
-        print(f"{path} -> {target.relative_to(HERE)}")
+    # Due diagrammi con lo stesso nome nella stessa sezione finirebbero
+    # nello stesso file: meglio fermarsi che sovrascriverne uno.
+    targets = {}
+    for d in diagrams:
+        targets.setdefault(output_path(d), []).append(diagram_path(d))
+    clashes = {out: paths for out, paths in targets.items() if len(paths) > 1}
+    if clashes:
+        sys.exit(
+            "Diagrammi diversi finirebbero nello stesso file; rinominane uno:\n"
+            + "\n".join(f"  {out}: {', '.join(p)}" for out, p in clashes.items())
+        )
+
+    for d in selected:
+        if not any(d.get_all_items()):
+            print(f"{diagram_path(d)}: vuoto, saltato")
+            continue
+        out = output_path(d)
+        export_pdf(d, HERE / out)
+        print(f"{diagram_path(d)} -> {out}")
 
 
 if __name__ == "__main__":

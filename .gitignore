@@ -12,8 +12,9 @@
 
 # I PDF sono per lo più output di compilazione, quindi ignorati di
 # default. Fanno eccezione i PDF che sono sorgenti/risorse a tutti
-# gli effetti: i diagrammi delle classi esportati da Gaphor (usati
+# gli effetti: i diagrammi esportati da Gaphor con export_diagrams.py
+# (una cartella per sezione: class/, BusinessLogic/, DAO/, ...; usati
 # come figure nel documento) e la traccia del progetto.
 *.pdf
-!docs/softwarereqspec/src/diagrams/class/*.pdf
+!docs/softwarereqspec/src/diagrams/*/*.pdf
 !docs/statement/*.pdf
