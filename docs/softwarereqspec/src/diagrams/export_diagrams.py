@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env -S uv run
 """Esporta da Gaphor i diagrammi usati nella SRS, pronti per \\includegraphics.
 
 Per ogni diagramma della tabella DIAGRAMS:
@@ -9,11 +9,12 @@ Per ogni diagramma della tabella DIAGRAMS:
 
 Il file .gaphor non viene modificato.
 
-Uso (dalla cartella del repo o da qualsiasi altra):
-    docs/softwarereqspec/src/diagrams/export_diagrams.py
-    docs/softwarereqspec/src/diagrams/export_diagrams.py User Gym
+Uso (da qualsiasi cartella dentro il repo; le dipendenze Python sono nel
+progetto uv alla radice, `pyproject.toml`):
+    uv run docs/softwarereqspec/src/diagrams/export_diagrams.py
+    uv run docs/softwarereqspec/src/diagrams/export_diagrams.py User Gym
 
-Richiede Gaphor installato nel Python di sistema e `pdfcrop` (TeX Live).
+Oltre al progetto uv serve `pdfcrop` (TeX Live), che non è un pacchetto Python.
 """
 
 import argparse
