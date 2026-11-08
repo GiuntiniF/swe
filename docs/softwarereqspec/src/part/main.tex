@@ -80,6 +80,9 @@ Il sistema ha due attori:
   \item[Palestra] Il luogo fisico in cui il PT lavora e in cui
     l'Atleta si allena. Un PT può essere associato a più palestre e
     un Atleta può essere iscritto a più palestre.
+  \item[Rapporto PT-Atleta] Il legame tra un PT e un atleta che il PT
+    segue. Nasce con la registrazione dell'atleta. Contiene la data di
+    inizio e, se terminato, la data di fine.
   \item[Associazione PT-Palestra] Il legame tra un PT e una palestra
     in cui lavora. Contiene la data di inizio e, se terminata, la
     data di fine.
@@ -165,6 +168,9 @@ comuni, PT per il Personal Trainer, A per l'Atleta.
 
 \subsubsection{PT-16: Duplicazione Scheda}
 \subfile{../diagrams/useCaseTemplates/pt/src/PT-16-duplicazioneScheda}
+
+\subsubsection{PT-17: Cessazione Rapporto con un Atleta}
+\subfile{../diagrams/useCaseTemplates/pt/src/PT-17-cessazioneRapportoAtleta}
 
 \subsection{Template dei casi d'uso dell'Atleta}
 \subsubsection{A-01: Completamento Profilo}
@@ -424,7 +430,8 @@ solo nei casi seguenti:
     costruire le attività di una sessione;
   \item \texttt{PlanAssignmentService} usa \texttt{UserService} per
     controllare che il PT segua l'atleta, cioè che esista un
-    \texttt{PTAssignment} attivo.
+    \texttt{PTAssignment} attivo. Il controllo usa il metodo
+    \texttt{hasActivePTAssignment}.
 \end{itemize}
 
 \subsubsection{User}
@@ -445,6 +452,13 @@ profilo dell'atleta. Usa \texttt{UserDAO} e
     \texttt{GymService.enrollAthlete} (PT-02);
   \item \texttt{getAthletesByPT} e \texttt{getAthlete(athleteId,
     ptId)}: restituiscono gli atleti del PT (PT-08);
+  \item \texttt{hasActivePTAssignment}: restituisce \texttt{true} se
+    il PT segue l'atleta oggi, cioè se il loro \texttt{PTAssignment}
+    è attivo. Lo usano \texttt{getAthlete(athleteId, ptId)} e
+    \texttt{PlanAssignmentService};
+  \item \texttt{terminatePTAssignment}: imposta la data di fine del
+    \texttt{PTAssignment} alla data odierna. Il metodo accetta solo
+    un \texttt{PTAssignment} attivo (PT-17);
   \item \texttt{completeProfile}: completa il profilo dell'atleta al
     primo accesso (A-01);
   \item \texttt{getAthlete(athleteId)} e

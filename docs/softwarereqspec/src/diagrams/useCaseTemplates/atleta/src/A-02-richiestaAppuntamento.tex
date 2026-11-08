@@ -12,7 +12,8 @@
   \ucdescription{L'atleta richiede un appuntamento con il PT.
     L'atleta indica la palestra, la data, l'ora e la motivazione.} \\
     \hline
-  \ucprecond{L'atleta deve essere autenticato.} \\ \hline
+  \ucprecond{L'atleta deve essere autenticato. Un PT deve seguire
+    l'atleta (vedi Nota 2).} \\ \hline
   \ucpostcond{Il sistema crea un appuntamento in attesa
     di conferma dal PT. Il PT riceve un'email di notifica.} \\ \hline
   \ucmainflow{
@@ -39,6 +40,10 @@
     \textbf{Nota 1:} se l'atleta è iscritto a una sola palestra, il
     sistema la preseleziona e l'atleta può comunque confermarla o
     cambiarla, se iscritto a più di una (vedi caso d'uso A-06).
+    \newline
+    \textbf{Nota 2:} se il PT ha terminato il rapporto con l'atleta
+    (caso d'uso PT-17), nessun PT segue l'atleta. In questo caso il
+    sistema non mostra il pulsante "Richiedi Appuntamento".
   } \\ \hline
 \end{xltabular}
 \end{document}

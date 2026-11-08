@@ -42,6 +42,8 @@ Per questo `UserService` ha anche `getPT(in ptId: UUID): PT`.
 | `registerAthlete(in ptId: UUID, in firstName: string, in lastName: string, in email: string, in gymIds: UUID [1..*]): Athlete` | PT-02, passi 5–6, 5a, 5b, 5c. Crea l'`Athlete`, il `PTAssignment` e la password temporanea, poi chiama `GymService.enrollAthlete`. |
 | `getAthletesByPT(in ptId: UUID): Athlete [0..*]` | PT-08, passo 2. Solo atleti con `PTAssignment` attivo, ordinati per cognome. |
 | `getAthlete(in athleteId: UUID, in ptId: UUID): Athlete` | PT-08, passo 4. Controlla che l'atleta sia del PT (Nota 4). |
+| `hasActivePTAssignment(in athleteId: UUID, in ptId: UUID): bool` | Controllo usato da `getAthlete(athleteId, ptId)` e da `PlanAssignmentService`. Vero se il `PTAssignment` tra i due è attivo oggi. |
+| `terminatePTAssignment(in athleteId: UUID, in ptId: UUID)` | PT-17, passo 5. Imposta `endDate` a oggi; ammesso solo se `isActive`. |
 | `getAthlete(in athleteId: UUID): Athlete` | A-04, passo 2. |
 | `completeProfile(in athleteId: UUID, in newPassword: string, in birthDate: LocalDate, in height: float, in weight: float): Athlete` | A-01, passi 5–6 e 5a. |
 | `updatePersonalData(in athleteId: UUID, in birthDate: LocalDate, in height: float, in weight: float): Athlete` | A-04, passi 7 e 7a. |
