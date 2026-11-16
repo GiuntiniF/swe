@@ -612,6 +612,105 @@ esercizi.
   \caption{Diagramma delle classi del DAO dei package TrainingPlan ed Exercise}
   \label{fig:trainingPlanExerciseDAO}
 \end{figure}
+
+\subsection{Diagrammi di sequenza}
+\label{sec:sequenceDiagrams}
+I diagrammi di sequenza mostrano come le classi delle sezioni
+precedenti collaborano per realizzare un caso d'uso. I diagrammi
+seguono le convenzioni seguenti:
+\begin{itemize}
+  \item le lifeline sono ordinate da sinistra a destra: l'attore, il
+    controller, i service, i DAO e gli oggetti del Domain Model. I
+    diagrammi non mostrano il database;
+  \item i service e i DAO hanno una lifeline anonima, per esempio
+    \texttt{:UserService}. Gli oggetti del Domain Model hanno una
+    lifeline con nome, per esempio \texttt{plan:TrainingPlan};
+  \item \texttt{ptId} è l'id del PT autenticato. Il controller legge
+    l'id dalla sessione HTTP e lo passa ai service;
+  \item una freccia tratteggiata è un messaggio di ritorno. Il
+    diagramma mostra il ritorno solo se un passo successivo usa il
+    valore restituito. Il diagramma non mostra i ritorni dei metodi
+    \texttt{void};
+  % T1 locale: in OT1 i guillemet escono come i simboli matematici ≪ ≫.
+  \item il messaggio {\fontencoding{T1}\selectfont\texttt{«create»}}
+    crea un oggetto. La lifeline
+    dell'oggetto inizia all'altezza del messaggio;
+  \item i frammenti \texttt{alt} rappresentano i casi di errore. Nel
+    ramo di errore il service restituisce al controller un messaggio
+    che inizia con \texttt{errore:}. Dopo il frammento il controller mostra l'esito
+    al PT con un solo messaggio di ritorno;
+  \item il frammento \texttt{ref} richiama un altro diagramma di
+    sequenza;
+  \item i diagrammi usano i metodi get e set degli attributi e delle
+    associazioni, anche se i diagrammi delle classi non li mostrano.
+    Le guardie e i messaggi di ritorno usano questi metodi senza
+    disegnare il messaggio.
+\end{itemize}
+
+\subsubsection{Controllo PT dell'atleta}
+Il diagramma della figura \ref{fig:sdControlloPT} controlla che il PT
+segua l'atleta, cioè che l'atleta abbia un \texttt{PTAssignment} attivo
+con quel PT. Più casi d'uso usano questo controllo. Gli altri diagrammi
+lo richiamano con il frammento
+\texttt{ref Controllo PT dell'atleta(athleteId, ptId)}.
+
+\texttt{PlanAssignmentService} chiama il metodo \texttt{getActivePT} di
+\texttt{UserService}. \texttt{UserService} legge i
+\texttt{PTAssignment} dell'atleta con \texttt{PTAssignmentDAO}. Poi
+\texttt{UserService} cerca il \texttt{PTAssignment} attivo alla data
+odierna e restituisce il suo PT. Il controllo fallisce in due casi:
+l'atleta non ha un PT attivo, oppure il PT attivo non è il PT
+autenticato. In questi casi il service restituisce l'errore al
+controller.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/Sequence_Diagrams/Controllo_PT_dell_atleta.pdf}
+  \caption{Diagramma di sequenza del controllo PT dell'atleta}
+  \label{fig:sdControlloPT}
+\end{figure}
+
+\subsubsection{PT-05: Assegnazione Scheda ad un Atleta}
+Il diagramma della figura \ref{fig:sdPT05Assegnazione} mostra i passi
+4--6 del caso d'uso PT-05 e i flussi alternativi 4b e 6a. Il PT invia
+l'atleta, la scheda e la data di inizio.
+\texttt{PlanAssignmentController} carica l'atleta con il metodo
+\texttt{getAthlete} di \texttt{UserService}. Poi il controller chiama
+il metodo \texttt{addAssignment} di \texttt{PlanAssignmentService}. Il
+service esegue le operazioni seguenti:
+\begin{enumerate}
+  \item controlla che il PT segua l'atleta con il frammento
+    \texttt{ref Controllo PT dell'atleta};
+  \item legge la scheda con \texttt{TrainingPlanDAO}. Se la scheda non
+    esiste o non appartiene al PT, il service restituisce un errore;
+  \item chiede alla scheda se è configurata (\texttt{isConfigured}) e
+    calcola la data di fine dell'assegnazione (\texttt{getEndDate});
+  \item cerca con \texttt{findOverlapping} un'assegnazione dell'atleta
+    che si sovrappone all'intervallo di date. La ricerca considera
+    solo le assegnazioni confermate;
+  \item se la scheda non è configurata (flusso 4b) o se c'è una
+    sovrapposizione (flusso 6a), restituisce un errore;
+  \item altrimenti crea il \texttt{PlanAssignment} in bozza e lo salva
+    con il metodo \texttt{create} di \texttt{PlanAssignmentDAO}. Il
+    salvataggio comprende anche le \texttt{Week} e gli
+    \texttt{AssignedExercise}. Queste classi sono parti della
+    composizione e non hanno un DAO.
+\end{enumerate}
+Il service esegue \texttt{getEndDate} e \texttt{findOverlapping} anche
+se la scheda non è configurata. Così il frammento \texttt{alt} ha un
+solo livello.
+
+Alla fine il controller mostra l'esito al PT. Se il service crea
+l'assegnazione, il controller mostra il form dei carichi del passo 7.
+Altrimenti il controller mostra il messaggio di errore. Nel flusso 4b
+il PT riprende dal passo 3, nel flusso 6a dal passo 5.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/Sequence_Diagrams/PT_05_Assegnazione.pdf}
+  \caption{Diagramma di sequenza dell'assegnazione di una scheda (PT-05)}
+  \label{fig:sdPT05Assegnazione}
+\end{figure}
 \fussy
 
 \newpage
