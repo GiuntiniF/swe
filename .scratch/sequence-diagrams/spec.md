@@ -325,6 +325,9 @@ carica l'assegnazione e fa il controllo PT una volta sola, poi scorre le Week.
   getAssignmentWeek e getAssignmentWeekForAthlete."
 - "Le sessionViews sono ordinate per weekNumber e sessionNumber. Il form le
   raggruppa per weekId."
+- "I dati di testata del form (scheda, date) si leggono con
+  getAssignment(assignmentId, ptId), in una richiesta separata anche
+  asincrona. Non sono disegnati."
 - "Percorso rappresentativo: l'attività è un DropSetDecorator applicato a un
   Exercise. Superset e RestPause seguono lo stesso schema: accept → visitX →
   accept sui figli → «create» AssignedActivityView."
