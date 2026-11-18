@@ -690,8 +690,11 @@ service esegue le operazioni seguenti:
     solo le assegnazioni confermate;
   \item se la scheda non è configurata (flusso 4b) o se c'è una
     sovrapposizione (flusso 6a), restituisce un errore;
-  \item altrimenti crea il \texttt{PlanAssignment} in bozza e lo salva
-    con il metodo \texttt{create} di \texttt{PlanAssignmentDAO}. Il
+  \item altrimenti crea il \texttt{PlanAssignment} in bozza. Il
+    frammento \texttt{ref PT-05 Creazione Week} mostra il costruttore
+    di \texttt{PlanAssignment} (figura \ref{fig:sdPT05CreazioneWeek}).
+    Poi il service salva il \texttt{PlanAssignment} con il metodo
+    \texttt{create} di \texttt{PlanAssignmentDAO}. Il
     salvataggio comprende anche le \texttt{Week} e gli
     \texttt{AssignedExercise}. Queste classi sono parti della
     composizione e non hanno un DAO.
@@ -710,6 +713,45 @@ il PT riprende dal passo 3, nel flusso 6a dal passo 5.
   \includegraphics[width=\textwidth]{diagrams/Sequence_Diagrams/PT_05_Assegnazione.pdf}
   \caption{Diagramma di sequenza dell'assegnazione di una scheda (PT-05)}
   \label{fig:sdPT05Assegnazione}
+\end{figure}
+
+\subsubsection{PT-05: Creazione delle Week}
+Il diagramma della figura \ref{fig:sdPT05CreazioneWeek} mostra il
+costruttore di \texttt{PlanAssignment}. Il diagramma della figura
+\ref{fig:sdPT05Assegnazione} lo richiama con il frammento
+\texttt{ref PT-05 Creazione Week}. Il costruttore crea
+l'assegnazione nello stato \texttt{Draft} ed esegue le operazioni
+seguenti:
+\begin{enumerate}
+  \item legge i blocchi mensili della scheda con il metodo
+    \texttt{getBlocks} di \texttt{TrainingPlan};
+  \item per ogni blocco legge il numero di settimane con
+    \texttt{getWeeksCount};
+  \item crea un \texttt{Week} per ogni settimana del blocco. Il
+    numero della settimana (\texttt{weekNumber}) parte da 1 e aumenta
+    di 1 a ogni \texttt{Week}. La numerazione continua da un blocco
+    al successivo, nell'ordine della scheda.
+\end{enumerate}
+
+Il costruttore di \texttt{Week} legge le sessioni del blocco con
+\texttt{getSessions}. Per ogni sessione legge le attività con
+\texttt{getActivities}. Per ogni attività legge gli esercizi con
+\texttt{getExercises}. Per ogni esercizio crea un
+\texttt{AssignedExercise} con l'esercizio e la sessione.
+
+Il metodo \texttt{getExercises} restituisce gli \texttt{Exercise}
+foglia dell'albero dell'attività. Il risultato comprende anche gli
+esercizi dei \texttt{Superset} e dei decoratori. Il \texttt{Week}
+non memorizza il blocco: il metodo \texttt{getMonthlyBlock} ricava
+il blocco dal numero della settimana. Gli \texttt{AssignedExercise}
+creati non hanno i carichi (\texttt{weight}). Il PT inserisce i
+carichi con il form dei carichi.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/Sequence_Diagrams/PT_05_Creazione_Week.pdf}
+  \caption{Diagramma di sequenza della creazione delle Week (PT-05)}
+  \label{fig:sdPT05CreazioneWeek}
 \end{figure}
 \fussy
 
