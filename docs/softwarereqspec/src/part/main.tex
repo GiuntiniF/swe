@@ -506,9 +506,13 @@ classe \texttt{PlanAssignmentService} gestisce le assegnazioni delle
 schede agli atleti e la personalizzazione degli esercizi assegnati.
 Il tipo di valore \texttt{WeightEntry} associa un carico a un
 \texttt{AssignedExercise}. Le classi \texttt{AssignedSessionView} e
-\texttt{AssignedActivityView} rappresentano una settimana
+\texttt{AssignedActivityView} rappresentano le sessioni
 dell'assegnazione con i valori della scheda e i valori dell'atleta.
-La classe \texttt{AssignedActivityVisitor} costruisce queste classi
+Ogni \texttt{AssignedSessionView} contiene l'id e il numero della
+settimana (\texttt{weekId} e \texttt{weekNumber}). Il metodo
+\texttt{getLoadForm} restituisce le sessioni di tutte le settimane per
+il form dei carichi. Il metodo \texttt{getAssignmentWeek} restituisce
+le sessioni di una sola settimana. La classe \texttt{AssignedActivityVisitor} costruisce queste classi
 con il pattern Visitor. I due service usano \texttt{TrainingPlanDAO}
 e \texttt{PlanAssignmentDAO}.
 
@@ -623,8 +627,8 @@ seguono le convenzioni seguenti:
     controller, i service, i DAO e gli oggetti del Domain Model. I
     diagrammi non mostrano il database;
   \item i service e i DAO hanno una lifeline anonima, per esempio
-    \texttt{:UserService}. Gli oggetti del Domain Model hanno una
-    lifeline con nome, per esempio \texttt{plan:TrainingPlan};
+    \texttt{:UserService}. Gli altri oggetti hanno una lifeline con
+    nome, per esempio \texttt{plan:TrainingPlan};
   \item \texttt{ptId} è l'id del PT autenticato. Il controller legge
     l'id dalla sessione HTTP e lo passa ai service;
   \item una freccia tratteggiata è un messaggio di ritorno. Il
@@ -641,6 +645,13 @@ seguono le convenzioni seguenti:
     al PT con un solo messaggio di ritorno;
   \item il frammento \texttt{ref} richiama un altro diagramma di
     sequenza;
+  \item il frammento \texttt{loop} ripete i messaggi per ogni
+    elemento indicato nella guardia. Il frammento \texttt{opt} esegue
+    i messaggi solo se la guardia è vera;
+  \item una barra di attivazione sopra un'altra barra della stessa
+    lifeline indica un metodo che inizia mentre l'oggetto esegue già
+    un altro metodo. Per esempio, un metodo chiama un altro metodo
+    dello stesso oggetto;
   \item i diagrammi usano i metodi get e set degli attributi e delle
     associazioni, anche se i diagrammi delle classi non li mostrano.
     Le guardie e i messaggi di ritorno usano questi metodi senza
@@ -704,8 +715,8 @@ se la scheda non è configurata. Così il frammento \texttt{alt} ha un
 solo livello.
 
 Alla fine il controller mostra l'esito al PT. Se il service crea
-l'assegnazione, il controller mostra il form dei carichi del passo 7.
-Altrimenti il controller mostra il messaggio di errore. Nel flusso 4b
+l'assegnazione, il controller mostra il form dei carichi del passo 7
+(figura \ref{fig:sdPT05FormCarichi}). Altrimenti il controller mostra il messaggio di errore. Nel flusso 4b
 il PT riprende dal passo 3, nel flusso 6a dal passo 5.
 
 \begin{figure}[H]
@@ -752,6 +763,75 @@ carichi con il form dei carichi.
   \includegraphics[width=\textwidth]{diagrams/Sequence_Diagrams/PT_05_Creazione_Week.pdf}
   \caption{Diagramma di sequenza della creazione delle Week (PT-05)}
   \label{fig:sdPT05CreazioneWeek}
+\end{figure}
+
+\subsubsection{PT-05: Form dei carichi}
+Il diagramma della figura \ref{fig:sdPT05FormCarichi} mostra il passo
+7 del caso d'uso PT-05 e il flusso alternativo 2a. Il form mostra le
+sessioni di tutte le settimane dell'assegnazione. Per questo il
+controller chiama una sola volta il metodo \texttt{getLoadForm} di
+\texttt{PlanAssignmentService}. Il service esegue le operazioni
+seguenti:
+\begin{enumerate}
+  \item legge l'assegnazione con \texttt{PlanAssignmentDAO} e
+    controlla che il PT segua l'atleta con il frammento
+    \texttt{ref Controllo PT dell'atleta};
+  \item legge i \texttt{Week} dell'assegnazione con
+    \texttt{getWeeks};
+  \item per ogni \texttt{Week} chiama il proprio metodo privato
+    \texttt{buildSessionViews(week)}. Il metodo legge il blocco mensile del
+    \texttt{Week} (\texttt{getMonthlyBlock}) e le sessioni del blocco
+    (\texttt{getSessions}). Per ogni sessione legge le attività
+    (\texttt{getActivities}) e crea un \texttt{AssignedSessionView};
+  \item restituisce al controller gli \texttt{AssignedSessionView} di
+    tutti i \texttt{Week}, ordinati per numero di settimana e numero di
+    sessione. Il form raggruppa le sessioni per settimana con
+    \texttt{weekId}.
+\end{enumerate}
+Anche i metodi \texttt{getAssignmentWeek} e
+\texttt{getAssignmentWeekForAthlete} usano \texttt{buildSessionViews}.
+
+Per ogni attività il service crea un \texttt{AssignedActivityVisitor}
+e chiama il metodo \texttt{accept} dell'attività. Il pattern Visitor
+sceglie il metodo da eseguire in base al tipo dell'attività. Il
+diagramma mostra un solo caso: un \texttt{DropSetDecorator} applicato
+a un \texttt{Exercise}. Gli altri tipi di attività seguono lo stesso
+schema. Il caso mostrato comprende i passi seguenti:
+\begin{enumerate}
+  \item il \texttt{DropSetDecorator} chiama il metodo
+    \texttt{visitDropSet} del visitor. Il visitor chiama il metodo
+    \texttt{accept} dell'\texttt{Exercise} contenuto nel decoratore;
+  \item l'\texttt{Exercise} chiama il metodo \texttt{visitExercise}
+    del visitor. Il visitor cerca l'\texttt{AssignedExercise}
+    dell'esercizio con il metodo \texttt{findAssignedExercise} di
+    \texttt{Week}. Poi legge il carico, le ripetizioni e il tempo di
+    recupero dell'\texttt{AssignedExercise} e crea un
+    \texttt{AssignedActivityView} per l'esercizio. La view contiene
+    l'id dell'\texttt{AssignedExercise}. Il form usa questo id per
+    inviare i carichi;
+  \item se il carico è presente, il visitor calcola il carico della
+    discesa con il metodo \texttt{getDropWeight} di
+    \texttt{DropSetDecorator}. Poi il visitor crea un
+    \texttt{AssignedActivityView} per il drop-set. Questa view
+    contiene la view dell'esercizio.
+\end{enumerate}
+Alla fine il service legge la view dell'attività con il metodo
+\texttt{getResult} del visitor.
+
+Il PT può modificare un carico nel form. In questo caso la UI
+aggiorna il carico della discesa con il campo
+\texttt{weightMultiplier} della view. Il server calcola di nuovo i
+carichi delle discese (\texttt{dropWeights}) a ogni caricamento del
+form. La UI precompila ogni sessione con i carichi della sessione
+precedente (Nota 1 di PT-05).
+
+\begin{figure}[H]
+  \centering
+  % Diagramma molto largo: ruotato di 90°. height prima di angle, così
+  % dopo la rotazione la larghezza è \textwidth.
+  \includegraphics[height=\textwidth,angle=90]{diagrams/Sequence_Diagrams/PT_05_Form_Carichi.pdf}
+  \caption{Diagramma di sequenza del form dei carichi (PT-05)}
+  \label{fig:sdPT05FormCarichi}
 \end{figure}
 \fussy
 
