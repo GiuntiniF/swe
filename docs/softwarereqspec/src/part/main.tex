@@ -80,6 +80,9 @@ Il sistema ha due attori:
   \item[Palestra] Il luogo fisico in cui il PT lavora e in cui
     l'Atleta si allena. Un PT può essere associato a più palestre e
     un Atleta può essere iscritto a più palestre.
+  \item[Rapporto PT-Atleta] Il legame tra un PT e un atleta che il PT
+    segue. Nasce con la registrazione dell'atleta. Contiene la data di
+    inizio e, se terminato, la data di fine.
   \item[Associazione PT-Palestra] Il legame tra un PT e una palestra
     in cui lavora. Contiene la data di inizio e, se terminata, la
     data di fine.
@@ -172,6 +175,9 @@ comuni, PT per il Personal Trainer, A per l'Atleta.
 
 \subsubsection{PT-16: Duplicazione Scheda}
 \subfile{../diagrams/useCaseTemplates/pt/src/PT-16-duplicazioneScheda}
+
+\subsubsection{PT-17: Cessazione Rapporto con un Atleta}
+\subfile{../diagrams/useCaseTemplates/pt/src/PT-17-cessazioneRapportoAtleta}
 
 \subsection{Template dei casi d'uso dell'Atleta}
 \subsubsection{A-01: Completamento Profilo}
@@ -430,7 +436,10 @@ solo nei casi seguenti:
 Il sottopackage contiene la classe \texttt{UserService}. Il service
 gestisce l'accesso al sistema, il recupero della password e la
 registrazione del PT e dell'atleta. Il service gestisce anche il
-profilo e i dati anagrafici dell'atleta. Il recupero della password
+profilo e i dati anagrafici dell'atleta. Il metodo
+\texttt{terminatePTAssignment} termina il rapporto tra il PT e
+l'atleta (PT-17). Il metodo imposta la data di fine del
+\texttt{PTAssignment} attivo alla data odierna. Il recupero della password
 usa un \texttt{PasswordResetToken}. Il service usa \texttt{UserDAO},
 \texttt{PTAssignmentDAO} e \texttt{PasswordResetTokenDAO}.
 
