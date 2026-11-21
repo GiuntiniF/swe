@@ -898,6 +898,71 @@ modello non rappresenta ancora l'invio delle notifiche.
   \caption{Diagramma di sequenza della conferma dell'assegnazione (PT-05)}
   \label{fig:sdPT05Conferma}
 \end{figure}
+
+\subsubsection{PT-09: Personalizzazione di una Scheda Assegnata}
+Il diagramma della figura \ref{fig:sdPT09Personalizzazione} mostra i
+passi 9--10 del caso d'uso PT-09. Il PT preme il pulsante
+\enquote{Salva} e invia il carico, le ripetizioni e il tempo di
+recupero di un esercizio. Il form identifica l'esercizio con l'id
+dell'\texttt{AssignedExercise}, che la view dell'attività contiene. Il
+controller chiama il metodo \texttt{customizeAssignedExercise} di
+\texttt{PlanAssignmentService}. Il service esegue le operazioni
+seguenti:
+\begin{enumerate}
+  \item legge l'assegnazione che contiene l'esercizio con il metodo
+    \texttt{findByAssignedExercise} di \texttt{PlanAssignmentDAO}. Poi
+    controlla che il PT segua l'atleta con il frammento
+    \texttt{ref Controllo PT dell'atleta};
+  \item legge tutti gli esercizi assegnati con il metodo
+    \texttt{getAssignedExercises} di \texttt{PlanAssignment}. Poi
+    cerca l'\texttt{AssignedExercise} con lo stesso id. Il service
+    confronta gli id: il Domain Model non riceve id.
+    L'\texttt{AssignedExercise} esiste sempre, perché
+    \texttt{findByAssignedExercise} ha trovato l'assegnazione proprio
+    con quell'id;
+  \item legge il \texttt{Week} che contiene l'esercizio con il metodo
+    \texttt{getWeekOf} di \texttt{PlanAssignment};
+  \item chiede al \texttt{Week} se è modificabile con il metodo
+    \texttt{isEditable(today)}. Il \texttt{Week} non è modificabile se
+    l'assegnazione è in bozza oppure se la settimana è già trascorsa
+    (Nota 2 di PT-09). In questi casi il service restituisce un
+    errore. La UI mostra solo le settimane modificabili, ma il service
+    ripete il controllo;
+  \item altrimenti chiama il metodo \texttt{customize} di
+    \texttt{AssignedExercise};
+  \item salva l'assegnazione con il metodo \texttt{update} di
+    \texttt{PlanAssignmentDAO}. Il salvataggio comprende anche i
+    \texttt{Week} e gli \texttt{AssignedExercise}.
+\end{enumerate}
+
+Il metodo \texttt{customize} confronta i valori ricevuti con i valori
+base. Il carico base è l'attributo \texttt{weight}
+dell'\texttt{AssignedExercise}. Le ripetizioni e il tempo di recupero
+base sono quelli dell'\texttt{Exercise} della scheda. Il metodo li
+legge con \texttt{getReps} e \texttt{getRestTime}. Il metodo salva una
+personalizzazione solo per i valori diversi dal valore base (Nota 1 di
+PT-09).
+
+Il ripristino del flusso alternativo 7a segue lo stesso schema. Il
+controller chiama il metodo \texttt{resetAssignedExercise} del service.
+Il service chiama il metodo \texttt{resetCustomization} di
+\texttt{AssignedExercise} al posto di \texttt{customize}. Per questo
+motivo il diagramma mostra il ripristino solo in una nota.
+
+Alla fine il controller mostra l'esito al PT. Se il salvataggio
+riesce, il PT torna al passo 5 con i valori aggiornati. Altrimenti il
+controller mostra il messaggio di errore. Il diagramma non mostra
+l'email all'atleta del passo 11, perché il modello non rappresenta
+ancora l'invio delle notifiche.
+
+\begin{figure}[H]
+  \centering
+  % Diagramma molto largo: ruotato di 90°. Il lato lungo è la larghezza
+  % prima della rotazione, quindi width è riferito a \textheight.
+  \includegraphics[width=0.9\textheight,angle=90]{diagrams/Sequence_Diagrams/PT_09_Personalizzazione.pdf}
+  \caption{Diagramma di sequenza della personalizzazione di un esercizio (PT-09)}
+  \label{fig:sdPT09Personalizzazione}
+\end{figure}
 \fussy
 
 \newpage
