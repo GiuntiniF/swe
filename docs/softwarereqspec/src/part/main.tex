@@ -823,7 +823,8 @@ aggiorna il carico della discesa con il campo
 \texttt{weightMultiplier} della view. Il server calcola di nuovo i
 carichi delle discese (\texttt{dropWeights}) a ogni caricamento del
 form. La UI precompila ogni sessione con i carichi della sessione
-precedente (Nota 1 di PT-05).
+precedente (Nota 1 di PT-05). Il PT invia i carichi con il pulsante
+\enquote{Assegna Scheda} (figura \ref{fig:sdPT05Conferma}).
 
 \begin{figure}[H]
   \centering
@@ -832,6 +833,63 @@ precedente (Nota 1 di PT-05).
   \includegraphics[height=\textwidth,angle=90]{diagrams/Sequence_Diagrams/PT_05_Form_Carichi.pdf}
   \caption{Diagramma di sequenza del form dei carichi (PT-05)}
   \label{fig:sdPT05FormCarichi}
+\end{figure}
+
+\subsubsection{PT-05: Conferma dell'assegnazione}
+Il diagramma della figura \ref{fig:sdPT05Conferma} mostra i passi
+8--11 del caso d'uso PT-05 e i flussi alternativi 9a e 9b. Il PT
+preme il pulsante \enquote{Assegna Scheda} e invia i carichi del form.
+Ogni carico è un \texttt{WeightEntry}. Il tipo di valore contiene
+l'id di un \texttt{AssignedExercise} e il carico. Il controller chiama
+il metodo \texttt{confirmAssignment} di
+\texttt{PlanAssignmentService}. Il service esegue le operazioni
+seguenti:
+\begin{enumerate}
+  \item legge l'assegnazione con \texttt{PlanAssignmentDAO} e
+    controlla che il PT segua l'atleta con il frammento
+    \texttt{ref Controllo PT dell'atleta};
+  \item controlla che l'assegnazione sia in bozza. Se l'assegnazione
+    è già confermata, il service restituisce un errore;
+  \item legge gli \texttt{AssignedExercise} di tutti i \texttt{Week}
+    con il metodo \texttt{getAssignedExercises} di
+    \texttt{PlanAssignment};
+  \item per ogni \texttt{WeightEntry} cerca l'\texttt{AssignedExercise}
+    con lo stesso id e imposta il carico con \texttt{setWeight}. Se
+    l'id non corrisponde a nessun \texttt{AssignedExercise}
+    dell'assegnazione, il service restituisce un errore e non salva
+    l'assegnazione. Il service confronta gli id: il Domain Model non
+    riceve id;
+  \item cerca gli \texttt{AssignedExercise} senza carico con il
+    metodo \texttt{getMissingWeights} di \texttt{PlanAssignment};
+  \item cerca con \texttt{findOverlapping} un'assegnazione confermata
+    dell'atleta che si sovrappone all'intervallo di date. La ricerca
+    non trova l'assegnazione stessa, perché l'assegnazione è ancora in
+    bozza;
+  \item se tutti gli esercizi hanno un carico e non c'è una
+    sovrapposizione, conferma l'assegnazione con il metodo
+    \texttt{confirm} di \texttt{PlanAssignment}. Lo stato passa da
+    \texttt{Draft} a \texttt{Confirmed};
+  \item salva l'assegnazione con il metodo \texttt{update} di
+    \texttt{PlanAssignmentDAO}.
+\end{enumerate}
+Il service salva l'assegnazione anche nei flussi 9a e 9b. In questi
+casi l'assegnazione resta in bozza con i carichi inseriti. Così il PT
+non perde i carichi già inseriti.
+
+Alla fine il controller mostra l'esito al PT. Nel flusso 9a il
+controller mostra le sessioni incomplete. Il controller legge la
+sessione di ogni \texttt{AssignedExercise} senza carico con
+\texttt{getSession}. Nel flusso 9b il controller mostra il nome e
+l'intervallo di date della scheda in conflitto, come nel flusso 6a. Il
+diagramma non mostra l'email all'atleta del passo 11, perché il
+modello non rappresenta ancora l'invio delle notifiche.
+
+\begin{figure}[H]
+  \centering
+  % Diagramma largo: ruotato di 90° come il form dei carichi.
+  \includegraphics[height=\textwidth,angle=90]{diagrams/Sequence_Diagrams/PT_05_Conferma.pdf}
+  \caption{Diagramma di sequenza della conferma dell'assegnazione (PT-05)}
+  \label{fig:sdPT05Conferma}
 \end{figure}
 \fussy
 
