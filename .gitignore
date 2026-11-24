@@ -18,3 +18,11 @@
 *.pdf
 !docs/softwarereqspec/src/diagrams/*/*.pdf
 !docs/statement/*.pdf
+
+# Cache di Python (script di supporto come export_diagrams.py e
+# .scratch/controllers/genera_controllers.py).
+__pycache__/
+
+# Copia del modello scritta da genera_controllers.py: si controlla in
+# Gaphor e poi sostituisce domain_model.gaphor, non va committata.
+*.controllers.gaphor
