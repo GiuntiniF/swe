@@ -87,7 +87,38 @@ in un commit separato, come per i diagrammi di sequenza.
     - Le classi contenitore non hanno associazioni: gli attributi sono
       tipizzati come in `AssignedSessionView`.
 
-## Come costruire i diagrammi in Gaphor (Q21)
+## Come costruire i diagrammi in Gaphor (Q21, Q24)
+
+### Classi, operazioni e attributi: lo script
+
+`genera_controllers.py`, in questa cartella, legge i blocchi di codice di
+questa spec. Scrive una **copia** del modello con i sottopackage, le classi,
+le operazioni e gli attributi dei Controllers. Non crea né diagrammi né
+associazioni, e non scrive mai il file originale (Q24).
+
+1. In Gaphor salva il modello (o chiudi senza salvare se non ti serve), poi
+   chiudilo.
+2. Dalla radice del repo:
+   `gaphor exec .scratch/controllers/genera_controllers.py`
+3. Apri in Gaphor `docs/softwarereqspec/src/diagrams/class/domain_model.controllers.gaphor`
+   e controlla le classi nel browser del modello, sotto `Controllers`.
+4. Se va bene, chiudi Gaphor e sostituisci l'originale con il comando che
+   lo script stampa (`mv … domain_model.gaphor`).
+5. Crea i diagrammi e trascina le classi dal browser del modello. Poi
+   disegna le associazioni.
+
+Lo script salta le operazioni e gli attributi che una classe ha già, quindi
+si può rilanciare. Toglie anche le operazioni il cui nome contiene una
+parentesi, cioè più firme incollate in una sola riga. Lo script carica e
+salva con le API di Gaphor, quindi la copia differisce dall'originale solo
+per le aggiunte e per l'ordine in cui il file salva le viste dei diagrammi.
+Gaphor riordina le viste allo stesso modo a ogni salvataggio dalla GUI.
+
+### Una riga alla volta, a mano
+
+Se aggiungi un'operazione a mano, incollala in **una** riga "New
+Operation…" e premi Invio. Una riga con più firme diventa una sola
+operazione.
 
 Ogni operazione e attributo qui sotto è scritto nella sintassi che Gaphor
 accetta. Una riga si incolla in una nuova riga della scheda delle operazioni
