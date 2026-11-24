@@ -1,0 +1,82 @@
+@startuml D0_annotato
+skinparam monochrome false
+skinparam noteBackgroundColor #FFFFFF
+skinparam sequenceGroupBackgroundColor #FFFFFF
+skinparam ArrowColor #000000
+skinparam participantBackgroundColor #FFFFFF
+skinparam sequenceLifeLineBorderColor #555555
+skinparam shadowing false
+skinparam defaultFontName Liberation Sans
+skinparam sequenceMessageAlign left
+hide footbox
+mainframe sd Controllo PT dell'atleta(athleteId, ptId)
+
+participant ":PlanAssignmentService" as S
+participant ":UserService" as U
+participant ":PTAssignmentDAO" as D
+participant "ptAssignment:PTAssignment" as P
+note over S, U #E3F0FF
+<b>[1] Lifeline</b>: un riquadro in alto
+con la linea tratteggiata verso il basso.
+Nome «nome:Classe»; i singleton sono anonimi
+(«:UserService»). Il tempo scorre in basso.
+end note
+
+[-> S
+activate S
+note left of S #E3F0FF
+<b>[2] Gate + attivazione</b>: la freccia dal bordo
+è la chiamata che arriva dal diagramma
+che fa il ref. Il rettangolo stretto
+sulla lifeline è la barra di attivazione:
+il metodo è in esecuzione.
+end note
+S -> U : getActivePT(athleteId)
+activate U
+U -> D : findByAthlete(athleteId)
+note right of D #E3F0FF
+<b>[3] Messaggio sincrono</b>: linea piena,
+punta piena. Etichetta = chiamata
+con i parametri.
+end note
+activate D
+D --> U : ptAssignments
+note right of D #E3F0FF
+<b>[4] Ritorno</b>: tratteggiato; l'etichetta
+è il nome del valore restituito, usato dopo.
+end note
+deactivate D
+
+loop per ogni ptAssignment, finché non ne trova uno attivo
+  U -> P : isActive(today)
+  activate P
+  P --> U : active
+note right of P #E3F0FF
+<b>[5] Frammento loop</b>: cornice con
+etichetta a pentagono e guardia
+tra parentesi quadre.
+end note
+  deactivate P
+end
+
+U --> S : activePT
+deactivate U
+
+alt activePT assente oppure activePT.id ≠ ptId
+  [<-- S : errore: l'atleta non è seguito dal PT
+note right of U #E3F0FF
+<b>[6] Frammento alt</b>: un operando per ramo,
+separati dalla linea tratteggiata;
+ogni operando ha la sua guardia.
+L'errore esce dal gate verso il chiamante.
+end note
+else else
+  note over S : controllo superato:\nnessun messaggio
+end
+deactivate S
+
+note right of P
+  today è la data odierna
+  del sistema.
+end note
+@enduml

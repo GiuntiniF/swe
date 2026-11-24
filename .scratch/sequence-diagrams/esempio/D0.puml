@@ -1,0 +1,44 @@
+@startuml D0
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Liberation Sans
+skinparam sequenceMessageAlign left
+hide footbox
+mainframe sd Controllo PT dell'atleta(athleteId, ptId)
+
+participant ":PlanAssignmentService" as S
+participant ":UserService" as U
+participant ":PTAssignmentDAO" as D
+participant "ptAssignment:PTAssignment" as P
+
+[-> S
+activate S
+S -> U : getActivePT(athleteId)
+activate U
+U -> D : findByAthlete(athleteId)
+activate D
+D --> U : ptAssignments
+deactivate D
+
+loop per ogni ptAssignment, finché non ne trova uno attivo
+  U -> P : isActive(today)
+  activate P
+  P --> U : active
+  deactivate P
+end
+
+U --> S : activePT
+deactivate U
+
+alt activePT assente oppure activePT.id ≠ ptId
+  [<-- S : errore: l'atleta non è seguito dal PT
+else else
+  note over S : controllo superato:\nnessun messaggio
+end
+deactivate S
+
+note right of P
+  today è la data odierna
+  del sistema.
+end note
+@enduml
