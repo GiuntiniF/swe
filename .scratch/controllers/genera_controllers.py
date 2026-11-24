@@ -78,6 +78,8 @@ def read_spec(path):
         elif sub and (m := re.match(r"^### (\w+)\s*$", line)):
             cls = m.group(1)
             result[sub][cls] = []
+        elif line.startswith("### "):
+            cls = None  # titolo che non è una classe, es. "Contenuto del diagramma"
     return result
 
 

@@ -79,13 +79,32 @@ in un commit separato, come per i diagrammi di sequenza.
 13. **Pagine che leggono da più service** (Q13). Le servono le classi
     contenitore `AthleteDetail` e `PlanConfiguration`. Referenziano oggetti
     di dominio e non ne copiano i campi.
-14. **Notazione** (Q6, Q19).
+14. **Notazione** (Q6, Q19, Q25). La stessa dei diagrammi della Business
+    Logic.
     - Controller → service è un'associazione orientata ("Direct
       Association"), come service → DAO: senza nomi dei ruoli e senza
       molteplicità.
-    - Nei diagrammi dei controller i service compaiono senza operazioni.
-    - Le classi contenitore non hanno associazioni: gli attributi sono
-      tipizzati come in `AssignedSessionView`.
+    - Controller → classe usata è una dipendenza (`Shift+D`). È una classe
+      usata ogni tipo del Domain Model, o tipo non service della Business
+      Logic, che il controller:
+      - nomina in una firma (parametro o ritorno);
+      - carica per passarlo a un service (regola 9);
+      - legge con un metodo in sola lettura (regola 5).
+
+      Non contano i tipi di libreria (`UUID`, `string`, `LocalDate`,
+      `LocalDateTime`, `Duration`, `int`, `float`, `bool`).
+    - Controller → la sua classe contenitore è una dipendenza con nome
+      `<<create>>`, come `PlanAssignmentService` → `AssignedSessionView`.
+    - Classe contenitore → i tipi dei suoi attributi è una dipendenza.
+    - Le classi degli altri strati compaiono **senza operazioni e senza
+      attributi** (togliere la spunta a "Show operations" e "Show
+      attributes"), dentro la cornice del loro package, per esempio
+      `Domain Model::User` o `BusinessLogic::User`. Le classi dei
+      Controllers compaiono complete.
+    - Le dipendenze si tracciano **dal controller verso la classe usata**:
+      la punta va sulla classe usata (il `supplier`).
+    - Ogni diagramma ha la sezione "Contenuto del diagramma" con le classi
+      da inserire e le relazioni da tracciare.
 
 ## Come costruire i diagrammi in Gaphor (Q21, Q24)
 
@@ -167,6 +186,35 @@ Aggiungere una dipendenza da `Controllers` a `Domain Model` (Q4).
 
 ## Controllers/User
 
+### Contenuto del diagramma
+
+| Cornice del package            | Classi                                  |
+| ------------------------------ | --------------------------------------- |
+| `Controllers::User` (complete) | `UserController`, `AthleteDetail`       |
+| `BusinessLogic::User`          | `UserService`                           |
+| `BusinessLogic::Gym`           | `GymService`                            |
+| `BusinessLogic::TrainingPlan`  | `PlanAssignmentService`                 |
+| `BusinessLogic::Coaching`      | `CoachingService`                       |
+| `Domain Model::User`           | `User`, `Athlete`                       |
+| `Domain Model::Gym`            | `Gym`, `Membership`                     |
+| `Domain Model::TrainingPlan`   | `PlanAssignment`                        |
+| `Domain Model::Coaching`       | `Appointment`                           |
+
+| Da               | Verso                   | Relazione               | Perché                                                       |
+| ---------------- | ----------------------- | ----------------------- | ------------------------------------------------------------ |
+| `UserController` | `UserService`           | associazione orientata  | quasi tutti i metodi                                         |
+| `UserController` | `GymService`            | associazione orientata  | `showAthleteRegistrationForm`, `showAthlete`                 |
+| `UserController` | `PlanAssignmentService` | associazione orientata  | `showAthlete`                                                |
+| `UserController` | `CoachingService`       | associazione orientata  | `showAthlete`                                                |
+| `UserController` | `User`                  | dipendenza              | `login`: `authenticate` restituisce un `User`                |
+| `UserController` | `Athlete`               | dipendenza              | `showAthletes`, `showProfile`; `login` chiama `isProfileComplete()` |
+| `UserController` | `Gym`                   | dipendenza              | `showAthleteRegistrationForm`                                |
+| `UserController` | `AthleteDetail`         | dipendenza `<<create>>` | `showAthlete`                                                |
+| `AthleteDetail`  | `Athlete`               | dipendenza              | attributo `athlete`                                          |
+| `AthleteDetail`  | `Membership`            | dipendenza              | attributo `memberships`                                      |
+| `AthleteDetail`  | `PlanAssignment`        | dipendenza              | attributo `assignments`                                      |
+| `AthleteDetail`  | `Appointment`           | dipendenza              | attributo `appointments`                                     |
+
 ### UserController
 
 Associazioni orientate verso `UserService`, `GymService`,
@@ -217,6 +265,27 @@ appointments: Appointment[0..*]
 
 ## Controllers/Gym
 
+### Contenuto del diagramma
+
+| Cornice del package           | Classi                                      |
+| ----------------------------- | ------------------------------------------- |
+| `Controllers::Gym` (completa) | `GymController`                             |
+| `BusinessLogic::Gym`          | `GymService`                                |
+| `BusinessLogic::User`         | `UserService`                               |
+| `Domain Model::Gym`           | `Gym`, `StaffAssignment`, `Membership`      |
+| `Domain Model::User`          | `PT`                                        |
+| `Domain Model::ValueType`     | `Address`                                   |
+
+| Da              | Verso             | Relazione              | Perché                                            |
+| --------------- | ----------------- | ---------------------- | ------------------------------------------------- |
+| `GymController` | `GymService`      | associazione orientata | tutti i metodi                                    |
+| `GymController` | `UserService`     | associazione orientata | `associatePT` carica il PT con `getPT`            |
+| `GymController` | `Gym`             | dipendenza             | `registerGym`, `searchGyms`                       |
+| `GymController` | `StaffAssignment` | dipendenza             | `showStaffAssignments`, `showStaffAssignment`     |
+| `GymController` | `Membership`      | dipendenza             | `showMemberships`, `showMembership`               |
+| `GymController` | `PT`              | dipendenza             | `associatePT` lo carica e lo passa al service     |
+| `GymController` | `Address`         | dipendenza             | `registerGym`                                     |
+
 ### GymController
 
 Associazioni orientate verso `GymService` e `UserService`.
@@ -244,6 +313,29 @@ showMembership(membershipId: UUID): Membership
 | `showMembership`           | A-06 passo 4              | `GymService.getMembership(membershipId, athleteId)`                                          |
 
 ## Controllers/Coaching
+
+### Contenuto del diagramma
+
+| Cornice del package                | Classi                         |
+| ---------------------------------- | ------------------------------ |
+| `Controllers::Coaching` (completa) | `CoachingController`           |
+| `BusinessLogic::Coaching`          | `CoachingService`              |
+| `BusinessLogic::Gym`               | `GymService`                   |
+| `BusinessLogic::User`              | `UserService`                  |
+| `Domain Model::Coaching`           | `Appointment`, `BookingStatus` |
+| `Domain Model::Gym`                | `Membership`                   |
+| `Domain Model::User`               | `Athlete`, `PT`                |
+
+| Da                   | Verso             | Relazione              | Perché                                                                 |
+| -------------------- | ----------------- | ---------------------- | ---------------------------------------------------------------------- |
+| `CoachingController` | `CoachingService` | associazione orientata | quasi tutti i metodi                                                   |
+| `CoachingController` | `GymService`      | associazione orientata | `showAppointmentRequestForm`                                           |
+| `CoachingController` | `UserService`     | associazione orientata | `requestAppointment` carica l'atleta e il suo PT attivo                |
+| `CoachingController` | `Appointment`     | dipendenza             | `showAppointments`, `showAppointment` e le versioni `ForAthlete`      |
+| `CoachingController` | `BookingStatus`   | dipendenza             | `showAppointments`                                                     |
+| `CoachingController` | `Membership`      | dipendenza             | `showAppointmentRequestForm`                                           |
+| `CoachingController` | `Athlete`         | dipendenza             | `requestAppointment` lo carica e lo passa al service                   |
+| `CoachingController` | `PT`              | dipendenza             | `requestAppointment` lo carica e lo passa al service                   |
 
 ### CoachingController
 
@@ -278,6 +370,41 @@ caso d'uso non cambia. Il ramo di errore nel controller serve contro una
 richiesta costruita a mano, che non passa dalla pagina.
 
 ## Controllers/TrainingPlan
+
+### Contenuto del diagramma
+
+Il diagramma contiene i due controller del sottopackage.
+
+| Cornice del package                    | Classi                                                                  |
+| -------------------------------------- | ----------------------------------------------------------------------- |
+| `Controllers::TrainingPlan` (complete) | `TrainingPlanController`, `PlanConfiguration`, `PlanAssignmentController` |
+| `BusinessLogic::TrainingPlan`          | `TrainingPlanService`, `PlanAssignmentService`, `AssignedSessionView`, `WeightEntry` |
+| `BusinessLogic::Exercise`              | `ExerciseService`, `ActivitySpec`                                       |
+| `BusinessLogic::User`                  | `UserService`                                                           |
+| `Domain Model::TrainingPlan`           | `TrainingPlan`, `PlanAssignment`                                        |
+| `Domain Model::Exercise`               | `ExerciseType`, `Reps`                                                  |
+| `Domain Model::User`                   | `PT`, `Athlete`                                                         |
+| `Domain Model::ValueType`              | `Weight`                                                                |
+
+| Da                         | Verso                   | Relazione               | Perché                                                                                   |
+| -------------------------- | ----------------------- | ----------------------- | ---------------------------------------------------------------------------------------- |
+| `TrainingPlanController`   | `TrainingPlanService`   | associazione orientata  | quasi tutti i metodi                                                                     |
+| `TrainingPlanController`   | `ExerciseService`       | associazione orientata  | `showExerciseTypes`                                                                      |
+| `TrainingPlanController`   | `UserService`           | associazione orientata  | `addPlan` carica il PT con `getPT`                                                       |
+| `TrainingPlanController`   | `TrainingPlan`          | dipendenza              | `addPlan`, `showPlans`, `duplicatePlan`                                                  |
+| `TrainingPlanController`   | `PT`                    | dipendenza              | `addPlan` lo carica e lo passa al service                                                |
+| `TrainingPlanController`   | `ExerciseType`          | dipendenza              | `showExerciseTypes`                                                                      |
+| `TrainingPlanController`   | `ActivitySpec`          | dipendenza              | `showActivity`, `addActivityToSession`, `editActivityOfSession`                          |
+| `TrainingPlanController`   | `PlanConfiguration`     | dipendenza `<<create>>` | `showPlanConfiguration`                                                                  |
+| `PlanConfiguration`        | `TrainingPlan`          | dipendenza              | attributo `plan`                                                                         |
+| `PlanAssignmentController` | `PlanAssignmentService` | associazione orientata  | tutti i metodi                                                                           |
+| `PlanAssignmentController` | `UserService`           | associazione orientata  | `assignPlan` carica l'atleta con `getAthlete`                                            |
+| `PlanAssignmentController` | `PlanAssignment`        | dipendenza              | `assignPlan`, `showAssignment`, `showConfirmedAssignments`, `showAssignmentForAthlete`   |
+| `PlanAssignmentController` | `Athlete`               | dipendenza              | `assignPlan` lo carica e lo passa al service                                             |
+| `PlanAssignmentController` | `AssignedSessionView`   | dipendenza              | `showLoadForm`, `showAssignmentWeek`, `showAssignmentWeekForAthlete`                     |
+| `PlanAssignmentController` | `WeightEntry`           | dipendenza              | `saveDraft`, `confirmAssignment`                                                         |
+| `PlanAssignmentController` | `Weight`                | dipendenza              | `customizeAssignedExercise`                                                              |
+| `PlanAssignmentController` | `Reps`                  | dipendenza              | `customizeAssignedExercise`                                                              |
 
 ### TrainingPlanController
 
@@ -402,6 +529,22 @@ Tutte in Italiano Tecnico Semplificato.
   caso d'uso U-03.
 - Notifiche email (voce "Gestione Notifiche" del `TODO.md`).
 - La CLI o un'altra interfaccia che chiama i controller.
+
+## Osservazioni sui diagrammi della Business Logic
+
+La regola 14 conta tra le classi usate anche i tipi di valore, le
+enumerazioni e le interfacce. I diagrammi della Business Logic non lo fanno
+sempre: hanno la dipendenza `PlanAssignmentService` → `Weight`, ma non
+queste:
+
+- `GymService` → `Address` (`registerGym`);
+- `CoachingService` → `BookingStatus` (`getAppointmentsByPT`);
+- `PlanAssignmentService` → `Reps` (`customizeAssignedExercise`);
+- `ExerciseService` → `ExerciseType` (`getExerciseType`,
+  `getExerciseTypeList`).
+
+Non fa parte di questo lavoro. Se vuoi gli strati uniformi, si aggiungono
+le quattro dipendenze ai diagrammi della Business Logic.
 
 ## Punti aperti
 
