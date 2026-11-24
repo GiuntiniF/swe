@@ -38,7 +38,16 @@ in un commit separato, come per i diagrammi di sequenza.
 6. **Tipo di ritorno** (Q4). Un metodo `show…` restituisce i dati che la
    pagina mostra, con il tipo del service. Un'azione non restituisce niente:
    l'esito, o il redirect, è il `mostra esito` dei diagrammi di sequenza.
-   Vedi il punto aperto 1.
+   Fanno eccezione le azioni dopo cui il flusso prosegue sull'entità appena
+   creata (Q23). Restituiscono quell'entità, la stessa che il service già
+   restituisce:
+   - `addPlan(…): TrainingPlan` → configurazione della scheda (PT-03 passo 7
+     → PT-04);
+   - `duplicatePlan(…): TrainingPlan` → configurazione della copia (PT-16
+     passo 8 → PT-04);
+   - `assignPlan(…): PlanAssignment` → `showLoadForm(assignment.id)` (D1);
+   - `registerGym(…): Gym` → form di associazione con la palestra creata
+     (PT-13 4a → passo 6).
 7. **Quando c'è un metodo** (Q5, Q12). Un metodo per ogni richiesta
    dell'attore in cui il sistema legge o scrive dati. Non hanno un metodo:
    - i form vuoti;
@@ -182,7 +191,7 @@ appointments: Appointment[0..*]
 Associazioni orientate verso `GymService` e `UserService`.
 
 ```
-registerGym(name: string, address: Address, phone: string)
+registerGym(name: string, address: Address, phone: string): Gym
 searchGyms(name: string): Gym[0..*]
 associatePT(gymId: UUID, startDate: LocalDate)
 showStaffAssignments(): StaffAssignment[0..*]
@@ -245,11 +254,11 @@ Associazioni orientate verso `TrainingPlanService`, `ExerciseService` e
 `UserService`.
 
 ```
-addPlan(name: string, description: string)
+addPlan(name: string, description: string): TrainingPlan
 showPlans(): TrainingPlan[0..*]
 editPlan(planId: UUID, name: string, description: string)
 deletePlan(planId: UUID)
-duplicatePlan(planId: UUID, name: string)
+duplicatePlan(planId: UUID, name: string): TrainingPlan
 showPlanConfiguration(planId: UUID): PlanConfiguration
 addMonthlyBlock(planId: UUID, weeksCount: int)
 editMonthlyBlock(planId: UUID, blockId: UUID, weeksCount: int)
@@ -297,7 +306,7 @@ editable: bool
 Associazioni orientate verso `PlanAssignmentService` e `UserService`.
 
 ```
-assignPlan(athleteId: UUID, planId: UUID, startDate: LocalDate)
+assignPlan(athleteId: UUID, planId: UUID, startDate: LocalDate): PlanAssignment
 showLoadForm(assignmentId: UUID): AssignedSessionView[0..*]
 saveDraft(assignmentId: UUID, weights: WeightEntry[0..*])
 discardDraft(assignmentId: UUID)
@@ -365,17 +374,5 @@ Tutte in Italiano Tecnico Semplificato.
 
 ## Punti aperti
 
-1. **Azioni che proseguono sull'entità appena creata.** Per la regola 6
-   un'azione non restituisce niente. Però in quattro casi il flusso prosegue
-   sull'entità creata, e chi chiama il controller ne ha bisogno:
-   - `addPlan` → configurazione della scheda (PT-03 passo 7 → PT-04);
-   - `duplicatePlan` → configurazione della copia (PT-16 passo 8 → PT-04);
-   - `assignPlan` → `showLoadForm(assignment.id)` (D1);
-   - `registerGym` → form di associazione con la palestra creata (PT-13 4a →
-     passo 6).
-
-   Proposta: queste quattro azioni restituiscono l'entità creata
-   (`addPlan(…): TrainingPlan`, `duplicatePlan(…): TrainingPlan`,
-   `assignPlan(…): PlanAssignment`, `registerGym(…): Gym`). È la stessa
-   entità che il service già restituisce, e il `mostra esito` dei diagrammi
-   non cambia.
+Nessuno. L'ultimo (azioni che proseguono sull'entità appena creata) è
+deciso in Q23: vedi la regola 6.
