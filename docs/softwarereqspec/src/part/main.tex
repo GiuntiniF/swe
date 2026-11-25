@@ -213,7 +213,10 @@ package.
 \end{figure}
 
 Il package \texttt{Controllers} riceve le richieste e le inoltra al package
-\texttt{Business Logic}. Dipende dal package \texttt{Business Logic}.
+\texttt{Business Logic}. Dipende dal package \texttt{Business Logic} e dal
+package \texttt{Domain Model}. Legge gli oggetti di dominio, li passa ai
+service e li restituisce al chiamante, ma non ne cambia lo stato. La
+sezione \ref{sec:controllers} lo descrive in dettaglio.
 
 Il package \texttt{Business Logic} contiene la logica applicativa. Implementa
 i casi d'uso del sistema. Dipende dal package \texttt{Domain Model} e dal
@@ -411,9 +414,11 @@ metodo riceve l'id. I metodi che ricevono l'oggetto sono:
   \item \texttt{PlanAssignmentService.addAssignment}, che crea un
     \texttt{PlanAssignment}.
 \end{itemize}
-Il chiamante carica l'oggetto con i metodi \texttt{getPT},
+Il controller carica l'oggetto con i metodi \texttt{getPT},
 \texttt{getAthlete} o \texttt{getActivePT} di \texttt{UserService}.
-Così solo \texttt{UserService} usa \texttt{UserDAO}. Quando il metodo
+Fa eccezione \texttt{GymService.enrollAthlete}: lo chiama
+\texttt{UserService.registerAthlete}, che gli passa l'atleta appena
+creato. Così solo \texttt{UserService} usa \texttt{UserDAO}. Quando il metodo
 usa l'id solo per un controllo o per filtrare i dati, l'id è
 sufficiente: un oggetto richiede una lettura in più e non aggiunge
 informazioni.
@@ -633,6 +638,220 @@ esercizi.
   \label{fig:trainingPlanExerciseDAO}
 \end{figure}
 
+\subsection{Controllers}
+\label{sec:controllers}
+Il package \texttt{Controllers} riceve le richieste dell'attore e chiama
+i service della Business Logic. Il package ha quattro sottopackage:
+\texttt{User}, \texttt{Gym}, \texttt{Coaching} e \texttt{TrainingPlan}.
+Ogni sottopackage contiene un controller per ogni service del
+sottopackage della Business Logic con lo stesso nome. Un controller può
+chiamare anche i service di altri sottopackage. Il package non ha il
+sottopackage \texttt{Exercise}: \texttt{ExerciseService} fornisce solo
+il catalogo degli esercizi a PT-04, e nessun caso d'uso ha il passo
+principale in questo service. I controller coprono tutti i casi d'uso.
+
+I sottopackage non dipendono l'uno dall'altro. Per questo motivo il
+package non ha un package diagram. Ogni diagramma delle sezioni
+seguenti mostra:
+\begin{itemize}
+  \item le classi del sottopackage, con le operazioni e gli attributi;
+  \item i service che i controller usano. Un'associazione orientata va
+    dal controller al service;
+  \item le classi del Domain Model e della Business Logic che i
+    controller usano. Una dipendenza va dal controller alla classe.
+\end{itemize}
+Un controller usa una classe se la nomina in un parametro o nel tipo
+restituito, se la carica per passarla a un service o se ne legge i
+dati. I tipi di libreria, come \texttt{UUID} e \texttt{LocalDate}, non
+contano. Le classi degli altri strati non mostrano le operazioni e gli
+attributi.
+
+\subsubsection{Regole comuni}
+I controller seguono le regole seguenti.
+
+\paragraph{Sessione e ruolo.} Il login salva l'utente autenticato nella
+sessione. Gli altri metodi leggono dalla sessione \texttt{ptId} o
+\texttt{athleteId} e passano l'id ai service. Un metodo è riservato
+all'attore del suo caso d'uso. Se l'utente non è autenticato o ha un
+altro ruolo, il controller lo rimanda al login. I diagrammi non
+mostrano la sessione.
+
+\paragraph{Domain Model in sola lettura.} I controller usano gli oggetti
+del Domain Model solo per leggerli, per passarli ai service e per
+restituirli al chiamante. I controller non chiamano mai i metodi che
+cambiano lo stato di un oggetto, come \texttt{confirm()},
+\texttt{moveTo()} o i metodi set. Per esempio, il metodo \texttt{login}
+chiama \texttt{isProfileComplete()} sull'atleta. Così sa se mandare
+l'atleta al completamento del profilo (A-01).
+
+\paragraph{Quando c'è un metodo.} Un controller ha un metodo per ogni
+richiesta dell'attore in cui il sistema legge o scrive dati. Non hanno
+un metodo:
+\begin{itemize}
+  \item i form vuoti;
+  \item le pagine che mostrano solo dati già restituiti dalla richiesta
+    precedente. Per esempio, i form precompilati di PT-10, PT-16 e
+    A-04;
+  \item le richieste di conferma, come \enquote{Conferma Eliminazione}
+    o \enquote{Annulla}.
+\end{itemize}
+
+\paragraph{Tipo restituito.} Un metodo \texttt{show\ldots} restituisce i
+dati che la pagina mostra, con il tipo restituito dal service. Un metodo
+che esegue un'azione non restituisce niente: il controller mostra
+l'esito all'attore. Fanno eccezione le azioni dopo cui il flusso
+continua sull'entità appena creata. Questi metodi restituiscono
+l'entità:
+\begin{itemize}
+  \item \texttt{addPlan} e \texttt{duplicatePlan} restituiscono il
+    \texttt{TrainingPlan}. Il PT continua con la configurazione della
+    scheda (PT-04);
+  \item \texttt{assignPlan} restituisce il \texttt{PlanAssignment}. Il
+    PT continua con il form dei carichi (PT-05);
+  \item \texttt{registerGym} restituisce il \texttt{Gym}. Il PT
+    continua con l'associazione alla palestra (PT-13).
+\end{itemize}
+
+\paragraph{Parametri.} Un metodo riceve solo i dati della richiesta:
+gli id della pagina e i campi del form. Un metodo non riceve mai l'id
+dell'utente autenticato, perché lo legge dalla sessione. Gli id seguono
+la struttura della scheda dall'esterno all'interno, per esempio
+\texttt{planId}, \texttt{blockId}, \texttt{sessionId}.
+
+\paragraph{Caricamento degli oggetti.} Alcuni metodi dei service
+ricevono un oggetto e non un id (regola \enquote{Id oppure oggetto}
+della sezione \ref{sec:businessLogic}). In questo caso il controller
+carica l'oggetto con i metodi \texttt{getPT}, \texttt{getAthlete} o
+\texttt{getActivePT} di \texttt{UserService}. Poi il controller passa
+l'oggetto al service.
+
+\paragraph{Controller di un caso d'uso.} Un caso d'uso appartiene al
+controller del service che esegue il passo principale. Il controller
+usa gli altri service solo per caricare gli oggetti o per riempire un
+form.
+
+\paragraph{Riuso.} Una richiesta uguale a una richiesta già coperta usa
+lo stesso metodo, anche se il metodo è in un altro controller. Per
+esempio, il passo 3 di PT-05 usa \texttt{TrainingPlanController.showPlans}.
+Il passo 1 di A-02 usa
+\texttt{CoachingController.showAppointmentsForAthlete}.
+
+\paragraph{Nomi.} I nomi dei metodi seguono le regole seguenti:
+\begin{itemize}
+  \item i metodi che leggono dati hanno il prefisso \texttt{show};
+  \item se un metodo chiama un solo metodo del service, ha lo stesso
+    nome di quel metodo;
+  \item un metodo per l'atleta ha il suffisso \texttt{ForAthlete} solo
+    se esiste un metodo per il PT con lo stesso nome;
+  \item i metodi dei diagrammi di sequenza mantengono il loro nome. Per
+    esempio, \texttt{assignPlan} chiama \texttt{addAssignment}.
+\end{itemize}
+
+\paragraph{Classi contenitore.} Alcune pagine mostrano dati che vengono
+da più service. Per queste pagine il controller crea una classe
+contenitore: \texttt{AthleteDetail} (PT-08) e
+\texttt{PlanConfiguration} (PT-04). Una classe contenitore referenzia
+gli oggetti di dominio e non copia i loro campi. Nei diagrammi la
+dipendenza dal controller alla classe contenitore ha il nome
+{\fontencoding{T1}\selectfont\texttt{«create»}}.
+
+\subsubsection{User}
+Il sottopackage contiene la classe \texttt{UserController} e la classe
+contenitore \texttt{AthleteDetail}. Il controller gestisce l'accesso al
+sistema e il recupero della password (U-01, U-02). Gestisce anche la
+registrazione del PT e dell'atleta (PT-01, PT-02), la visualizzazione
+degli atleti (PT-08) e la cessazione del rapporto con un atleta
+(PT-17). Per l'atleta, il controller gestisce il profilo e i dati
+anagrafici (A-01, A-04). Il controller usa \texttt{UserService} per
+quasi tutti i metodi. Usa \texttt{GymService} per le palestre del form
+di registrazione dell'atleta.
+
+Il metodo \texttt{showAthlete} costruisce la pagina di dettaglio
+dell'atleta (PT-08). La classe \texttt{AthleteDetail} contiene
+l'atleta, le sue iscrizioni, le sue assegnazioni e i suoi appuntamenti
+con il PT. Il metodo chiama per primo \texttt{getAthlete} di
+\texttt{UserService}, che controlla che il PT segua l'atleta. Poi il
+metodo legge i dati da \texttt{GymService},
+\texttt{PlanAssignmentService} e \texttt{CoachingService}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/Controllers/User.pdf}
+  \caption{Diagramma delle classi dei Controllers del package User}
+  \label{fig:userControllers}
+\end{figure}
+
+\subsubsection{Gym}
+Il sottopackage contiene la classe \texttt{GymController}. Il
+controller gestisce le palestre e le associazioni PT-Palestra (PT-12,
+PT-13, PT-14, PT-15). Gestisce anche le iscrizioni dell'atleta (A-06).
+Il controller usa \texttt{GymService}. Il metodo \texttt{associatePT}
+usa anche \texttt{UserService} per caricare il PT. Il metodo
+\texttt{registerGym} restituisce il \texttt{Gym} creato. Nel flusso 4a
+di PT-13 il PT registra la palestra e poi continua con l'associazione
+alla palestra.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/Controllers/Gym.pdf}
+  \caption{Diagramma delle classi dei Controllers del package Gym}
+  \label{fig:gymControllers}
+\end{figure}
+
+\subsubsection{Coaching}
+Il sottopackage contiene la classe \texttt{CoachingController}. Il
+controller gestisce le richieste di appuntamento e gli appuntamenti del
+PT (PT-06, PT-07) e dell'atleta (A-02, A-05). Il parametro facoltativo
+\texttt{status} di \texttt{showAppointments} filtra gli appuntamenti
+per stato. PT-06 mostra solo le richieste in attesa. PT-07 mostra tutti
+gli appuntamenti. Il controller usa \texttt{CoachingService}. Usa anche
+\texttt{GymService} per le palestre del form di richiesta. Il metodo
+\texttt{requestAppointment} usa \texttt{UserService} per caricare
+l'atleta e il suo PT attivo. Se l'atleta non ha un PT attivo, il metodo
+mostra un errore. La pagina di A-02 non mostra il pulsante di richiesta
+in questo caso. Il controllo protegge da una richiesta che non viene
+dalla pagina.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/Controllers/Coaching.pdf}
+  \caption{Diagramma delle classi dei Controllers del package Coaching}
+  \label{fig:coachingControllers}
+\end{figure}
+
+\subsubsection{TrainingPlan}
+Il sottopackage contiene due controller e la classe contenitore
+\texttt{PlanConfiguration}.
+
+La classe \texttt{TrainingPlanController} gestisce le schede e la loro
+struttura. Il controller crea, modifica, cancella e duplica le schede
+(PT-03, PT-10, PT-11, PT-16). Il controller configura anche le sessioni
+di allenamento della scheda (PT-04). Il controller usa
+\texttt{TrainingPlanService}. Usa anche \texttt{ExerciseService} per
+il catalogo degli esercizi. Il metodo \texttt{addPlan} usa
+\texttt{UserService} per caricare il PT. Il metodo
+\texttt{showPlanConfiguration} costruisce la pagina di configurazione
+di PT-04. La classe \texttt{PlanConfiguration} contiene la scheda e
+l'attributo \texttt{editable}. L'attributo \texttt{editable} è falso
+se la scheda ha almeno un'assegnazione. In questo caso il PT non può
+modificare la struttura della scheda (flusso 1a di PT-04).
+
+La classe \texttt{PlanAssignmentController} gestisce le assegnazioni.
+Il controller assegna una scheda a un atleta (PT-05) e personalizza una
+scheda assegnata (PT-09). Per l'atleta, il controller mostra le schede
+assegnate (A-03). Il controller usa \texttt{PlanAssignmentService}. Il
+metodo \texttt{assignPlan} usa \texttt{UserService} per caricare
+l'atleta. I diagrammi di sequenza della sezione
+\ref{sec:sequenceDiagrams} mostrano i metodi di questo controller.
+
+\begin{figure}[H]
+  \centering
+  % Diagramma molto largo: ruotato di 90°, come quello di PT-09.
+  \includegraphics[width=0.9\textheight,angle=90]{diagrams/Controllers/TrainingPlan.pdf}
+  \caption{Diagramma delle classi dei Controllers del package TrainingPlan}
+  \label{fig:trainingPlanControllers}
+\end{figure}
+
 \subsection{Diagrammi di sequenza}
 \label{sec:sequenceDiagrams}
 I diagrammi di sequenza mostrano come le classi delle sezioni
@@ -646,7 +865,7 @@ seguono le convenzioni seguenti:
     \texttt{:UserService}. Gli altri oggetti hanno una lifeline con
     nome, per esempio \texttt{plan:TrainingPlan};
   \item \texttt{ptId} è l'id del PT autenticato. Il controller legge
-    l'id dalla sessione HTTP e lo passa ai service;
+    l'id dalla sessione e lo passa ai service;
   \item una freccia tratteggiata è un messaggio di ritorno. Il
     diagramma mostra il ritorno solo se un passo successivo usa il
     valore restituito. Il diagramma non mostra i ritorni dei metodi

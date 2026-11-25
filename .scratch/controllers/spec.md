@@ -158,7 +158,6 @@ Tutte le righe sono state verificate con il parser di Gaphor 3.3.2.
 
 | Nome in Gaphor                     | Package               | Tipo            | File esportato                                     |
 | ---------------------------------- | --------------------- | --------------- | -------------------------------------------------- |
-| `Package Diagram of Controllers`   | `Controllers`         | PackageDiagram  | `Controllers/Package_Diagram_of_Controllers.pdf`   |
 | `User`                             | `Controllers/User`    | ClassDiagram    | `Controllers/User.pdf`                             |
 | `Gym`                              | `Controllers/Gym`     | ClassDiagram    | `Controllers/Gym.pdf`                              |
 | `Coaching`                         | `Controllers/Coaching`| ClassDiagram    | `Controllers/Coaching.pdf`                         |
@@ -167,18 +166,14 @@ Tutte le righe sono state verificate con il parser di Gaphor 3.3.2.
 Lo script di export usa il primo package sotto la radice come cartella,
 quindi i PDF finiscono in `diagrams/Controllers/`.
 
-### Package Diagram of Controllers
+### Niente Package Diagram of Controllers
 
-Come il `Package Diagram of Business Logic`: i sottopackage di `Controllers`
-con una dipendenza (`Shift+D`) verso i sottopackage di `BusinessLogic` che
-usano.
-
-| Da `Controllers/…` | Verso `BusinessLogic/…`                    |
-| ------------------ | ------------------------------------------ |
-| `User`             | `User`, `Gym`, `TrainingPlan`, `Coaching`  |
-| `Gym`              | `Gym`, `User`                              |
-| `Coaching`         | `Coaching`, `Gym`, `User`                  |
-| `TrainingPlan`     | `TrainingPlan`, `Exercise`, `User`         |
+Deciso il 2026-11-25. I sottopackage di `Controllers` non dipendono l'uno
+dall'altro. I package diagram del `Domain Model` e della `Business Logic`
+mostrano solo le dipendenze tra i sottopackage dello stesso strato: per
+`Controllers` sarebbe un diagramma senza frecce. Le dipendenze verso la
+Business Logic sono già nelle associazioni dei quattro diagrammi delle
+classi, e quelle tra strati in `SystemArchitecture`.
 
 ### SystemArchitecture
 
@@ -511,7 +506,7 @@ Tutte in Italiano Tecnico Semplificato.
    e li restituisce al chiamante, ma non ne cambia lo stato.
 2. **Nuova sottosezione `Controllers`**, dopo `DAO` e prima di `Diagrammi di
    sequenza` (Q20). Contiene:
-   - un'introduzione con il package diagram;
+   - un'introduzione che dice perché non c'è un package diagram;
    - le "Regole comuni": regole 4–13 di questa spec;
    - una sottosezione per sottopackage (`User`, `Gym`, `Coaching`,
      `TrainingPlan`), con la figura e la frase "Il sottopackage contiene…".
