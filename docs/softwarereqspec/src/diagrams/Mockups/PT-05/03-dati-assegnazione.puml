@@ -1,0 +1,27 @@
+' PT-05, passi 5-6 e flusso 6a: data di inizio e durata dell'assegnazione.
+@startsalt
+scale 1.5
+{+
+  {* Atleti | Schede | Palestre | Appuntamenti | Profilo }
+  ==
+  { <&chevron-left> Mario Rossi / <b>Assegna nuova Scheda</b> }
+  .
+  { Passo <b>2</b> di 3: date dell'assegnazione }
+  .
+  {
+    Scheda:          | <b>Forza avanzata</b>
+    Blocchi mensili: | 3 (4 + 4 + 4 settimane)
+    Durata:          | 12 settimane
+    Data di inizio:  | { "16/11/2026" | <&calendar> }
+    Data di fine:    | 07/02/2027 (calcolata)
+  }
+  .
+  {+
+    <&circle-x> L'intervallo si sovrappone alla scheda
+    "Mantenimento" (09/11/2026 - 06/12/2026).
+    Scegli un'altra data di inizio.
+  }
+  .
+  { [<&chevron-left> Indietro] | . | [Continua <&chevron-right>] }
+}
+@endsalt

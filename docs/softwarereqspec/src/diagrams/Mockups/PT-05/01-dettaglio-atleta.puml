@@ -1,0 +1,32 @@
+' PT-05, passi 1-2 e flussi 2a/2b: pagina di dettaglio dell'atleta (PT-08).
+@startsalt
+scale 1.5
+{+
+  {* Atleti | Schede | Palestre | Appuntamenti | Profilo }
+  ==
+  { <&chevron-left> Atleti / <b>Mario Rossi</b> }
+  .
+  {+
+    <b>Dati anagrafici</b>   | <b>Dati fisici</b>
+    Nome: Mario Rossi        | Altezza: 178 cm
+    Età: 27                  | Peso: 76 kg
+    Email: mario.rossi@mail.it | Palestre: FitLab Pisa
+  }
+  .
+  { <b>Schede assegnate</b> | . | . | [<&plus> Assegna nuova Scheda] }
+  {#
+    <b>Scheda</b>          | <b>Periodo</b>           | <b>Stato</b>   | <b>Azioni</b>
+    Forza base             | 06/01/2026 - 01/03/2026  | Terminata      | { [Apri] }
+    Ipertrofia 12 sett.    | 02/03/2026 - 24/05/2026  | Terminata      | { [Apri] }
+    Mantenimento           | 09/11/2026 - 06/12/2026  | In corso       | { [Apri] }
+    Ipertrofia invernale   | 01/03/2027 - 23/05/2027  | <&pencil> Bozza | { [Riprendi] | [Scarta] }
+  }
+  .
+  { <b>Appuntamenti</b> }
+  {#
+    <b>Data</b> | <b>Ora</b> | <b>Stato</b>
+    02/12/2026  | 18:30      | Confermato
+    09/12/2026  | 18:30      | Richiesto
+  }
+}
+@endsalt

@@ -1,0 +1,27 @@
+' PT-05, passi 3-4 e flussi 4a/4b: scelta della scheda da assegnare.
+@startsalt
+scale 1.5
+{+
+  {* Atleti | Schede | Palestre | Appuntamenti | Profilo }
+  ==
+  { <&chevron-left> Mario Rossi / <b>Assegna nuova Scheda</b> }
+  .
+  { Passo <b>1</b> di 3: scegli la scheda }
+  { Cerca: | "Nome della scheda    " | [<&magnifying-glass>] }
+  .
+  {#
+    <b>Scheda</b>          | <b>Blocchi mensili</b> | <b>Durata</b> | <b>Stato</b>
+    Forza base             | 2                      | 8 settimane   | <&check> Configurata
+    Ipertrofia 12 sett.    | 3                      | 12 settimane  | <&check> Configurata
+    Mantenimento           | 1                      | 4 settimane   | <&check> Configurata
+    Forza avanzata         | 3                      | 12 settimane  | <&check> Configurata
+    Ricomposizione         | 1                      | 4 settimane   | <&warning> Non configurata
+  }
+  .
+  {+
+    <&warning> La scheda non è configurata: completala con il caso d'uso PT-04
+  }
+  .
+  { [Annulla] | . | [<&plus> Crea scheda ad hoc] }
+}
+@endsalt

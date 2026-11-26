@@ -1,0 +1,40 @@
+' PT-05, passi 7-8 e flussi 8a/9a/2a: form dei carichi, sessione per sessione.
+' Ogni sessione è precompilata con i carichi della sessione precedente (Nota 1).
+' Il carico del drop-set è calcolato dal moltiplicatore della variante (Nota 2).
+@startsalt
+scale 1.5
+{+
+  {* Atleti | Schede | Palestre | Appuntamenti | Profilo }
+  ==
+  { <&chevron-left> Mario Rossi / <b>Assegna nuova Scheda</b> }
+  .
+  { Passo <b>3</b> di 3: carichi degli esercizi | . | Compilati: <b>18 / 72</b> }
+  .
+  {/ <b>Blocco 1</b> | Blocco 2 | Blocco 3 }
+  {/ <b>Week 1</b> | Week 2 | Week 3 <&warning> | Week 4 }
+  .
+  { <b>Sessione 1</b> | . | <&loop-circular> precompilata dalla sessione precedente }
+  {#
+    <b>Esercizio</b>            | <b>Serie x Rip.</b> | <b>Recupero</b> | <b>Carico (kg)</b>
+    Squat                       | 5 x 5               | 180 s           | "  100 "
+    Panca piana                 | 4 x 6               | 150 s           | "   80 "
+    <&arrow-thick-bottom> drop-set (x 0,7) | 1 x max | -               | 56 (calcolato)
+    Superset: Rematore          | 3 x 10              | -               | "   60 "
+    Superset: Lento avanti      | 3 x 10              | 90 s            | "   40 "
+  }
+  .
+  { <b>Sessione 2</b> }
+  {#
+    <b>Esercizio</b>            | <b>Serie x Rip.</b> | <b>Recupero</b> | <b>Carico (kg)</b>
+    Stacco da terra             | 5 x 3               | 180 s           | "  130 "
+    Trazioni zavorrate          | 4 x 6               | 120 s           | { "      " | <&warning> }
+  }
+  .
+  {+
+    <&warning> Carichi mancanti in Week 1 (Sessione 2) e Week 3.
+    L'assegnazione resta in bozza.
+  }
+  .
+  { [<&chevron-left> Indietro] | [Salva e continua dopo] | . | [<&check> Assegna Scheda] }
+}
+@endsalt
