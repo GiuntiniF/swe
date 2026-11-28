@@ -1,8 +1,8 @@
-// PROTOTIPO USA E GETTA. Pezzi riusati dalle tre varianti (non il layout, che resta di ogni variante).
+// PROTOTIPO USA E GETTA. Pezzi riusati da più schermate del wizard e dal dettaglio atleta.
 import { Alert, Badge, Button, Group, NumberInput, Table, Text } from "@mantine/core";
 import { IconAlertTriangle, IconCalendar, IconCheck, IconCircleX, IconCornerDownRight, IconPencil } from "@tabler/icons-react";
 import {
-  type Assignment, type Row, type Session, EX_IDS, addDays, dropValue, endOf, fmt, hasLoad, key, kg, missingInWeek,
+  type AppointmentStatus, type Assignment, type Row, type Session, EX_IDS, addDays, dropValue, endOf, fmt, hasLoad, key, kg, missingInWeek,
   periodStatus, plan, weekRanges,
 } from "./domain";
 import { S, flow, useUpdate } from "./store";
@@ -13,6 +13,9 @@ export function PeriodBadge({ a }: { a: Assignment }) {
 }
 export const DraftBadge = ({ a }: { a: Assignment }) =>
   a.status === "draft" ? <Badge variant="light" color="yellow" leftSection={<IconPencil size={12} />}>Bozza</Badge> : null;
+
+const APP_COLOR: Record<AppointmentStatus, string> = { Confermato: "green", "In attesa": "yellow", Rifiutato: "red" };
+export const AppointmentBadge = ({ status }: { status: AppointmentStatus }) => <Badge variant="light" color={APP_COLOR[status]}>{status}</Badge>;
 
 export function LoadInput({ w, ex, width = 96, compact = false }: { w: number; ex: string; width?: number; compact?: boolean }) {
   const update = useUpdate();

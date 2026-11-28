@@ -2,7 +2,7 @@
   "name": "prototype-pt05-mantine",
   "private": true,
   "version": "0.0.0",
-  "description": "PROTOTIPO USA E GETTA: tre varianti Mantine del caso d'uso PT-05",
+  "description": "PROTOTIPO USA E GETTA: caso d'uso PT-05 in Mantine (wizard a pagine, dettaglio atleta a tab)",
   "type": "module",
   "scripts": {
     "dev": "vite --open",

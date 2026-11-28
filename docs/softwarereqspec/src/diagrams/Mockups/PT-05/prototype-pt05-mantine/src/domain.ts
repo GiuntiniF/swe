@@ -26,9 +26,11 @@ export type Flow = {
 };
 
 export const ATHLETE = { name: "Mario Rossi", initials: "MR", email: "mario.rossi@mail.it", age: 27, height: 178, weight: 76, gyms: ["FitLab Pisa"] };
-export const APPOINTMENTS = [
+// Stati come in PT-07: confermati, in attesa, rifiutati.
+export type AppointmentStatus = "Confermato" | "In attesa" | "Rifiutato";
+export const APPOINTMENTS: { date: string; time: string; status: AppointmentStatus }[] = [
   { date: "2026-12-02", time: "18:30", status: "Confermato" },
-  { date: "2026-12-09", time: "18:30", status: "Richiesto" },
+  { date: "2026-12-09", time: "18:30", status: "In attesa" },
 ];
 export const PLANS: Plan[] = [
   { id: "forza-base", name: "Forza base", blocks: [4, 4] },

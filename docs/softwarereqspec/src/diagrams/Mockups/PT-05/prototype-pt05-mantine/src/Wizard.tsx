@@ -1,4 +1,4 @@
-// PROTOTIPO USA E GETTA. Variante A: wizard a pagine, stessa struttura dei mockup Salt.
+// PROTOTIPO USA E GETTA. Wizard a pagine (variante A scelta), stessa struttura dei mockup Salt.
 import {
   Alert, Anchor, Badge, Breadcrumbs, Button, Container, Group, Paper, Progress, SegmentedControl, Stack, Stepper, Tabs, Text, ThemeIcon, Title, UnstyledButton,
 } from "@mantine/core";
@@ -13,9 +13,9 @@ import {
 } from "./domain";
 import { FlowAlert, SessionTable, WeekBadge, WeekDot } from "./shared";
 import { AthleteDetail } from "./AthleteDetail";
-import { type VariantHooks, S, continueToLoads, flow, notifyOutOfScope, saveDraft, submit, useUpdate } from "./store";
+import { type FlowHooks, S, continueToLoads, flow, notifyOutOfScope, saveDraft, submit, useUpdate } from "./store";
 
-export const hooksA: VariantHooks = {
+export const hooks: FlowHooks = {
   resume(a) { S.flow = flowFromDraft(a); S.ui.aView = "loads"; },
   leave() { S.flow = null; S.ui.aView = "detail"; },
   done(a) { S.flow = null; S.ui.doneId = a.id; S.ui.aView = "done"; S.ui.bTab = "schede"; },
@@ -50,7 +50,7 @@ function Detail() {
   return (
     <Stack gap="lg">
       <Crumbs />
-      <AthleteDetail hooks={hooksA} onNew={() => { S.flow = newFlow(); S.ui.highlight = null; S.ui.aView = "plans"; }} />
+      <AthleteDetail hooks={hooks} onNew={() => { S.flow = newFlow(); S.ui.highlight = null; S.ui.aView = "plans"; }} />
     </Stack>
   );
 }
@@ -148,8 +148,8 @@ function Loads() {
       <Group>
         <Button variant="default" leftSection={<IconChevronLeft size={16} />} onClick={toDates}>Indietro</Button>
         <div style={{ flex: 1 }} />
-        <Button variant="light" leftSection={<IconDeviceFloppy size={16} />} onClick={() => update(() => saveDraft(hooksA))}>Salva e continua dopo</Button>
-        <Button leftSection={<IconCheck size={16} />} onClick={() => update(() => submit(hooksA))}>Assegna Scheda</Button>
+        <Button variant="light" leftSection={<IconDeviceFloppy size={16} />} onClick={() => update(() => saveDraft(hooks))}>Salva e continua dopo</Button>
+        <Button leftSection={<IconCheck size={16} />} onClick={() => update(() => submit(hooks))}>Assegna Scheda</Button>
       </Group>
     </Stack>
   );
@@ -180,7 +180,7 @@ function Done() {
   );
 }
 
-export function VariantA() {
+export function Wizard() {
   const View = { detail: Detail, plans: Plans, dates: Dates, loads: Loads, done: Done }[S.ui.aView];
   return <Container size="lg" px={0}><View /></Container>;
 }

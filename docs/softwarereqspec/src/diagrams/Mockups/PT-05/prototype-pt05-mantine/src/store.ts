@@ -8,19 +8,14 @@ import {
 
 export type Ui = {
   aView: "detail" | "plans" | "dates" | "loads" | "done";
-  bSheet: boolean;
-  bPhase: "setup" | "loads";
+  /** Tab aperta nel dettaglio atleta. */
   bTab: string;
-  cOpen: boolean;
   doneId: number | null;
   highlight: number | null;
-  /** Cambia quando il calendario di B deve tornare sul mese della data scelta. */
-  bCal: number;
 };
-export const initUi = (): Ui => ({ aView: "detail", bSheet: false, bPhase: "setup", bTab: "schede", cOpen: false, doneId: null, highlight: null, bCal: 0 });
+export const initUi = (): Ui => ({ aView: "detail", bTab: "schede", doneId: null, highlight: null });
 
 export const S = {
-  variant: 0,
   assignments: initialAssignments(),
   nextId: 5,
   flow: null as Flow | null,
@@ -28,8 +23,8 @@ export const S = {
   showState: false,
 };
 
-/** Ogni variante decide dove si torna dopo il salvataggio e cosa mostra alla conferma. */
-export type VariantHooks = { resume(a: Assignment): void; leave(): void; done(a: Assignment): void };
+/** Dove si torna dopo il salvataggio o lo scarto, e cosa si mostra alla conferma. */
+export type FlowHooks = { resume(a: Assignment): void; leave(): void; done(a: Assignment): void };
 
 export const UpdateContext = createContext<(fn?: () => void) => void>(() => {});
 export const useUpdate = () => useContext(UpdateContext);
@@ -57,13 +52,13 @@ export function continueToLoads() {
   f.week = incompleteWeeks(f)[0] || 1;
   return true;
 }
-export function saveDraft(h: VariantHooks) {
+export function saveDraft(h: FlowHooks) {
   upsertDraft();
   S.ui.highlight = flow().id;
   h.leave();
   notifications.show({ title: "Bozza salvata", message: "La trovi tra le schede di Mario Rossi. Puoi riprenderla quando vuoi.", color: "yellow" });
 }
-export function submit(h: VariantHooks) {
+export function submit(h: FlowHooks) {
   const f = flow();
   f.showErrors = true;
   const miss = incompleteWeeks(f);
@@ -76,7 +71,7 @@ export function submit(h: VariantHooks) {
   S.ui.highlight = a.id;
   h.done(a);
 }
-export function askDiscard(id: number, h: VariantHooks, update: (fn?: () => void) => void) {
+export function askDiscard(id: number, h: FlowHooks, update: (fn?: () => void) => void) {
   const a = S.assignments.find((x) => x.id === id)!;
   const name = plan(a.planId).name;
   modals.openConfirmModal({

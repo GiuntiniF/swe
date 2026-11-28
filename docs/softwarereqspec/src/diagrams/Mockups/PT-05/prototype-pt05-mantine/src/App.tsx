@@ -1,32 +1,15 @@
-// PROTOTIPO USA E GETTA. Tre varianti Mantine di PT-05, da scorrere con la barra in basso o con i tasti ← →.
-// La variante è nell'hash (#variante-a, #variante-b, #variante-c) o in ?variant=B.
-import { useEffect, useReducer } from "react";
-import { ActionIcon, Avatar, Box, Code, Group, Paper, Text, UnstyledButton } from "@mantine/core";
-import { IconBarbell, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+// PROTOTIPO USA E GETTA. PT-05 come wizard a pagine, partendo dal dettaglio atleta a tab (lo stesso di PT-08).
+// La barra in basso serve solo al prototipo: ha l'attributo data-prototype-bar, così gli screenshot la possono nascondere.
+import { useReducer } from "react";
+import { Avatar, Box, Code, Group, Paper, Text, UnstyledButton } from "@mantine/core";
+import { IconBarbell } from "@tabler/icons-react";
 import { endOf, fmt, initialAssignments, incompleteWeeks, periodStatus, plan, totals, TODAY, weekRanges } from "./domain";
 import { sortedAssignments } from "./shared";
-import { S, UpdateContext, type VariantHooks, initUi } from "./store";
-import { VariantA, hooksA } from "./VariantA";
-import { VariantB, hooksB } from "./VariantB";
-import { VariantC, hooksC } from "./VariantC";
-
-const VARIANTS: { key: string; slug: string; name: string; View: () => React.ReactNode; hooks: VariantHooks }[] = [
-  { key: "A", slug: "variante-a", name: "Wizard a pagine", View: VariantA, hooks: hooksA },
-  { key: "B", slug: "variante-b", name: "Pannello laterale", View: VariantB, hooks: hooksB },
-  { key: "C", slug: "variante-c", name: "Matrice dei carichi", View: VariantC, hooks: hooksC },
-];
-
-function routeIndex() {
-  const i = VARIANTS.findIndex((v) => v.slug === location.hash.slice(1));
-  if (i >= 0) return i;
-  const q = (new URLSearchParams(location.search).get("variant") || "A").toUpperCase();
-  return Math.max(0, VARIANTS.findIndex((v) => v.key === q));
-}
-const go = (i: number) => { location.hash = VARIANTS[(i + VARIANTS.length) % VARIANTS.length].slug; };
+import { S, UpdateContext, initUi } from "./store";
+import { Wizard } from "./Wizard";
 
 function stateDump() {
-  const v = VARIANTS[S.variant];
-  const lines = [`Variante ${v.key} (${v.name})${S.variant === 0 ? ` · vista: ${S.ui.aView}` : ""}`, "", `Schede dell'atleta (oggi = ${fmt(TODAY)}):`];
+  const lines = [`Vista: ${S.ui.aView}${S.ui.aView === "detail" ? ` · tab ${S.ui.bTab}` : ""}`, "", `Schede dell'atleta (oggi = ${fmt(TODAY)}):`];
   for (const a of sortedAssignments())
     lines.push(`  #${a.id} ${plan(a.planId).name.padEnd(24)} ${fmt(a.start)} – ${fmt(endOf(a.planId, a.start))}  ${a.status === "draft" ? "BOZZA" : "confermata"} · ${periodStatus(a)}`);
   lines.push("", "Flusso in corso:");
@@ -56,8 +39,7 @@ function Header() {
   );
 }
 
-function Switcher({ update }: { update: (fn?: () => void) => void }) {
-  const v = VARIANTS[S.variant];
+function PrototypeBar({ update }: { update: (fn?: () => void) => void }) {
   const pill: React.CSSProperties = { position: "fixed", left: "50%", transform: "translateX(-50%)", zIndex: 400, background: "var(--mantine-color-dark-9)", color: "white" };
   return (
     <>
@@ -67,9 +49,7 @@ function Switcher({ update }: { update: (fn?: () => void) => void }) {
         </Paper>
       )}
       <Group data-prototype-bar gap={4} wrap="nowrap" p={4} style={{ ...pill, bottom: "calc(16px + env(safe-area-inset-bottom, 0px))", borderRadius: 999, boxShadow: "0 8px 24px rgba(0,0,0,.35)" }}>
-        <ActionIcon radius="xl" variant="subtle" color="gray" c="white" aria-label="Variante precedente" onClick={() => go(S.variant - 1)}><IconChevronLeft size={16} /></ActionIcon>
-        <Text size="xs" fw={500} px={4} style={{ whiteSpace: "nowrap" }}><span style={{ opacity: 0.6 }}>Prototipo Mantine · </span>{v.key} <span style={{ opacity: 0.7 }}>({v.name})</span></Text>
-        <ActionIcon radius="xl" variant="subtle" color="gray" c="white" aria-label="Variante successiva" onClick={() => go(S.variant + 1)}><IconChevronRight size={16} /></ActionIcon>
+        <Text size="xs" fw={500} px="sm" style={{ whiteSpace: "nowrap" }}><span style={{ opacity: 0.6 }}>Prototipo Mantine · </span>PT-05</Text>
         <Box w={1} h={16} bg="rgba(255,255,255,.25)" />
         <UnstyledButton px="sm" h={28} fz="xs" fw={500} c="white" style={{ borderRadius: 999 }} aria-pressed={S.showState} onClick={() => update(() => { S.showState = !S.showState; })}>{S.showState ? "Nascondi stato" : "Stato"}</UnstyledButton>
         <UnstyledButton px="sm" h={28} fz="xs" fw={500} c="white" opacity={0.7} style={{ borderRadius: 999 }}
@@ -82,31 +62,11 @@ function Switcher({ update }: { update: (fn?: () => void) => void }) {
 export function App() {
   const [, bump] = useReducer((x: number) => x + 1, 0);
   const update = (fn?: () => void) => { fn?.(); bump(); };
-
-  useEffect(() => {
-    const apply = () => {
-      const i = routeIndex();
-      if (i !== S.variant) { S.variant = i; S.flow = null; S.ui = initUi(); }
-      bump();
-    };
-    apply();
-    const onKey = (e: KeyboardEvent) => {
-      const t = e.target as HTMLElement | null;
-      if (t?.closest?.("input, textarea, select, [contenteditable], [role=dialog]")) return;
-      if (e.key === "ArrowLeft") go(S.variant - 1);
-      if (e.key === "ArrowRight") go(S.variant + 1);
-    };
-    window.addEventListener("hashchange", apply);
-    window.addEventListener("keydown", onKey);
-    return () => { window.removeEventListener("hashchange", apply); window.removeEventListener("keydown", onKey); };
-  }, []);
-
-  const { View } = VARIANTS[S.variant];
   return (
     <UpdateContext.Provider value={update}>
       <Header />
-      <Box maw={1320} mx="auto" pb={96}><View /></Box>
-      <Switcher update={update} />
+      <Box maw={1320} mx="auto" pb={96}><Wizard /></Box>
+      <PrototypeBar update={update} />
     </UpdateContext.Provider>
   );
 }
