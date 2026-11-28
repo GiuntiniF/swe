@@ -9,16 +9,13 @@ import {
 
 export type Ui = {
   aView: "plan" | "session" | "catalog" | "form";
-  bDrawer: "catalog" | "form" | null;
-  cModal: "catalog" | "form" | null;
   highlight: string | null;
   query: string;
   group: string | null;
 };
-export const initUi = (): Ui => ({ aView: "plan", bDrawer: null, cModal: null, highlight: null, query: "", group: null });
+export const initUi = (): Ui => ({ aView: "plan", highlight: null, query: "", group: null });
 
 export const S = {
-  variant: 0,
   plans: initialPlans(),
   planId: null as string | null,
   /** Sessione corrente (passo 4). */
@@ -28,8 +25,8 @@ export const S = {
   showState: false,
 };
 
-/** Ogni variante decide dove mostra la sessione, il catalogo e il form. */
-export type VariantHooks = { plan(): void; session(): void; catalog(): void; form(): void };
+/** Dove la pagina mostra l'elenco dei blocchi, la sessione, il catalogo e il form. */
+export type FlowHooks = { plan(): void; session(): void; catalog(): void; form(): void };
 export type Update = (fn?: () => void) => void;
 
 export const UpdateContext = createContext<Update>(() => {});
@@ -56,7 +53,7 @@ export function closePlan() {
   S.draft = null;
   S.ui = initUi();
 }
-export function select(h: VariantHooks, blockId: string, sessionId: string) {
+export function select(h: FlowHooks, blockId: string, sessionId: string) {
   S.sel = { blockId, sessionId };
   S.draft = null;
   h.session();
@@ -86,14 +83,14 @@ export function askDeleteBlock(blockId: string, update: Update) {
     confirmProps: { color: "red" },
     onConfirm: () => update(() => {
       plan().blocks.splice(i, 1);
-      if (S.sel?.blockId === blockId) { S.sel = null; S.draft = null; S.ui.aView = "plan"; S.ui.bDrawer = null; S.ui.cModal = null; }
+      if (S.sel?.blockId === blockId) { S.sel = null; S.draft = null; S.ui.aView = "plan"; }
       notifications.show({ title: `Blocco ${i + 1} eliminato`, message: "Con tutte le sessioni e gli esercizi che conteneva.", color: "gray" });
     }),
   });
 }
 
 // Flussi 2c e 2f.
-export function addSession(h: VariantHooks, blockId: string) {
+export function addSession(h: FlowHooks, blockId: string) {
   const b = block(blockId);
   if (b.sessions.length >= MAX_SESSIONS) return;
   const s = { id: uid("s"), items: [] };
@@ -102,7 +99,7 @@ export function addSession(h: VariantHooks, blockId: string) {
   select(h, blockId, s.id);
 }
 // Flusso 4a.
-export function askDeleteSession(h: VariantHooks, blockId: string, sessionId: string, update: Update) {
+export function askDeleteSession(h: FlowHooks, blockId: string, sessionId: string, update: Update) {
   const s = session(blockId, sessionId);
   const label = where(blockId, sessionId);
   modals.openConfirmModal({
@@ -122,24 +119,24 @@ export function askDeleteSession(h: VariantHooks, blockId: string, sessionId: st
 }
 
 // Passi 5-8 e flusso 5a.
-export function startAdd(h: VariantHooks) {
+export function startAdd(h: FlowHooks) {
   S.draft = null;
   S.ui.query = "";
   h.catalog();
 }
-export function pick(h: VariantHooks, exerciseTypeId: string) {
+export function pick(h: FlowHooks, exerciseTypeId: string) {
   const sel = S.sel!;
   if (S.draft) S.draft.exerciseTypeId = exerciseTypeId; // "Cambia esercizio" dal form: tiene i dati già inseriti
   else S.draft = newDraft(sel.blockId, sel.sessionId, exerciseTypeId);
   h.form();
 }
-export function startEdit(h: VariantHooks, blockId: string, sessionId: string, item: Item) {
+export function startEdit(h: FlowHooks, blockId: string, sessionId: string, item: Item) {
   S.sel = { blockId, sessionId };
   S.draft = draftFromItem(blockId, sessionId, item);
   h.form();
 }
 /** Passi 10-12: aggiunge (o aggiorna) l'esercizio e torna al dettaglio della sessione. */
-export function commit(h: VariantHooks) {
+export function commit(h: FlowHooks) {
   const d = S.draft!;
   d.showErrors = true;
   if (Object.keys(validate(d)).length) return;
@@ -157,7 +154,7 @@ export function commit(h: VariantHooks) {
     color: "green",
   });
 }
-export function cancelForm(h: VariantHooks) {
+export function cancelForm(h: FlowHooks) {
   S.draft = null;
   h.session();
 }

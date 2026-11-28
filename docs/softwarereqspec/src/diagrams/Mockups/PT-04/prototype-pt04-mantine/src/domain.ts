@@ -66,12 +66,13 @@ export function setsLabel(reps: Reps[]) {
   return `${reps.length} serie: ${reps.map(repsLabel).join(" · ")}`;
 }
 export function variantLabel(v: Variant) {
-  if (v.kind === "superset") return `Superserie con ${v.partners.map((p) => ex(p.exerciseTypeId).name).join(" + ")}`;
-  if (v.kind === "dropset") return `Dropset ${v.drops.map((d) => `× ${num(d)}`).join(" → ")}`;
+  if (v.kind === "superset") return `Superset con ${v.partners.map((p) => ex(p.exerciseTypeId).name).join(" + ")}`;
+  if (v.kind === "dropset") return `Drop-set ${v.drops.map((d) => `× ${num(d)}`).join(" → ")}`;
   if (v.kind === "restpause") return `Rest-pause, ${v.pause} s tra le miniserie`;
   return null;
 }
-export const VARIANT_NAMES: Record<VariantKind, string> = { none: "Nessuna", superset: "Superserie", dropset: "Dropset", restpause: "Rest-pause" };
+// Stessi termini del prototipo e dei mockup Salt di PT-05.
+export const VARIANT_NAMES: Record<VariantKind, string> = { none: "Nessuna", superset: "Superset", dropset: "Drop-set", restpause: "Rest-pause" };
 export const sessionLabel = (i: number) => `Sessione ${i + 1}`;
 /** La sessione non ha nome nel modello: il sottotitolo è ricavato dai gruppi muscolari degli esercizi. */
 /** Tutti gli esercizi del catalogo usati nella sessione, compresi quelli in superserie. */
@@ -88,19 +89,26 @@ export const sessionsLabel = (n: number) => `${n} ${n === 1 ? "sessione" : "sess
 export const totalWeeks = (p: Plan) => p.blocks.reduce((a, b) => a + b.weeks, 0);
 /** Nota 3: le sessioni del blocco sono un pattern settimanale che si ripete per ogni settimana. */
 export const generated = (b: Block) => b.sessions.length * b.weeks;
-export function planStatus(p: Plan): { label: string; color: string } {
-  if (p.assignedTo.length) return { label: `Assegnata a ${p.assignedTo.length} ${p.assignedTo.length === 1 ? "atleta" : "atleti"}`, color: "blue" };
-  if (!p.blocks.length) return { label: "Senza blocchi", color: "yellow" };
-  if (p.blocks.some((b) => !b.sessions.length || b.sessions.some((s) => !s.items.length))) return { label: "Da completare", color: "yellow" };
-  return { label: "Configurata", color: "green" };
+/** Come in PT-05: una scheda è configurata se ogni blocco ha almeno una sessione e ogni sessione almeno un esercizio. */
+export function unconfigured(p: Plan) {
+  if (!p.blocks.length) return "La scheda non ha blocchi mensili.";
+  const b = p.blocks.findIndex((x) => !x.sessions.length);
+  if (b >= 0) return `Il blocco mensile ${b + 1} non ha sessioni di allenamento.`;
+  for (let i = 0; i < p.blocks.length; i++) {
+    const s = p.blocks[i].sessions.findIndex((x) => !x.items.length);
+    if (s >= 0) return `La sessione ${s + 1} del blocco mensile ${i + 1} non ha esercizi.`;
+  }
+  return null;
 }
-/** Flusso 5c: la rimozione si porta dietro la superserie o la variante. */
+export const planSub = (p: Plan) =>
+  p.blocks.length ? `${p.blocks.length} ${p.blocks.length === 1 ? "blocco mensile" : "blocchi mensili"} · ${totalWeeks(p)} settimane` : "Nessun blocco mensile";
+/** Flusso 5c: la rimozione si porta dietro il superset o la variante. */
 export function removalWarning(i: Item) {
   if (i.variant.kind === "superset") {
     const n = i.variant.partners.length;
-    return `L'esercizio fa parte di una superserie: ${n === 1 ? "sarà rimosso" : "saranno rimossi"} anche ${i.variant.partners.map((p) => ex(p.exerciseTypeId).name).join(" e ")}.`;
+    return `L'esercizio fa parte di un superset: ${n === 1 ? "sarà rimosso" : "saranno rimossi"} anche ${i.variant.partners.map((p) => ex(p.exerciseTypeId).name).join(" e ")}.`;
   }
-  if (i.variant.kind === "dropset") return `L'esercizio ha una variante di esecuzione: sarà rimosso anche il dropset (${i.variant.drops.length} ${i.variant.drops.length === 1 ? "discesa" : "discese"}).`;
+  if (i.variant.kind === "dropset") return `L'esercizio ha una variante di esecuzione: sarà rimosso anche il drop-set (${i.variant.drops.length} ${i.variant.drops.length === 1 ? "discesa" : "discese"}).`;
   if (i.variant.kind === "restpause") return "L'esercizio ha una variante di esecuzione: sarà rimosso anche il rest-pause.";
   return null;
 }
@@ -197,48 +205,45 @@ const it = (exerciseTypeId: string, reps: Reps[], rest: number, variant: Variant
 const ses = (...items: Item[]): Session => ({ id: uid("s"), items });
 const blk = (weeks: number, ...sessions: Session[]): Block => ({ id: uid("b"), weeks, sessions });
 
+// Le stesse due sessioni del prototipo PT-05 (Sessione 1 e Sessione 2), ripetute in ogni blocco delle schede configurate.
+const pt05Sessions = () => [
+  ses(
+    it("squat", sets(5, F(5)), 180, undefined, "Discesa controllata in 3 secondi."),
+    it("panca", sets(4, F(6)), 150, { kind: "dropset", drops: [0.7] }),
+    it("rematore", sets(3, F(10)), 90, { kind: "superset", partners: [{ exerciseTypeId: "lento", reps: F(10) }] }),
+  ),
+  ses(it("stacco", sets(5, F(3)), 180, undefined, "Presa mista solo sulle ultime due serie."), it("trazioni", sets(4, F(6)), 120)),
+];
+const pt05Blocks = (...weeks: number[]) => weeks.map((w) => blk(w, ...pt05Sessions()));
+const MARIO = ["Mario Rossi"];
+
+/** Le prime sei schede sono quelle di PT-05, nello stesso ordine; le assegnazioni sono quelle di Mario Rossi in PT-05. */
 export function initialPlans(): Plan[] {
   seq = 1;
   return [
+    { id: "forza-base", name: "Forza base", description: "Fondamentali con poche ripetizioni.", assignedTo: MARIO, blocks: pt05Blocks(4, 4) },
+    { id: "ipertrofia-12", name: "Ipertrofia 12 settimane", description: "Volume medio-alto.", assignedTo: MARIO, blocks: pt05Blocks(4, 4, 4) },
+    { id: "mantenimento", name: "Mantenimento", description: "Un blocco per mantenere la forza.", assignedTo: MARIO, blocks: pt05Blocks(4) },
     {
       id: "forza-avanzata", name: "Forza avanzata", description: "Fondamentali a basse ripetizioni, con lavoro complementare.", assignedTo: [],
       blocks: [
-        blk(4,
-          ses(
-            it("squat", sets(5, F(5)), 180, undefined, "Discesa controllata in 3 secondi."),
-            it("panca", sets(4, F(6)), 150, { kind: "dropset", drops: [0.7] }),
-            it("rematore", sets(3, F(10)), 90, { kind: "superset", partners: [{ exerciseTypeId: "lento", reps: F(10) }] }),
-          ),
-          ses(
-            it("stacco", sets(5, F(3)), 180, undefined, "Presa mista solo sulle ultime due serie."),
-            it("trazioni", sets(4, F(6)), 120),
-            it("face-pull", sets(3, R(12, 15)), 60),
-          ),
-          ses(
-            it("leg-press", sets(4, R(8, 12)), 120),
-            it("panca-inclinata", sets(3, R(8, 10)), 90, { kind: "restpause", pause: 15 }),
-            it("alzate", sets(3, X), 60),
-          ),
-        ),
+        blk(4, ...pt05Sessions()),
         blk(4,
           ses(
             it("squat", [F(5), F(5), F(3), F(3), F(3)], 180),
             it("panca", sets(5, F(5)), 150, { kind: "dropset", drops: [0.8, 0.6] }),
+            it("lento", sets(3, F(8)), 90),
           ),
-          ses(it("stacco", sets(4, F(3)), 210), it("trazioni", sets(4, F(5)), 120)),
+          ses(it("stacco", sets(4, F(3)), 210), it("trazioni", sets(4, F(5)), 120), it("panca-inclinata", sets(3, R(8, 10)), 90, { kind: "restpause", pause: 15 })),
         ),
-        blk(3),
+        blk(4, ...pt05Sessions()),
       ],
     },
-    { id: "ricomposizione", name: "Ricomposizione", description: "Appena creata con PT-03: non ha ancora blocchi mensili.", assignedTo: [], blocks: [] },
-    {
-      id: "ipertrofia-12", name: "Ipertrofia 12 settimane", description: "Volume medio-alto, tre sessioni a settimana.", assignedTo: ["Mario Rossi", "Giulia Bianchi"],
-      blocks: [
-        blk(4, ses(it("panca", sets(4, R(8, 10)), 90), it("croci", sets(3, R(12, 15)), 60)), ses(it("lat", sets(4, R(8, 10)), 90), it("curl", sets(3, F(12)), 60)), ses(it("squat", sets(4, F(8)), 120), it("leg-curl", sets(3, F(12)), 60))),
-        blk(4, ses(it("panca-inclinata", sets(4, F(10)), 90)), ses(it("pulley", sets(4, F(10)), 90)), ses(it("affondi", sets(3, F(12)), 90))),
-        blk(4, ses(it("dip", sets(4, X), 90)), ses(it("trazioni", sets(4, F(8)), 90)), ses(it("leg-press", sets(4, F(15)), 120))),
-      ],
-    },
+    // In PT-05 è assegnata solo in bozza: per PT-04 conta comunque come assegnata (flusso 1a, "in qualunque stato").
+    { id: "ipertrofia-invernale", name: "Ipertrofia invernale", description: "Volume alto per la stagione invernale.", assignedTo: MARIO, blocks: pt05Blocks(4, 4, 4) },
+    { id: "ricomposizione", name: "Ricomposizione", description: "Meno grasso, stessa massa muscolare.", assignedTo: [], blocks: [blk(4)] },
+    // Schede in più, solo per provare i flussi 2a e 2f.
+    { id: "definizione", name: "Definizione estiva", description: "Volume alto in vista dell'estate.", assignedTo: [], blocks: [] },
     {
       id: "preparazione-gara", name: "Preparazione gara", description: "Un blocco con una sessione al giorno.", assignedTo: [],
       blocks: [

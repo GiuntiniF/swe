@@ -1,63 +1,64 @@
-// PROTOTIPO USA E GETTA. Pezzi riusati dalle tre varianti (non il layout, che resta di ogni variante).
+// PROTOTIPO USA E GETTA. Pezzi della configurazione della scheda: elenco schede, blocchi, tabella della sessione, catalogo e form.
 import { useState } from "react";
 import {
-  ActionIcon, Alert, Badge, Box, Button, Chip, Divider, Group, Menu, NumberInput, Paper, ScrollArea, SegmentedControl, Select,
-  Stack, Switch, Table, Text, TextInput, Textarea, ThemeIcon, Title, Tooltip, UnstyledButton,
+  ActionIcon, Alert, Badge, Box, Button, Chip, Divider, Group, Menu, NumberInput, Paper, SegmentedControl, Select, Stack, Switch, Table, Text,
+  TextInput, Textarea, ThemeIcon, Title, Tooltip, UnstyledButton,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import {
-  IconArrowsExchange, IconCalendarWeek, IconCheck, IconChevronRight, IconCopy, IconCornerDownRight, IconDots, IconInfoCircle,
-  IconLock, IconPencil, IconPlus, IconSearch, IconStack2, IconTrash, IconX,
+  IconAlertTriangle, IconArrowsExchange, IconCalendarWeek, IconCheck, IconChevronRight, IconCopy, IconCornerDownRight, IconDots,
+  IconInfoCircle, IconLock, IconPencil, IconPlus, IconSearch, IconStack2, IconTrash, IconX,
 } from "@tabler/icons-react";
 import {
-  type Block, type Item, type RepsDraft, CATALOG, GROUPS, MAX_SESSIONS, MAX_WEEKS, VARIANT_NAMES, type VariantKind, emptyReps, ex,
-  generated, num, planStatus, resizeReps, sessionExerciseIds, sessionsLabel, setsLabel, totalWeeks, validate, weeksLabel,
+  type Block, type Item, type Plan, type RepsDraft, CATALOG, GROUPS, MAX_SESSIONS, MAX_WEEKS, VARIANT_NAMES, type VariantKind, emptyReps, ex,
+  generated, num, planSub, resizeReps, sessionExerciseIds, sessionsLabel, setsLabel, unconfigured, validate, weeksLabel,
 } from "./domain";
 import {
-  type Update, type VariantHooks, S, addBlock, askDeleteBlock, blockIndex, cancelForm, commit, notifyOutOfScope, openPlan,
-  plan, session, setWeeks, useUpdate,
+  type FlowHooks, type Update, S, addBlock, askDeleteBlock, blockIndex, cancelForm, commit, notifyOutOfScope, openPlan, plan, session,
+  setWeeks, useUpdate,
 } from "./store";
+
+// ---------- Stato della scheda, come nella scelta della scheda di PT-05 ----------
+export function PlanBadges({ p }: { p: Plan }) {
+  return (
+    <>
+      {unconfigured(p) ? <Badge color="yellow" variant="light">Non configurata</Badge> : <Badge color="green" variant="light">Configurata</Badge>}
+      {p.assignedTo.length > 0 && <Badge color="gray" variant="light" leftSection={<IconLock size={12} />}>Assegnata</Badge>}
+    </>
+  );
+}
 
 // ---------- Passo 1: elenco delle schede del PT ----------
 export function PlanList() {
   const update = useUpdate();
   return (
     <Stack gap="lg">
-      <div><Title order={2}>Schede</Title><Text c="dimmed" size="sm">Scegli la scheda di cui configurare le sessioni di allenamento.</Text></div>
+      <div><Title order={2}>Le mie schede</Title><Text c="dimmed" size="sm">Scegli la scheda di cui configurare blocchi mensili, sessioni ed esercizi.</Text></div>
       <Paper withBorder radius="md">
-        {S.plans.map((p, i) => {
-          const st = planStatus(p);
-          return (
-            <UnstyledButton key={p.id} w="100%" px="md" py="sm" style={{ borderTop: i ? "1px solid var(--mantine-color-default-border)" : undefined }}
-              onClick={() => update(() => openPlan(p.id))}>
-              <Group wrap="nowrap">
-                <ThemeIcon variant="light" size="lg" color={st.color}>{p.assignedTo.length ? <IconLock size={18} /> : <IconStack2 size={18} />}</ThemeIcon>
-                <Box style={{ flex: 1, minWidth: 0 }}>
-                  <Text fw={500}>{p.name}</Text>
-                  <Text size="sm" c="dimmed" truncate>{p.blocks.length ? `${p.blocks.length} ${p.blocks.length === 1 ? "blocco mensile" : "blocchi mensili"} · ${weeksLabel(totalWeeks(p))}` : "Nessun blocco mensile"} · {p.description}</Text>
-                </Box>
-                <Badge variant="light" color={st.color} visibleFrom="xs">{st.label}</Badge>
-                <IconChevronRight size={16} color="var(--mantine-color-dimmed)" />
-              </Group>
-            </UnstyledButton>
-          );
-        })}
+        {S.plans.map((p, i) => (
+          <UnstyledButton key={p.id} w="100%" px="md" py="sm" style={{ borderTop: i ? "1px solid var(--mantine-color-default-border)" : undefined }}
+            onClick={() => update(() => openPlan(p.id))}>
+            <Group wrap="nowrap">
+              <ThemeIcon variant="light" color={unconfigured(p) ? "yellow" : "blue"} size="lg"><IconStack2 size={18} /></ThemeIcon>
+              <div style={{ flex: 1, minWidth: 0 }}><Text fw={500}>{p.name}</Text><Text size="sm" c="dimmed">{planSub(p)}</Text></div>
+              <Group gap={6} visibleFrom="xs"><PlanBadges p={p} /></Group>
+              <IconChevronRight size={16} color="var(--mantine-color-dimmed)" />
+            </Group>
+          </UnstyledButton>
+        ))}
       </Paper>
-      <Text size="xs" c="dimmed">Per provare i flussi alternativi: "Ricomposizione" non ha blocchi (2a), "Ipertrofia 12 settimane" è assegnata (1a), "Preparazione gara" ha 7 sessioni (2f).</Text>
     </Stack>
   );
 }
 
 export function PlanTitle({ right }: { right?: React.ReactNode }) {
   const p = plan();
-  const st = planStatus(p);
   return (
     <Group justify="space-between" align="flex-start">
       <Box style={{ flex: 1, minWidth: 220 }}>
-        <Group gap="xs"><Title order={2}>{p.name}</Title><Badge variant="light" color={st.color}>{st.label}</Badge></Group>
-        <Text size="sm" c="dimmed">{p.description}</Text>
-        <Text size="sm" c="dimmed">{p.blocks.length ? `${p.blocks.length} ${p.blocks.length === 1 ? "blocco mensile" : "blocchi mensili"} · ${weeksLabel(totalWeeks(p))}` : "Nessun blocco mensile"}</Text>
+        <Group gap="xs"><Title order={2}>{p.name}</Title><PlanBadges p={p} /></Group>
+        <Text size="sm" c="dimmed">{p.description} · {planSub(p)}</Text>
       </Box>
       {right}
     </Group>
@@ -69,11 +70,21 @@ export function ReadOnlyAlert() {
   const p = plan();
   if (!p.assignedTo.length) return null;
   return (
-    <Alert variant="light" color="blue" icon={<IconLock />} title="Sola lettura">
+    <Alert variant="light" color="blue" icon={<IconLock />} title="Scheda in sola lettura">
       <Text size="sm">La scheda è assegnata ad almeno un atleta: per modificarla, duplicala.</Text>
-      <Text size="xs" c="dimmed" mt={4}>Assegnata a {p.assignedTo.join(" e ")}.</Text>
-      <Button mt="sm" size="xs" leftSection={<IconCopy size={14} />}
+      <Button mt="sm" size="xs" variant="default" leftSection={<IconCopy size={14} />}
         onClick={() => notifyOutOfScope("Duplica Scheda", "Il flusso continua dal passo 4 di PT-16. Non fa parte di questo prototipo.")}>Duplica Scheda</Button>
+    </Alert>
+  );
+}
+/** Stesso messaggio che PT-05 mostra quando si sceglie una scheda non configurata. */
+export function UnconfiguredAlert() {
+  const p = plan();
+  const why = unconfigured(p);
+  if (!why || p.assignedTo.length || !p.blocks.length) return null;
+  return (
+    <Alert color="yellow" variant="light" icon={<IconAlertTriangle />} title="La scheda non è configurata">
+      {why} Finché non è configurata non si può assegnare (PT-05).
     </Alert>
   );
 }
@@ -81,9 +92,9 @@ export function ReadOnlyAlert() {
 // ---------- Flussi 2a, 2b, 2d: form della durata del blocco ----------
 function WeeksForm({ initial, onConfirm, onCancel }: { initial: number; onConfirm: (w: number) => void; onCancel: () => void }) {
   const [v, setV] = useState<number | string>(initial);
+  const [touched, setTouched] = useState(false);
   const n = typeof v === "number" ? v : NaN;
   const err = !(n >= 1 && n <= MAX_WEEKS) ? `Da 1 a ${MAX_WEEKS} settimane` : null;
-  const [touched, setTouched] = useState(false);
   return (
     <form onSubmit={(e) => { e.preventDefault(); setTouched(true); if (!err) onConfirm(n); }}>
       <Stack>
@@ -102,9 +113,9 @@ export function askWeeks(update: Update, blockId?: string) {
     title: edit ? `Modifica durata del blocco ${edit.i + 1}` : `Nuovo blocco mensile (blocco ${plan().blocks.length + 1})`,
     children: (
       <Stack gap="sm">
-        {edit
-          ? <Text size="sm" c="dimmed">Le sessioni di allenamento del blocco non cambiano: si ripetono per la nuova durata.</Text>
-          : <Text size="sm" c="dimmed">Il blocco viene aggiunto in coda alla scheda, senza sessioni di allenamento.</Text>}
+        <Text size="sm" c="dimmed">
+          {edit ? "Le sessioni di allenamento del blocco non cambiano: si ripetono per la nuova durata." : "Il blocco viene aggiunto in coda alla scheda, senza sessioni di allenamento."}
+        </Text>
         <WeeksForm initial={edit?.w ?? 4} onCancel={() => modals.close(id)}
           onConfirm={(w) => { modals.close(id); update(() => (blockId ? setWeeks(blockId, w) : addBlock(w))); }} />
       </Stack>
@@ -112,20 +123,19 @@ export function askWeeks(update: Update, blockId?: string) {
   });
 }
 
-// ---------- Elenco dei blocchi (passo 2) ----------
+// ---------- Passo 2: elenco dei blocchi ----------
 export function BlockMenu({ b }: { b: Block }) {
   const update = useUpdate();
-  if (!plan().assignedTo.length)
-    return (
-      <Menu position="bottom-end" withinPortal>
-        <Menu.Target><ActionIcon variant="subtle" color="gray" aria-label={`Azioni sul blocco ${blockIndex(b.id) + 1}`}><IconDots size={16} /></ActionIcon></Menu.Target>
-        <Menu.Dropdown>
-          <Menu.Item leftSection={<IconCalendarWeek size={14} />} onClick={() => askWeeks(update, b.id)}>Modifica Durata</Menu.Item>
-          <Menu.Item color="red" leftSection={<IconTrash size={14} />} onClick={() => askDeleteBlock(b.id, update)}>Elimina Blocco</Menu.Item>
-        </Menu.Dropdown>
-      </Menu>
-    );
-  return null;
+  if (plan().assignedTo.length) return null;
+  return (
+    <Menu position="bottom-end" withinPortal>
+      <Menu.Target><ActionIcon variant="subtle" color="gray" aria-label={`Azioni sul blocco ${blockIndex(b.id) + 1}`}><IconDots size={16} /></ActionIcon></Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Item leftSection={<IconCalendarWeek size={14} />} onClick={() => askWeeks(update, b.id)}>Modifica Durata</Menu.Item>
+        <Menu.Item color="red" leftSection={<IconTrash size={14} />} onClick={() => askDeleteBlock(b.id, update)}>Elimina Blocco</Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
+  );
 }
 /** Nota 3: il pattern settimanale si ripete per ogni settimana del blocco. */
 export function PatternLine({ b }: { b: Block }) {
@@ -136,11 +146,12 @@ export function PatternLine({ b }: { b: Block }) {
     </Tooltip>
   );
 }
-/** Flusso 2f: il pulsante sparisce a 7 sessioni. */
+/** Flusso 2f: a 7 sessioni il pulsante sparisce. */
 export function MaxNote({ b }: { b: Block }) {
   if (b.sessions.length < MAX_SESSIONS) return null;
   return <Text size="xs" c="dimmed"><IconInfoCircle size={12} style={{ verticalAlign: -1 }} /> Massimo raggiunto: {MAX_SESSIONS} sessioni, una per giorno della settimana.</Text>;
 }
+/** Flusso 2a. */
 export function EmptyPlan() {
   const update = useUpdate();
   return (
@@ -155,53 +166,56 @@ export function EmptyPlan() {
   );
 }
 
-// ---------- Esercizi ----------
-export function VariantBadge({ i }: { i: Item }) {
-  if (i.variant.kind === "none") return null;
-  const color = { superset: "grape", dropset: "orange", restpause: "cyan" }[i.variant.kind];
-  return <Badge size="xs" variant="light" color={color}>{VARIANT_NAMES[i.variant.kind]}</Badge>;
-}
-/** Righe secondarie che mostrano la variante: esercizi della superserie, discese del dropset, pausa del rest-pause. */
-export function VariantLines({ i, size = "sm" }: { i: Item; size?: "xs" | "sm" }) {
-  const v = i.variant;
-  const line = (k: string, t: React.ReactNode) => <Group key={k} gap={4} wrap="nowrap" c="dimmed"><IconCornerDownRight size={12} style={{ flexShrink: 0 }} /><Text size={size}>{t}</Text></Group>;
-  if (v.kind === "superset") return <>{v.partners.map((p, k) => line(String(k), <>+ <b>{ex(p.exerciseTypeId).name}</b> {setsLabel(i.reps.map(() => p.reps))}, senza recupero</>))}</>;
-  if (v.kind === "dropset") return <>{v.drops.map((d, k) => line(String(k), <>Discesa {k + 1}: carico × {num(d)}, fino al cedimento</>))}</>;
-  if (v.kind === "restpause") return line("rp", <>Rest-pause: {v.pause} s tra le miniserie</>);
-  return null;
-}
-export const restLabel = (i: Item) => (i.variant.kind === "superset" ? `${i.rest} s dopo la superserie` : `${i.rest} s`);
-
-export function ItemTable({ bId, sId, onEdit, onRemove }: { bId: string; sId: string; onEdit: (i: Item) => void; onRemove: (i: Item) => void }) {
+// ---------- Passo 4: tabella della sessione, con le stesse righe della tabella dei carichi di PT-05 ----------
+export function SessionTable({ bId, sId, onEdit, onRemove }: { bId: string; sId: string; onEdit: (i: Item) => void; onRemove: (i: Item) => void }) {
   const s = session(bId, sId);
   const ro = !!plan().assignedTo.length;
+  let letter = 0;
+  const sub = (key: string, label: React.ReactNode, sets: string, rest: string) => (
+    <Table.Tr key={key} bg="var(--mantine-color-default-hover)">
+      <Table.Td pl="lg"><Group gap={4} c="dimmed" wrap="nowrap"><IconCornerDownRight size={14} /><Text size="sm">{label}</Text></Group></Table.Td>
+      <Table.Td><Text size="sm" c="dimmed">{sets}</Text></Table.Td>
+      <Table.Td><Text size="sm" c="dimmed">{rest}</Text></Table.Td>
+      <Table.Td />
+      {!ro && <Table.Td />}
+    </Table.Tr>
+  );
+  const actions = (i: Item) => !ro && (
+    <Table.Td>
+      <Group gap={4} justify="flex-end" wrap="nowrap">
+        <Tooltip label="Modifica"><ActionIcon variant="subtle" color="gray" aria-label="Modifica" onClick={(e) => { e.stopPropagation(); onEdit(i); }}><IconPencil size={16} /></ActionIcon></Tooltip>
+        <Button size="compact-xs" variant="subtle" color="red" onClick={(e) => { e.stopPropagation(); onRemove(i); }}>Rimuovi</Button>
+      </Group>
+    </Table.Td>
+  );
   return (
     <Table.ScrollContainer minWidth={620}>
-      <Table verticalSpacing="sm" highlightOnHover={!ro}>
-        <Table.Thead><Table.Tr><Table.Th w={32}>#</Table.Th><Table.Th>Esercizio</Table.Th><Table.Th>Serie × rip.</Table.Th><Table.Th>Recupero</Table.Th><Table.Th>Note</Table.Th>{!ro && <Table.Th ta="right">Azioni</Table.Th>}</Table.Tr></Table.Thead>
+      <Table verticalSpacing="xs" highlightOnHover={!ro}>
+        <Table.Thead>
+          <Table.Tr><Table.Th>Esercizio</Table.Th><Table.Th>Serie × rip.</Table.Th><Table.Th>Recupero</Table.Th><Table.Th>Note</Table.Th>{!ro && <Table.Th ta="right">Azioni</Table.Th>}</Table.Tr>
+        </Table.Thead>
         <Table.Tbody>
-          {s.items.map((i, k) => (
-            <Table.Tr key={i.id} bg={S.ui.highlight === i.id ? "var(--mantine-color-green-light)" : undefined} style={{ cursor: ro ? undefined : "pointer", verticalAlign: "top" }}
-              onClick={() => !ro && onEdit(i)}>
-              <Table.Td c="dimmed">{k + 1}</Table.Td>
-              <Table.Td>
-                <Group gap={6}><Text size="sm" fw={500}>{ex(i.exerciseTypeId).name}</Text><VariantBadge i={i} /></Group>
-                <Text size="xs" c="dimmed">{ex(i.exerciseTypeId).group}</Text>
-                <VariantLines i={i} size="xs" />
-              </Table.Td>
-              <Table.Td><Text size="sm">{setsLabel(i.reps)}</Text></Table.Td>
-              <Table.Td><Text size="sm">{restLabel(i)}</Text></Table.Td>
-              <Table.Td maw={220}><Text size="xs" c="dimmed" fs={i.notes ? "italic" : undefined}>{i.notes || "—"}</Text></Table.Td>
-              {!ro && (
-                <Table.Td>
-                  <Group gap={4} justify="flex-end" wrap="nowrap">
-                    <Tooltip label="Modifica"><ActionIcon variant="subtle" color="gray" aria-label="Modifica" onClick={(e) => { e.stopPropagation(); onEdit(i); }}><IconPencil size={16} /></ActionIcon></Tooltip>
-                    <Button size="compact-xs" variant="subtle" color="red" onClick={(e) => { e.stopPropagation(); onRemove(i); }}>Rimuovi</Button>
-                  </Group>
-                </Table.Td>
-              )}
-            </Table.Tr>
-          ))}
+          {s.items.flatMap((i) => {
+            const v = i.variant;
+            const ss = v.kind === "superset" ? String.fromCharCode(65 + letter++) : null;
+            const bg = S.ui.highlight === i.id ? "var(--mantine-color-green-light)" : undefined;
+            const row = (key: string, exId: string, sets: string, rest: string, notes: string | null) => (
+              <Table.Tr key={key} bg={bg} style={{ cursor: ro ? undefined : "pointer" }} onClick={() => !ro && onEdit(i)}>
+                <Table.Td><Group gap="xs"><Text size="sm" fw={500}>{ex(exId).name}</Text>{ss && <Badge size="xs" variant="outline" color="gray">Superset {ss}</Badge>}</Group></Table.Td>
+                <Table.Td><Text size="sm">{sets}</Text></Table.Td>
+                <Table.Td><Text size="sm">{rest}</Text></Table.Td>
+                <Table.Td maw={240}><Text size="xs" c="dimmed" fs={notes ? "italic" : undefined}>{notes || "—"}</Text></Table.Td>
+                {actions(i)}
+              </Table.Tr>
+            );
+            // Nel superset il recupero è sull'ultimo esercizio, come in PT-05.
+            const rows = [row(i.id, i.exerciseTypeId, setsLabel(i.reps), ss ? "—" : `${i.rest} s`, i.notes)];
+            if (v.kind === "superset")
+              v.partners.forEach((p, k) => rows.push(row(`${i.id}-p${k}`, p.exerciseTypeId, setsLabel(i.reps.map(() => p.reps)), k === v.partners.length - 1 ? `${i.rest} s` : "—", null)));
+            if (v.kind === "dropset") v.drops.forEach((d, k) => rows.push(sub(`${i.id}-d${k}`, <>Drop-set × {num(d)}</>, "1 × max", "—")));
+            if (v.kind === "restpause") rows.push(sub(`${i.id}-rp`, "Rest-pause", "miniserie al cedimento", `${v.pause} s tra le miniserie`));
+            return rows;
+          })}
         </Table.Tbody>
       </Table>
     </Table.ScrollContainer>
@@ -217,27 +231,12 @@ export function NoExercises({ onAdd }: { onAdd?: () => void }) {
 }
 
 // ---------- Passo 6: catalogo (Nota 4: predefinito, in sola lettura) ----------
-export function ExerciseCatalog({ onPick, maxHeight }: { onPick: (id: string) => void; maxHeight?: number | string }) {
+export function ExerciseCatalog({ onPick }: { onPick: (id: string) => void }) {
   const update = useUpdate();
   const q = S.ui.query.trim().toLowerCase();
   const list = CATALOG.filter((e) => (!S.ui.group || e.group === S.ui.group) && (!q || `${e.name} ${e.muscles}`.toLowerCase().includes(q)));
   const inSession = new Set(S.sel ? sessionExerciseIds(session(S.sel.blockId, S.sel.sessionId)) : []);
   const current = S.draft?.exerciseTypeId;
-  const body = (
-    <Stack gap={0}>
-      {list.map((e, k) => (
-        <UnstyledButton key={e.id} px="sm" py={8} onClick={() => onPick(e.id)} style={{ borderTop: k ? "1px solid var(--mantine-color-default-border)" : undefined }}
-          bg={current === e.id ? "var(--mantine-primary-color-light)" : undefined}>
-          <Group wrap="nowrap" gap="sm">
-            <Box style={{ flex: 1, minWidth: 0 }}><Text size="sm" fw={500}>{e.name}</Text><Text size="xs" c="dimmed" truncate>{e.muscles}</Text></Box>
-            {inSession.has(e.id) && <Badge size="xs" variant="outline" color="gray">Già nella sessione</Badge>}
-            <Badge size="xs" variant="light" color="gray">{e.group}</Badge>
-          </Group>
-        </UnstyledButton>
-      ))}
-      {!list.length && <Text size="sm" c="dimmed" ta="center" py="lg">Nessun esercizio trovato.</Text>}
-    </Stack>
-  );
   return (
     <Stack gap="sm">
       <TextInput data-autofocus placeholder="Cerca per nome o muscolo" leftSection={<IconSearch size={16} />} value={S.ui.query}
@@ -249,7 +248,20 @@ export function ExerciseCatalog({ onPick, maxHeight }: { onPick: (id: string) =>
           {GROUPS.map((g) => <Chip key={g} size="xs" value={g}>{g}</Chip>)}
         </Group>
       </Chip.Group>
-      <Paper withBorder radius="md">{maxHeight ? <ScrollArea.Autosize mah={maxHeight}>{body}</ScrollArea.Autosize> : body}</Paper>
+      <Paper withBorder radius="md">
+        {list.map((e, k) => (
+          <UnstyledButton key={e.id} w="100%" px="md" py="sm" onClick={() => onPick(e.id)} style={{ borderTop: k ? "1px solid var(--mantine-color-default-border)" : undefined }}
+            bg={current === e.id ? "var(--mantine-primary-color-light)" : undefined}>
+            <Group wrap="nowrap">
+              <div style={{ flex: 1, minWidth: 0 }}><Text fw={500}>{e.name}</Text><Text size="sm" c="dimmed" truncate>{e.muscles}</Text></div>
+              {inSession.has(e.id) && <Badge variant="outline" color="gray" visibleFrom="xs">Già nella sessione</Badge>}
+              <Badge variant="light" color="gray">{e.group}</Badge>
+              <IconChevronRight size={16} color="var(--mantine-color-dimmed)" />
+            </Group>
+          </UnstyledButton>
+        ))}
+        {!list.length && <Text size="sm" c="dimmed" ta="center" py="lg">Nessun esercizio trovato.</Text>}
+      </Paper>
       <Text size="xs" c="dimmed">Il catalogo degli esercizi è predefinito: puoi sceglierli, ma non aggiungerli o modificarli.</Text>
     </Stack>
   );
@@ -260,20 +272,19 @@ const catalogData = GROUPS.map((g) => ({ group: g, items: CATALOG.filter((e) => 
 
 function RepsField({ r, error, label }: { r: RepsDraft; error?: string; label?: string }) {
   const update = useUpdate();
-  const set = (fn: () => void) => update(fn);
   const toNum = (v: number | string) => (v === "" ? "" : Number(v));
   return (
     <Stack gap={4}>
       <Group gap="xs" align="flex-start" wrap="wrap">
         {label && <Text size="sm" w={64} pt={6}>{label}</Text>}
-        <SegmentedControl size="xs" value={r.type} onChange={(v) => set(() => { r.type = v as RepsDraft["type"]; })}
+        <SegmentedControl size="xs" value={r.type} onChange={(v) => update(() => { r.type = v as RepsDraft["type"]; })}
           data={[{ value: "fixed", label: "Fisse" }, { value: "range", label: "Intervallo" }, { value: "failure", label: "Cedimento" }]} />
-        {r.type === "fixed" && <NumberInput size="xs" w={110} aria-label="Ripetizioni" min={1} allowDecimal={false} allowNegative={false} suffix=" rip." value={r.n} onChange={(v) => set(() => { r.n = toNum(v); })} error={!!error} />}
+        {r.type === "fixed" && <NumberInput size="xs" w={110} aria-label="Ripetizioni" min={1} allowDecimal={false} allowNegative={false} suffix=" rip." value={r.n} onChange={(v) => update(() => { r.n = toNum(v); })} error={!!error} />}
         {r.type === "range" && (
           <Group gap={4} wrap="nowrap">
-            <NumberInput size="xs" w={70} aria-label="Minimo" min={1} allowDecimal={false} allowNegative={false} value={r.min} onChange={(v) => set(() => { r.min = toNum(v); })} error={!!error} />
+            <NumberInput size="xs" w={70} aria-label="Minimo" min={1} allowDecimal={false} allowNegative={false} value={r.min} onChange={(v) => update(() => { r.min = toNum(v); })} error={!!error} />
             <Text size="sm">–</Text>
-            <NumberInput size="xs" w={70} aria-label="Massimo" min={1} allowDecimal={false} allowNegative={false} value={r.max} onChange={(v) => set(() => { r.max = toNum(v); })} error={!!error} />
+            <NumberInput size="xs" w={70} aria-label="Massimo" min={1} allowDecimal={false} allowNegative={false} value={r.max} onChange={(v) => update(() => { r.max = toNum(v); })} error={!!error} />
             <Text size="sm" c="dimmed">rip.</Text>
           </Group>
         )}
@@ -284,7 +295,7 @@ function RepsField({ r, error, label }: { r: RepsDraft; error?: string; label?: 
   );
 }
 
-export function ExerciseForm({ h, onChange }: { h: VariantHooks; onChange?: () => void }) {
+export function ExerciseForm({ h, onChange }: { h: FlowHooks; onChange?: () => void }) {
   const update = useUpdate();
   const d = S.draft!;
   const e = ex(d.exerciseTypeId);
@@ -295,18 +306,17 @@ export function ExerciseForm({ h, onChange }: { h: VariantHooks; onChange?: () =
   return (
     <form onSubmit={(ev) => { ev.preventDefault(); update(() => commit(h)); }}>
       <Stack gap="md">
-        <Paper withBorder radius="md" p="sm">
-          <Group wrap="nowrap">
-            <ThemeIcon variant="light" size="lg"><IconStack2 size={18} /></ThemeIcon>
-            <Box style={{ flex: 1, minWidth: 0 }}><Group gap={6}><Text fw={600}>{e.name}</Text><Badge size="xs" variant="light" color="gray">{e.group}</Badge></Group><Text size="xs" c="dimmed">{e.muscles}</Text></Box>
-            {onChange && <Button size="xs" variant="subtle" leftSection={<IconArrowsExchange size={14} />} onClick={onChange}>Cambia</Button>}
-          </Group>
-        </Paper>
+        <Group wrap="nowrap">
+          <ThemeIcon variant="light" size="lg"><IconStack2 size={18} /></ThemeIcon>
+          <Box style={{ flex: 1, minWidth: 0 }}><Text size="sm" c="dimmed">Esercizio</Text><Text fw={600}>{e.name}</Text><Text size="sm" c="dimmed">{e.group} · {e.muscles}</Text></Box>
+          {onChange && <Button size="xs" variant="default" leftSection={<IconArrowsExchange size={14} />} onClick={onChange}>Cambia</Button>}
+        </Group>
+        <Divider />
 
         <Group align="flex-start" gap="lg">
           <NumberInput label="Serie" description="Da 1 a 12" w={110} min={1} max={12} allowDecimal={false} allowNegative={false} value={d.sets} error={err.sets}
             onChange={(v) => set(() => { d.sets = toNum(v); resizeReps(d); })} />
-          <NumberInput label="Recupero tra le serie" description={d.kind === "superset" ? "Dopo l'intera superserie" : "In secondi"} w={200} min={0} step={15}
+          <NumberInput label="Recupero tra le serie" description={d.kind === "superset" ? "Dopo l'intero superset" : "In secondi"} w={200} min={0} step={15}
             allowDecimal={false} allowNegative={false} suffix=" s" value={d.rest} error={err.rest} onChange={(v) => set(() => { d.rest = toNum(v); })} />
         </Group>
 
@@ -326,13 +336,13 @@ export function ExerciseForm({ h, onChange }: { h: VariantHooks; onChange?: () =
           {d.kind === "superset" && (
             <Paper withBorder radius="md" p="sm">
               <Stack gap="sm">
-                <Text size="xs" c="dimmed">Gli esercizi si eseguono uno dopo l'altro, senza recupero, con lo stesso numero di serie ({d.sets || "—"}). Il recupero vale per tutta la superserie.</Text>
+                <Text size="xs" c="dimmed">Gli esercizi si eseguono uno dopo l'altro, senza recupero, con lo stesso numero di serie ({d.sets || "—"}). Il recupero vale per tutto il superset.</Text>
                 {d.partners.map((p, k) => (
                   <Stack key={k} gap={6} pb="xs" style={{ borderBottom: "1px dashed var(--mantine-color-default-border)" }}>
                     <Group gap="xs" wrap="nowrap" align="flex-start">
                       <Select style={{ flex: 1 }} size="xs" searchable placeholder="Scegli dal catalogo" data={catalogData} value={p.exerciseTypeId} error={err[`partner${k}`]}
-                        label={`Esercizio ${k + 2} della superserie`} onChange={(v) => set(() => { p.exerciseTypeId = v; })} nothingFoundMessage="Nessun esercizio" />
-                      {d.partners.length > 1 && <ActionIcon mt={22} variant="subtle" color="red" aria-label="Togli dalla superserie" onClick={() => set(() => { d.partners.splice(k, 1); })}><IconTrash size={14} /></ActionIcon>}
+                        label={`Esercizio ${k + 2} del superset`} onChange={(v) => set(() => { p.exerciseTypeId = v; })} nothingFoundMessage="Nessun esercizio" />
+                      {d.partners.length > 1 && <ActionIcon mt={22} variant="subtle" color="red" aria-label="Togli dal superset" onClick={() => set(() => { d.partners.splice(k, 1); })}><IconTrash size={14} /></ActionIcon>}
                     </Group>
                     <RepsField r={p.reps} error={err[`partnerReps${k}`]} />
                   </Stack>
@@ -375,7 +385,7 @@ export function ExerciseForm({ h, onChange }: { h: VariantHooks; onChange?: () =
           <Text size="xs">Il carico non si inserisce qui: è specifico dell'atleta e si inserisce al momento dell'assegnazione (PT-05).</Text>
         </Alert>
 
-        <Group justify="flex-end">
+        <Group justify="space-between" mt="sm">
           <Button variant="default" onClick={() => update(() => cancelForm(h))}>Annulla</Button>
           <Button type="submit" leftSection={d.editingId ? <IconCheck size={16} /> : <IconPlus size={16} />}>{d.editingId ? "Salva Modifiche" : "Aggiungi Esercizio"}</Button>
         </Group>
@@ -383,4 +393,3 @@ export function ExerciseForm({ h, onChange }: { h: VariantHooks; onChange?: () =
     </form>
   );
 }
-

@@ -2,7 +2,7 @@
   "name": "prototype-pt04-mantine",
   "private": true,
   "version": "0.0.0",
-  "description": "PROTOTIPO USA E GETTA: tre varianti Mantine del caso d'uso PT-04",
+  "description": "PROTOTIPO USA E GETTA: caso d'uso PT-04 nello stile di PT-05",
   "type": "module",
   "scripts": {
     "dev": "vite --open",
