@@ -202,7 +202,120 @@ comuni, PT per il Personal Trainer, A per l'Atleta.
 Questa sezione mostra i mockup dell'interfaccia per alcuni casi d'uso.
 I mockup spiegano i passi dei casi d'uso. Non definiscono l'aspetto
 finale dell'applicazione. Le figure usano dati di esempio: l'atleta è
-Mario Rossi e la scheda da assegnare è \enquote{Forza avanzata}.
+Mario Rossi e la scheda è \enquote{Forza avanzata}.
+
+\subsubsection{PT-04: Configurazione Sessioni di Allenamento in una Scheda}
+Le figure seguenti mostrano il flusso principale del caso d'uso PT-04
+e alcuni flussi alternativi. Ogni passo ha una pagina. In alto il
+percorso indica la scheda, il blocco mensile e la sessione correnti.
+
+La figura \ref{fig:mockupPT04Blocchi} mostra la pagina di
+configurazione della scheda (passi 1 e 2). Il sistema mostra l'elenco
+dei blocchi mensili. Per ogni blocco mostra la durata, il numero di
+sessioni e le sessioni di allenamento. Una riga indica quanti
+allenamenti genera il blocco quando il PT assegna la scheda (Nota 3).
+Il pulsante \enquote{Aggiungi Blocco Mensile} aggiunge un blocco in
+coda alla scheda (flusso alternativo 2b). Il menu di ogni blocco
+contiene \enquote{Modifica Durata} (flusso alternativo 2d) ed
+\enquote{Elimina Blocco} (flusso alternativo 2e). Il pulsante
+\enquote{Aggiungi Sessione} aggiunge una sessione al blocco (flusso
+alternativo 2c). Il sistema non mostra il pulsante quando il blocco ha
+7 sessioni (flusso alternativo 2f).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{diagrams/Mockups/PT-04/screens/pt04-01-blocchi.png}
+  \caption{Mockup dell'elenco dei blocchi mensili (PT-04, passi 1 e 2)}
+  \label{fig:mockupPT04Blocchi}
+\end{figure}
+
+La figura \ref{fig:mockupPT04Sessione} mostra il dettaglio di una
+sessione di allenamento (passi 3 e 4). Per ogni esercizio la tabella
+mostra le serie, le ripetizioni, il recupero e le note. Gli esercizi
+di un superset hanno la stessa lettera. Il recupero del superset è
+sull'ultimo esercizio. Il drop-set è una riga sotto l'esercizio, con
+il moltiplicatore del carico. Il PT preme su un esercizio per
+modificarlo (flusso alternativo 5a). Il pulsante \enquote{Rimuovi}
+rimuove l'esercizio (flusso alternativo 5c). Il pulsante
+\enquote{Elimina Sessione} elimina la sessione (flusso alternativo
+4a). I pulsanti in basso aprono un'altra sessione del blocco (flusso
+alternativo 5b).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/Mockups/PT-04/screens/pt04-02-sessione.png}
+  \caption{Mockup del dettaglio di una sessione di allenamento (PT-04, passi 3 e 4)}
+  \label{fig:mockupPT04Sessione}
+\end{figure}
+
+La figura \ref{fig:mockupPT04Catalogo} mostra il catalogo degli
+esercizi (passi 5, 6 e 7). L'aggiunta di un esercizio ha due passi:
+scelta dal catalogo e dettagli. Un indicatore in alto mostra il passo
+corrente. Il PT cerca un esercizio per nome o per muscolo e filtra per
+gruppo muscolare. Il sistema segnala gli esercizi che sono già nella
+sessione. Il PT non può modificare il catalogo (Nota 4).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/Mockups/PT-04/screens/pt04-03-catalogo.png}
+  \caption{Mockup del catalogo degli esercizi (PT-04, passi 5, 6 e 7)}
+  \label{fig:mockupPT04Catalogo}
+\end{figure}
+
+La figura \ref{fig:mockupPT04Form} mostra il form dei dettagli
+dell'esercizio (passi 8, 9 e 10). Il PT inserisce il numero di serie,
+le ripetizioni e il recupero in secondi. Le ripetizioni sono un numero
+fisso, un intervallo oppure l'esecuzione al cedimento. Le ripetizioni
+possono essere diverse per ogni serie. Il PT sceglie anche la variante
+di esecuzione e inserisce le note. Il form non chiede il carico (Nota
+1). Nella figura il PT ha scelto il superset. Il sistema chiede gli
+altri esercizi del superset e le loro ripetizioni (variazione 9a). Per
+il drop-set il sistema chiede il moltiplicatore di ogni discesa. Per
+il rest-pause chiede la pausa tra le miniserie.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{diagrams/Mockups/PT-04/screens/pt04-04-form-superset.png}
+  \caption{Mockup del form dei dettagli dell'esercizio con un superset (PT-04, passi 8, 9 e 10, variazione 9a)}
+  \label{fig:mockupPT04Form}
+\end{figure}
+
+La figura \ref{fig:mockupPT04Rimozione} mostra la rimozione di un
+esercizio (flusso alternativo 5c). L'esercizio fa parte di un
+superset. Il sistema chiede conferma e avvisa che rimuove anche
+l'altro esercizio del superset.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/Mockups/PT-04/screens/pt04-05-rimozione-superset.png}
+  \caption{Mockup della rimozione di un esercizio in un superset (PT-04, flusso alternativo 5c)}
+  \label{fig:mockupPT04Rimozione}
+\end{figure}
+
+La figura \ref{fig:mockupPT04Blocco} mostra una scheda senza blocchi
+mensili (flusso alternativo 2a). Il PT ha premuto \enquote{Aggiungi
+Blocco Mensile}. Il sistema mostra il form della durata del blocco, in
+numero di settimane.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/Mockups/PT-04/screens/pt04-06-nuovo-blocco.png}
+  \caption{Mockup del form della durata di un nuovo blocco mensile (PT-04, flusso alternativo 2a)}
+  \label{fig:mockupPT04Blocco}
+\end{figure}
+
+La figura \ref{fig:mockupPT04SolaLettura} mostra una scheda con
+almeno un'assegnazione (flusso alternativo 1a). Il sistema mostra la
+scheda in sola lettura, con un messaggio e il pulsante
+\enquote{Duplica Scheda}. La pagina non contiene i pulsanti di
+modifica.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{diagrams/Mockups/PT-04/screens/pt04-07-sola-lettura.png}
+  \caption{Mockup di una scheda assegnata in sola lettura (PT-04, flusso alternativo 1a)}
+  \label{fig:mockupPT04SolaLettura}
+\end{figure}
 
 \subsubsection{PT-05: Assegnazione Scheda ad un Atleta}
 Le figure seguenti mostrano il flusso principale del caso d'uso PT-05
