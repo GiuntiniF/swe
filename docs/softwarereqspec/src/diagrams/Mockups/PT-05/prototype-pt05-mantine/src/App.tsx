@@ -62,11 +62,11 @@ function Switcher({ update }: { update: (fn?: () => void) => void }) {
   return (
     <>
       {S.showState && (
-        <Paper shadow="xl" radius="md" p="sm" style={{ ...pill, bottom: "calc(68px + env(safe-area-inset-bottom, 0px))", width: "min(640px, calc(100% - 32px))", maxHeight: "50vh", overflow: "auto" }}>
+        <Paper data-prototype-bar shadow="xl" radius="md" p="sm" style={{ ...pill, bottom: "calc(68px + env(safe-area-inset-bottom, 0px))", width: "min(640px, calc(100% - 32px))", maxHeight: "50vh", overflow: "auto" }}>
           <Code block style={{ background: "transparent", color: "white", whiteSpace: "pre-wrap" }}>{stateDump()}</Code>
         </Paper>
       )}
-      <Group gap={4} wrap="nowrap" p={4} style={{ ...pill, bottom: "calc(16px + env(safe-area-inset-bottom, 0px))", borderRadius: 999, boxShadow: "0 8px 24px rgba(0,0,0,.35)" }}>
+      <Group data-prototype-bar gap={4} wrap="nowrap" p={4} style={{ ...pill, bottom: "calc(16px + env(safe-area-inset-bottom, 0px))", borderRadius: 999, boxShadow: "0 8px 24px rgba(0,0,0,.35)" }}>
         <ActionIcon radius="xl" variant="subtle" color="gray" c="white" aria-label="Variante precedente" onClick={() => go(S.variant - 1)}><IconChevronLeft size={16} /></ActionIcon>
         <Text size="xs" fw={500} px={4} style={{ whiteSpace: "nowrap" }}><span style={{ opacity: 0.6 }}>Prototipo Mantine · </span>{v.key} <span style={{ opacity: 0.7 }}>({v.name})</span></Text>
         <ActionIcon radius="xl" variant="subtle" color="gray" c="white" aria-label="Variante successiva" onClick={() => go(S.variant + 1)}><IconChevronRight size={16} /></ActionIcon>

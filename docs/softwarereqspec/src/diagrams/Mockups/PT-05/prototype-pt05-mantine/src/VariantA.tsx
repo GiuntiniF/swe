@@ -1,7 +1,6 @@
 // PROTOTIPO USA E GETTA. Variante A: wizard a pagine, stessa struttura dei mockup Salt.
 import {
-  Alert, Anchor, Avatar, Badge, Breadcrumbs, Button, Container, Group, Paper, Progress, SegmentedControl, SimpleGrid,
-  Stack, Stepper, Table, Tabs, Text, ThemeIcon, Title, UnstyledButton,
+  Alert, Anchor, Badge, Breadcrumbs, Button, Container, Group, Paper, Progress, SegmentedControl, Stack, Stepper, Tabs, Text, ThemeIcon, Title, UnstyledButton,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import {
@@ -9,16 +8,17 @@ import {
   IconMail, IconPlus, IconStack2,
 } from "@tabler/icons-react";
 import {
-  APPOINTMENTS, ATHLETE, EX_IDS, PLANS, SESSIONS, blockOfWeek, endOf, firstFreeDay, flowFromDraft, fmt, fmtLong, key,
+  ATHLETE, EX_IDS, PLANS, SESSIONS, blockOfWeek, endOf, firstFreeDay, flowFromDraft, fmtLong, key,
   newFlow, plan, planSub, prefillWeek, totals, weeksOf, weeksOfBlock,
 } from "./domain";
-import { DraftBadge, FlowAlert, PeriodBadge, SessionTable, WeekBadge, WeekDot, sortedAssignments } from "./shared";
-import { type VariantHooks, S, askDiscard, continueToLoads, flow, notifyOutOfScope, saveDraft, submit, useUpdate } from "./store";
+import { FlowAlert, SessionTable, WeekBadge, WeekDot } from "./shared";
+import { AthleteDetail } from "./AthleteDetail";
+import { type VariantHooks, S, continueToLoads, flow, notifyOutOfScope, saveDraft, submit, useUpdate } from "./store";
 
 export const hooksA: VariantHooks = {
   resume(a) { S.flow = flowFromDraft(a); S.ui.aView = "loads"; },
   leave() { S.flow = null; S.ui.aView = "detail"; },
-  done(a) { S.flow = null; S.ui.doneId = a.id; S.ui.aView = "done"; },
+  done(a) { S.flow = null; S.ui.doneId = a.id; S.ui.aView = "done"; S.ui.bTab = "schede"; },
 };
 
 function Crumbs({ extra }: { extra?: string }) {
@@ -47,57 +47,10 @@ function WizardHead({ step }: { step: number }) {
 }
 
 function Detail() {
-  const update = useUpdate();
   return (
     <Stack gap="lg">
       <Crumbs />
-      <Group justify="space-between">
-        <Group>
-          <Avatar size="lg" radius="xl" color="blue">{ATHLETE.initials}</Avatar>
-          <div><Title order={2}>{ATHLETE.name}</Title><Text c="dimmed" size="sm">{ATHLETE.email} · {ATHLETE.age} anni</Text></div>
-        </Group>
-        <Button leftSection={<IconPlus size={16} />} onClick={() => update(() => { S.flow = newFlow(); S.ui.highlight = null; S.ui.aView = "plans"; })}>Assegna nuova Scheda</Button>
-      </Group>
-      <SimpleGrid cols={{ base: 1, sm: 3 }}>
-        {[["Dati fisici", `${ATHLETE.height} cm · ${ATHLETE.weight} kg`], ["Palestre", ATHLETE.gyms.join(", ")], ["Prossimo appuntamento", `${fmt(APPOINTMENTS[0].date).slice(0, 5)} · ${APPOINTMENTS[0].time}`]].map(([k, v]) => (
-          <Paper key={k} withBorder p="md" radius="md"><Text size="xs" c="dimmed" tt="uppercase" fw={700}>{k}</Text><Text fw={700} size="xl" mt={4}>{v}</Text></Paper>
-        ))}
-      </SimpleGrid>
-      <Paper withBorder radius="md" p="md">
-        <Title order={4}>Schede assegnate</Title>
-        <Text size="sm" c="dimmed" mb="sm">Le bozze sono visibili solo a te finché non le confermi.</Text>
-        <Table.ScrollContainer minWidth={600}>
-          <Table highlightOnHover verticalSpacing="sm">
-            <Table.Thead><Table.Tr><Table.Th>Scheda</Table.Th><Table.Th>Periodo</Table.Th><Table.Th>Stato</Table.Th><Table.Th ta="right">Azioni</Table.Th></Table.Tr></Table.Thead>
-            <Table.Tbody>
-              {sortedAssignments().map((a) => (
-                <Table.Tr key={a.id} bg={S.ui.highlight === a.id ? "var(--mantine-color-green-light)" : undefined}>
-                  <Table.Td fw={500}>{plan(a.planId).name}</Table.Td>
-                  <Table.Td>{fmt(a.start)} – {fmt(endOf(a.planId, a.start))}</Table.Td>
-                  <Table.Td><Group gap={6}><PeriodBadge a={a} /><DraftBadge a={a} /></Group></Table.Td>
-                  <Table.Td>
-                    <Group gap="xs" justify="flex-end">
-                      {a.status === "draft" ? (<>
-                        <Button size="xs" variant="default" onClick={() => update(() => hooksA.resume(a))}>Riprendi</Button>
-                        <Button size="xs" variant="subtle" color="red" onClick={() => askDiscard(a.id, hooksA, update)}>Scarta</Button>
-                      </>) : <Button size="xs" variant="subtle" onClick={() => notifyOutOfScope("Apri la scheda", "Il dettaglio della scheda non fa parte di questo prototipo.")}>Apri</Button>}
-                    </Group>
-                  </Table.Td>
-                </Table.Tr>
-              ))}
-            </Table.Tbody>
-          </Table>
-        </Table.ScrollContainer>
-      </Paper>
-      <Paper withBorder radius="md" p="md">
-        <Title order={4} mb="sm">Appuntamenti</Title>
-        <Table>
-          <Table.Thead><Table.Tr><Table.Th>Data</Table.Th><Table.Th>Ora</Table.Th><Table.Th>Stato</Table.Th></Table.Tr></Table.Thead>
-          <Table.Tbody>{APPOINTMENTS.map((x) => (
-            <Table.Tr key={x.date}><Table.Td>{fmt(x.date)}</Table.Td><Table.Td>{x.time}</Table.Td><Table.Td><Badge variant="light" color={x.status === "Confermato" ? "green" : "gray"}>{x.status}</Badge></Table.Td></Table.Tr>
-          ))}</Table.Tbody>
-        </Table>
-      </Paper>
+      <AthleteDetail hooks={hooksA} onNew={() => { S.flow = newFlow(); S.ui.highlight = null; S.ui.aView = "plans"; }} />
     </Stack>
   );
 }
@@ -109,7 +62,7 @@ function Plans() {
   return (
     <Stack gap="lg">
       <WizardHead step={0} />
-      {n && <Alert color="red" variant="light" icon={<IconAlertTriangle />} title="La scheda non è configurata">"{n.name}": {n.unconfigured} Completala con il caso d'uso PT-04, poi assegnala.</Alert>}
+      {n && <Alert color="red" variant="light" icon={<IconAlertTriangle />} title="La scheda non è configurata">"{n.name}": {n.unconfigured!.charAt(0).toLowerCase() + n.unconfigured!.slice(1)} Completala con il caso d'uso PT-04, poi assegnala.</Alert>}
       <Paper withBorder radius="md">
         {PLANS.map((p, i) => (
           <UnstyledButton key={p.id} w="100%" px="md" py="sm" style={{ borderTop: i ? "1px solid var(--mantine-color-default-border)" : undefined }}
