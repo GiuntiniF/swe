@@ -1,0 +1,827 @@
+<title>Prototipo PT-05</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<!--
+  PROTOTIPO USA E GETTA (branch prototype/pt05-shadcn): non è codice di produzione.
+  Domanda: che aspetto deve avere il flusso PT-05 "Assegnazione Scheda ad un Atleta"?
+  Piano: tre varianti dello stesso flusso in un solo file, da scorrere con la barra
+  in basso (frecce o tasti ← →). La variante è nell'hash: #variante-a, #variante-b, #variante-c.
+    A  Wizard a pagine        stessa struttura dei mockup PlantUML Salt (01-05)
+    B  Pannello laterale      il dettaglio atleta resta sotto, le week in accordion
+    C  Matrice dei carichi    una pagina sola: calendario delle schede + griglia esercizi × week
+  Componenti: ricostruzioni HTML di shadcn/ui (Button, Card, Input, Table, Tabs, Badge,
+  Alert, AlertDialog, Sheet, Progress, Breadcrumb) con le stesse classi Tailwind e i
+  token del tema zinc. Nessun salvataggio: lo stato vive in memoria.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  /* Layout: shell applicativa shadcn (header + contenuto centrato); token zinc di shadcn/ui. */
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 142 72% 29%;
+    --warning: 32 95% 38%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+    --radius: 0.5rem;
+    --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --background: 240 10% 3.9%;
+      --foreground: 0 0% 98%;
+      --card: 240 10% 5.5%;
+      --card-foreground: 0 0% 98%;
+      --primary: 0 0% 98%;
+      --primary-foreground: 240 5.9% 10%;
+      --secondary: 240 3.7% 15.9%;
+      --secondary-foreground: 0 0% 98%;
+      --muted: 240 3.7% 15.9%;
+      --muted-foreground: 240 5% 64.9%;
+      --accent: 240 3.7% 15.9%;
+      --accent-foreground: 0 0% 98%;
+      --destructive: 0 75% 62%;
+      --destructive-foreground: 0 0% 98%;
+      --success: 142 60% 52%;
+      --warning: 38 92% 58%;
+      --border: 240 3.7% 15.9%;
+      --input: 240 3.7% 22%;
+      --ring: 240 4.9% 83.9%;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 5.5%;
+    --card-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 75% 62%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 142 60% 52%;
+    --warning: 38 92% 58%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 22%;
+    --ring: 240 4.9% 83.9%;
+    color-scheme: dark;
+  }
+  body {
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-sans);
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 0 6rem;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { text-wrap: balance; }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
+  .tabular { font-variant-numeric: tabular-nums; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ["var(--font-sans)"], mono: ["var(--font-mono)"] },
+        colors: Object.fromEntries(
+          ["background","foreground","border","input","ring"].map(k => [k, `hsl(var(--${k}) / <alpha-value>)`])
+          .concat(["primary","secondary","muted","accent","destructive","card"].map(k => [k, {
+            DEFAULT: `hsl(var(--${k}) / <alpha-value>)`,
+            foreground: `hsl(var(--${k}-foreground) / <alpha-value>)`,
+          }]))
+          .concat([["success", "hsl(var(--success) / <alpha-value>)"], ["warning", "hsl(var(--warning) / <alpha-value>)"]])
+        ),
+        borderColor: { DEFAULT: "hsl(var(--border))" },
+        borderRadius: { xl: "calc(var(--radius) + 4px)", lg: "var(--radius)", md: "calc(var(--radius) - 2px)", sm: "calc(var(--radius) - 4px)" },
+      },
+    },
+  };
+</script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+
+<div id="app"></div>
+<div id="overlays"></div>
+<div id="proto"></div>
+
+<script>
+/* ============================================================
+   Dati d'esempio (gli stessi dei mockup Salt)
+   ============================================================ */
+const TODAY = "2026-11-26";
+const ATHLETE = { name: "Mario Rossi", initials: "MR", email: "mario.rossi@mail.it", age: 27, height: 178, weight: 76, gyms: ["FitLab Pisa"] };
+const APPOINTMENTS = [
+  { date: "2026-12-02", time: "18:30", status: "Confermato" },
+  { date: "2026-12-09", time: "18:30", status: "Richiesto" },
+];
+const PLANS = [
+  { id: "forza-base", name: "Forza base", blocks: [4, 4] },
+  { id: "ipertrofia-12", name: "Ipertrofia 12 settimane", blocks: [4, 4, 4] },
+  { id: "mantenimento", name: "Mantenimento", blocks: [4] },
+  { id: "forza-avanzata", name: "Forza avanzata", blocks: [4, 4, 4] },
+  { id: "ipertrofia-invernale", name: "Ipertrofia invernale", blocks: [4, 4, 4] },
+  { id: "ricomposizione", name: "Ricomposizione", blocks: [4], unconfigured: "Il blocco mensile 1 non ha sessioni di allenamento." },
+];
+const SESSIONS = [
+  { id: "s1", name: "Sessione 1", focus: "Spinta e gambe", rows: [
+    { id: "squat", name: "Squat", sets: "5 × 5", rest: "180 s" },
+    { id: "panca", name: "Panca piana", sets: "4 × 6", rest: "150 s", drop: 0.7 },
+    { id: "rematore", name: "Rematore con bilanciere", sets: "3 × 10", rest: "—", superset: "A" },
+    { id: "lento", name: "Lento avanti", sets: "3 × 10", rest: "90 s", superset: "A" },
+  ]},
+  { id: "s2", name: "Sessione 2", focus: "Tirata", rows: [
+    { id: "stacco", name: "Stacco da terra", sets: "5 × 3", rest: "180 s" },
+    { id: "trazioni", name: "Trazioni zavorrate", sets: "4 × 6", rest: "120 s" },
+  ]},
+];
+const EX_IDS = SESSIONS.flatMap(s => s.rows.map(r => r.id));
+const BASE = { squat: 100, panca: 80, rematore: 60, lento: 40, stacco: 130, trazioni: 10 };
+
+/* ============================================================
+   Regole di dominio (PT-05)
+   ============================================================ */
+const plan = id => PLANS.find(p => p.id === id);
+const weeksOf = p => p.blocks.reduce((a, b) => a + b, 0);
+const key = (w, ex) => `${w}|${ex}`;
+function addDays(iso, n) { const d = new Date(iso + "T00:00:00Z"); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+const daysBetween = (a, b) => (new Date(b + "T00:00:00Z") - new Date(a + "T00:00:00Z")) / 86400000;
+// Nota 3: la data di fine è l'ultimo giorno dell'ultimo blocco mensile.
+const endOf = (planId, start) => addDays(start, weeksOf(plan(planId)) * 7 - 1);
+const fmt = iso => iso ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}/${iso.slice(0, 4)}` : "—";
+const fmtLong = iso => new Date(iso + "T00:00:00Z").toLocaleDateString("it-IT", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+const kg = v => Number(v).toLocaleString("it-IT", { maximumFractionDigits: 1 });
+function blockOfWeek(p, w) { let acc = 0; for (let i = 0; i < p.blocks.length; i++) { if (w <= acc + p.blocks[i]) return { block: i + 1, inBlock: w - acc }; acc += p.blocks[i]; } }
+function weeksOfBlock(p, b) { const s = p.blocks.slice(0, b - 1).reduce((a, x) => a + x, 0); return Array.from({ length: p.blocks[b - 1] }, (_, i) => s + i + 1); }
+function hasLoad(f, w, ex) { const v = f.loads[key(w, ex)]; return v !== undefined && v !== "" && !Number.isNaN(v); }
+const missingInWeek = (f, w) => EX_IDS.filter(ex => !hasLoad(f, w, ex)).length;
+function incompleteWeeks(f) { const W = weeksOf(plan(f.planId)); return Array.from({ length: W }, (_, i) => i + 1).filter(w => missingInWeek(f, w) > 0); }
+function totals(f) { const W = weeksOf(plan(f.planId)); let filled = 0; for (let w = 1; w <= W; w++) filled += EX_IDS.length - missingInWeek(f, w); return { filled, total: W * EX_IDS.length }; }
+// Nota 2: un solo carico; la discesa del drop-set usa il moltiplicatore della variante.
+const dropValue = (f, w, row) => hasLoad(f, w, row.id) ? Math.round(f.loads[key(w, row.id)] * row.drop * 2) / 2 : null;
+// Nota 5: il controllo di sovrapposizione considera solo le assegnazioni confermate.
+function overlapFor(start, end, excludeId) {
+  return S.assignments.find(a => a.status === "confirmed" && a.id !== excludeId && a.start <= end && start <= endOf(a.planId, a.start));
+}
+function firstFreeDay() {
+  const last = S.assignments.filter(a => a.status === "confirmed").map(a => endOf(a.planId, a.start)).sort().pop();
+  const d = addDays(last, 1); return d < TODAY ? TODAY : d;
+}
+// Nota 1: ogni sessione è precompilata con i carichi della stessa sessione nella week precedente.
+function prefillWeek(f, w, exIds = EX_IDS) {
+  if (w <= 1) return 0; let n = 0;
+  for (const ex of exIds) if (!hasLoad(f, w, ex) && hasLoad(f, w - 1, ex)) { f.loads[key(w, ex)] = f.loads[key(w - 1, ex)]; f.pre.add(key(w, ex)); n++; }
+  return n;
+}
+function weekRanges(ws) {
+  const out = []; let s = null, p = null;
+  for (const w of ws) { if (s === null) { s = p = w; } else if (w === p + 1) { p = w; } else { out.push([s, p]); s = p = w; } }
+  if (s !== null) out.push([s, p]);
+  return out.map(([a, b]) => a === b ? `Week ${a}` : `Week ${a}–${b}`).join(", ");
+}
+function periodStatus(a) { const e = endOf(a.planId, a.start); return TODAY < a.start ? "Programmata" : TODAY > e ? "Terminata" : "In corso"; }
+
+function genLoads(weeks, partial = {}) {
+  const L = {};
+  for (let w = 1; w <= weeks; w++) for (const ex of EX_IDS) L[key(w, ex)] = BASE[ex] + Math.floor((w - 1) / 2) * 2.5;
+  for (const [w, exs] of Object.entries(partial)) for (const ex of EX_IDS) if (!exs.includes(ex)) delete L[key(w, ex)];
+  return L;
+}
+function initialAssignments() {
+  const draft = genLoads(4, { 4: ["squat", "panca"] });
+  return [
+    { id: 1, planId: "forza-base", start: "2026-01-05", status: "confirmed", loads: genLoads(8) },
+    { id: 2, planId: "ipertrofia-12", start: "2026-03-02", status: "confirmed", loads: genLoads(12) },
+    { id: 3, planId: "mantenimento", start: "2026-11-09", status: "confirmed", loads: genLoads(4) },
+    { id: 4, planId: "ipertrofia-invernale", start: "2027-03-01", status: "draft", loads: draft },
+  ];
+}
+
+/* ============================================================
+   Stato (solo in memoria)
+   ============================================================ */
+const S = {
+  variant: 0,
+  assignments: initialAssignments(),
+  nextId: 5,
+  flow: null,
+  ui: {},
+  dialog: null,
+  toast: null,
+  showState: false,
+};
+const newFlow = () => ({ id: null, planId: null, start: "", loads: {}, pre: new Set(), showErrors: false, error: null, notice: null, week: 1, session: "s1", resumed: false });
+function flowFromDraft(a) {
+  const f = { ...newFlow(), id: a.id, planId: a.planId, start: a.start, loads: { ...a.loads }, showErrors: true, resumed: true };
+  f.week = incompleteWeeks(f)[0] || 1;
+  return f;
+}
+function resetUi() { S.flow = null; S.ui = { aView: "detail", bSheet: false, bPhase: "setup", bTab: "schede", cOpen: false, doneId: null, highlight: null }; }
+resetUi();
+
+function upsertDraft() {
+  const f = S.flow; let a = S.assignments.find(x => x.id === f.id);
+  if (!a) { a = { id: S.nextId++, status: "draft" }; S.assignments.push(a); f.id = a.id; }
+  Object.assign(a, { planId: f.planId, start: f.start, loads: { ...f.loads } });
+  return a;
+}
+// Passo 6: il sistema crea l'assegnazione in bozza (vedi il diagramma di sequenza PT-05 Assegnazione).
+function continueToLoads() {
+  const f = S.flow; const o = overlapFor(f.start, endOf(f.planId, f.start), f.id);
+  if (o) { f.error = { type: "overlap", with: o.id }; return false; }
+  f.error = null; upsertDraft(); f.week = incompleteWeeks(f)[0] || 1; return true;
+}
+function saveDraft() {
+  upsertDraft(); S.ui.highlight = S.flow.id; V().leave();
+  toast("Bozza salvata", "La trovi tra le schede di Mario Rossi. Puoi riprenderla quando vuoi.");
+}
+function submit() {
+  const f = S.flow; f.showErrors = true;
+  const miss = incompleteWeeks(f);
+  if (miss.length) { upsertDraft(); f.error = { type: "missing", weeks: miss }; render(); return; }
+  const o = overlapFor(f.start, endOf(f.planId, f.start), f.id);
+  if (o) { upsertDraft(); f.error = { type: "overlap-confirm", with: o.id }; render(); return; }
+  const a = upsertDraft(); a.status = "confirmed"; f.error = null; S.ui.highlight = a.id;
+  V().done(a);
+}
+
+/* ============================================================
+   Componenti shadcn/ui (stesse classi della libreria)
+   ============================================================ */
+const cx = (...a) => a.filter(Boolean).join(" ");
+const icon = (n, c = "") => `<i data-lucide="${n}" class="${c}"></i>`;
+const BTN = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0";
+const BTN_V = {
+  default: "bg-primary text-primary-foreground shadow hover:bg-primary/90",
+  destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+  outline: "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
+  secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
+  ghost: "hover:bg-accent hover:text-accent-foreground",
+  link: "text-primary underline-offset-4 hover:underline px-0",
+};
+const BTN_S = { default: "h-9 px-4 py-2", sm: "h-8 rounded-md px-3 text-xs", lg: "h-10 rounded-md px-8", icon: "h-9 w-9", "icon-sm": "h-7 w-7" };
+function Button(label, { v = "default", s = "default", action, data = {}, ic, icr, disabled, cls = "", title } = {}) {
+  const d = Object.entries(data).map(([k, x]) => ` data-${k}="${x}"`).join("");
+  return `<button type="button" class="${cx(BTN, BTN_V[v], BTN_S[s], cls)}"${action ? ` data-action="${action}"` : ""}${d}${disabled ? " disabled" : ""}${title ? ` title="${title}" aria-label="${title}"` : ""}>${ic ? icon(ic) : ""}${label}${icr ? icon(icr) : ""}</button>`;
+}
+const BADGE_V = {
+  default: "border-transparent bg-primary text-primary-foreground shadow",
+  secondary: "border-transparent bg-secondary text-secondary-foreground",
+  outline: "text-foreground",
+  destructive: "border-transparent bg-destructive/15 text-destructive",
+  success: "border-transparent bg-success/15 text-success",
+  warning: "border-transparent bg-warning/15 text-warning",
+};
+const Badge = (t, v = "default", ic) => `<span class="inline-flex items-center gap-1 whitespace-nowrap rounded-md border px-2 py-0.5 text-xs font-semibold [&_svg]:size-3 ${BADGE_V[v]}">${ic ? icon(ic) : ""}${t}</span>`;
+const Card = (inner, cls = "") => `<div class="rounded-xl border bg-card text-card-foreground shadow ${cls}">${inner}</div>`;
+const CardHeader = (title, desc = "", right = "") => `<div class="flex flex-wrap items-start justify-between gap-3 p-6"><div class="flex min-w-0 flex-col gap-1.5"><h3 class="font-semibold leading-none tracking-tight">${title}</h3>${desc ? `<p class="text-sm text-muted-foreground">${desc}</p>` : ""}</div>${right}</div>`;
+const CardContent = (x, cls = "") => `<div class="p-6 pt-0 ${cls}">${x}</div>`;
+const CardFooter = (x, cls = "") => `<div class="flex flex-wrap items-center gap-2 p-6 pt-0 ${cls}">${x}</div>`;
+const Separator = (cls = "") => `<div role="separator" class="h-px w-full shrink-0 bg-border ${cls}"></div>`;
+const Label = (t, forId) => `<label ${forId ? `for="${forId}"` : ""} class="text-sm font-medium leading-none">${t}</label>`;
+const INPUT = "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm";
+function Alert(title, desc, { v = "default", ic = "info", actions = "" } = {}) {
+  const vc = v === "destructive" ? "border-destructive/50 text-destructive [&>svg]:text-destructive"
+    : v === "success" ? "border-success/50 text-success [&>svg]:text-success"
+    : "bg-background text-foreground";
+  return `<div role="alert" class="relative w-full rounded-lg border px-4 py-3 text-sm [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:size-4 [&>svg~*]:pl-7 ${vc}">${icon(ic)}<div><h5 class="mb-1 font-medium leading-none tracking-tight">${title}</h5><div class="text-sm opacity-90 [&_p]:leading-relaxed">${desc}</div>${actions ? `<div class="mt-3 flex flex-wrap gap-2">${actions}</div>` : ""}</div></div>`;
+}
+const Progress = pct => `<div class="relative h-2 w-full overflow-hidden rounded-full bg-primary/20"><div data-live="progress-bar" class="h-full bg-primary transition-all" style="width:${pct}%"></div></div>`;
+const Avatar = (t, cls = "size-10") => `<span class="relative flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted font-medium ${cls}">${t}</span>`;
+function Tabs(items, current, action, cls = "") {
+  return `<div role="tablist" class="inline-flex h-9 max-w-full items-center overflow-x-auto rounded-lg bg-muted p-1 text-muted-foreground ${cls}">${items.map(it =>
+    `<button type="button" role="tab" data-action="${action}" data-id="${it.id}" data-state="${String(it.id) === String(current) ? "active" : "inactive"}" class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow">${it.label}${it.extra || ""}</button>`).join("")}</div>`;
+}
+const TH = "h-10 px-2 text-left align-middle font-medium text-muted-foreground whitespace-nowrap";
+const TD = "p-2 align-middle";
+const TR = "border-b transition-colors hover:bg-muted/50";
+function Breadcrumb(items) {
+  return `<nav aria-label="breadcrumb"><ol class="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground">${items.map((it, i) => {
+    const last = i === items.length - 1;
+    return `<li class="inline-flex items-center">${last ? `<span class="text-foreground">${it.label}</span>` : `<button type="button" class="transition-colors hover:text-foreground" ${it.action ? `data-action="${it.action}"` : ""}>${it.label}</button>`}</li>${last ? "" : `<li role="presentation" class="[&>svg]:size-3.5">${icon("chevron-right")}</li>`}`;
+  }).join("")}</ol></nav>`;
+}
+function AppHeader() {
+  return `<header class="mb-6 border-b"><div class="mx-auto flex h-14 max-w-6xl items-center gap-6">
+    <div class="flex items-center gap-2 font-semibold">${icon("dumbbell", "size-5")}<span>Area PT</span></div>
+    <nav class="hidden items-center gap-5 text-sm sm:flex">${["Atleti", "Schede", "Palestre", "Appuntamenti"].map(n => `<span class="${n === "Atleti" ? "font-medium text-foreground" : "text-muted-foreground"}">${n}</span>`).join("")}</nav>
+    <div class="ml-auto">${Avatar("PT", "size-8 text-xs")}</div></div></header>`;
+}
+
+/* Frammenti di dominio riusati dalle varianti */
+const periodBadge = a => { const s = periodStatus(a); return Badge(s, s === "In corso" ? "success" : s === "Terminata" ? "secondary" : "outline"); };
+const draftBadge = a => a.status === "draft" ? Badge("Bozza", "warning", "pencil") : "";
+const sorted = () => [...S.assignments].sort((a, b) => a.start.localeCompare(b.start));
+const planSub = p => `${p.blocks.length} ${p.blocks.length === 1 ? "blocco mensile" : "blocchi mensili"} · ${weeksOf(p)} settimane`;
+function loadInput(f, w, ex, cls = "w-20 text-right") {
+  const k = key(w, ex); const has = hasLoad(f, w, ex);
+  return `<input id="load-${S.variant}-${w}-${ex}" data-load="${k}" type="number" inputmode="decimal" step="0.5" min="0" aria-label="Carico in kg" value="${has ? f.loads[k] : ""}" placeholder="kg"
+    class="${cx(INPUT, "h-8 tabular", cls, f.pre.has(k) && "italic text-muted-foreground", !has && f.showErrors && "border-destructive bg-destructive/5")}">`;
+}
+function weekStatus(f, w, mode = "badge") {
+  const m = missingInWeek(f, w);
+  if (mode === "dot") return m === 0 ? `<span class="size-1.5 rounded-full bg-success"></span>` : `<span class="size-1.5 rounded-full ${f.showErrors ? "bg-destructive" : "bg-muted-foreground/40"}"></span>`;
+  if (m === 0) return Badge("Completa", "success", "check");
+  if (m === EX_IDS.length) return Badge("Da compilare", f.showErrors ? "destructive" : "outline");
+  return Badge(`${m} ${m === 1 ? "mancante" : "mancanti"}`, f.showErrors ? "destructive" : "warning");
+}
+const live = (w, mode) => `<span class="inline-flex" data-live="week-status" data-week="${w}" data-mode="${mode}">${weekStatus(S.flow, w, mode)}</span>`;
+function flowAlerts(f, { onDates = "" } = {}) {
+  if (!f.error) return "";
+  if (f.error.type === "missing")
+    return Alert("Mancano dei carichi", `<p>Inserisci i carichi mancanti in ${weekRanges(f.error.weeks)}. L'assegnazione resta in bozza finché non sono completi.</p>`, { v: "destructive", ic: "triangle-alert" });
+  const o = S.assignments.find(a => a.id === f.error.with);
+  if (!o) return "";
+  const oe = endOf(o.planId, o.start), e = endOf(f.planId, f.start);
+  const title = f.error.type === "overlap-confirm" ? "Nel frattempo è stata confermata un'altra scheda" : "Le date si sovrappongono a un'altra scheda";
+  return Alert(title, `<p>L'intervallo ${fmt(f.start)} – ${fmt(e)} si sovrappone a "${plan(o.planId).name}" (${fmt(o.start)} – ${fmt(oe)}). Scegli una data di inizio dal ${fmt(addDays(oe, 1))} in poi.</p>`,
+    { v: "destructive", ic: "circle-x", actions: onDates ? Button("Cambia la data di inizio", { v: "outline", s: "sm", action: onDates, ic: "calendar" }) : "" });
+}
+function sessionRows(f, w, s, { compact = false } = {}) {
+  return s.rows.map(r => {
+    const ss = r.superset ? Badge(`Superset ${r.superset}`, "outline") : "";
+    const main = compact
+      ? `<div class="flex items-center justify-between gap-3 py-2"><div class="min-w-0"><div class="flex flex-wrap items-center gap-2 text-sm font-medium">${r.name}${ss}</div><div class="text-xs text-muted-foreground tabular">${r.sets} · recupero ${r.rest}</div></div><div class="flex items-center gap-2">${loadInput(f, w, r.id, "w-20 text-right")}<span class="text-xs text-muted-foreground">kg</span></div></div>`
+      : `<tr class="${TR}"><td class="${TD}"><div class="flex flex-wrap items-center gap-2 font-medium">${r.name}${ss}</div></td><td class="${TD} tabular">${r.sets}</td><td class="${TD} tabular">${r.rest}</td><td class="${TD} text-right">${loadInput(f, w, r.id)}</td></tr>`;
+    if (!r.drop) return main;
+    const d = dropValue(f, w, r); const dv = d === null ? "—" : kg(d);
+    const mult = kg(r.drop);
+    return main + (compact
+      ? `<div class="flex items-center justify-between gap-3 border-l-2 pb-2 pl-3 text-xs text-muted-foreground"><span>Drop-set × ${mult} · 1 × max</span><span class="tabular"><span data-drop="${key(w, r.id)}">${dv}</span> kg calcolati</span></div>`
+      : `<tr class="${TR} bg-muted/30 text-muted-foreground"><td class="${TD} pl-6">${icon("corner-down-right", "mr-1 inline size-3.5")}Drop-set × ${mult}</td><td class="${TD} tabular">1 × max</td><td class="${TD}">—</td><td class="${TD} text-right tabular"><span data-drop="${key(w, r.id)}">${dv}</span> kg <span class="text-xs">calcolato</span></td></tr>`);
+  }).join("");
+}
+const freeDayChip = () => { const d = firstFreeDay(); return Button(`Primo giorno libero: ${fmtLong(d)}`, { v: "outline", s: "sm", action: "set-start", data: { d }, ic: "calendar-check" }); };
+
+/* ============================================================
+   Variante A: wizard a pagine (come i mockup Salt)
+   ============================================================ */
+function Stepper(cur) {
+  return `<ol class="flex items-center gap-2 text-sm">${["Scheda", "Date", "Carichi"].map((s, i) => {
+    const n = i + 1, done = n < cur, act = n === cur;
+    return `<li class="flex items-center gap-2">${i ? `<span class="h-px w-5 bg-border sm:w-8"></span>` : ""}<span class="flex size-6 items-center justify-center rounded-full border text-xs font-semibold ${done ? "border-primary bg-primary text-primary-foreground" : act ? "border-primary" : "text-muted-foreground"}">${done ? icon("check", "size-3.5") : n}</span><span class="hidden ${act ? "font-medium" : "text-muted-foreground"} sm:inline">${s}</span></li>`;
+  }).join("")}</ol>`;
+}
+function A_crumbs(extra) { return Breadcrumb([{ label: "Atleti" }, { label: "Mario Rossi", action: "a-detail" }, ...(extra ? [{ label: extra }] : [])]); }
+function A_title(step) {
+  const f = S.flow;
+  return `<div class="flex flex-wrap items-center justify-between gap-4"><h1 class="text-2xl font-semibold tracking-tight">${f && f.resumed ? "Riprendi la bozza" : "Assegna nuova Scheda"}</h1>${Stepper(step)}</div>`;
+}
+function A_detail() {
+  const rows = sorted().map(a => {
+    const p = plan(a.planId);
+    const acts = a.status === "draft"
+      ? `<div class="flex justify-end gap-1">${Button("Riprendi", { v: "outline", s: "sm", action: "resume", data: { id: a.id } })}${Button("Scarta", { v: "ghost", s: "sm", action: "discard", data: { id: a.id }, cls: "text-destructive hover:text-destructive" })}</div>`
+      : `<div class="flex justify-end">${Button("Apri", { v: "ghost", s: "sm", action: "open-plan" })}</div>`;
+    return `<tr class="${cx(TR, S.ui.highlight === a.id && "bg-success/10")}"><td class="${TD} font-medium">${p.name}</td><td class="${TD} tabular whitespace-nowrap">${fmt(a.start)} – ${fmt(endOf(a.planId, a.start))}</td><td class="${TD}"><div class="flex flex-wrap gap-1">${periodBadge(a)}${draftBadge(a)}</div></td><td class="${TD}">${acts}</td></tr>`;
+  }).join("");
+  return `<main class="mx-auto flex max-w-5xl flex-col gap-6">
+    ${Breadcrumb([{ label: "Atleti" }, { label: "Mario Rossi" }])}
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-4">${Avatar(ATHLETE.initials, "size-14 text-lg")}<div><h1 class="text-2xl font-semibold tracking-tight">${ATHLETE.name}</h1><p class="text-sm text-muted-foreground">${ATHLETE.email} · ${ATHLETE.age} anni</p></div></div>
+      ${Button("Assegna nuova Scheda", { action: "a-new", ic: "plus" })}
+    </div>
+    <div class="grid gap-4 sm:grid-cols-3">
+      ${Card(CardHeader("Dati fisici") + CardContent(`<p class="text-2xl font-semibold tabular">${ATHLETE.height} cm · ${ATHLETE.weight} kg</p>`))}
+      ${Card(CardHeader("Palestre") + CardContent(`<p class="text-2xl font-semibold">${ATHLETE.gyms.join(", ")}</p>`))}
+      ${Card(CardHeader("Prossimo appuntamento") + CardContent(`<p class="text-2xl font-semibold tabular">${fmt(APPOINTMENTS[0].date).slice(0, 5)} · ${APPOINTMENTS[0].time}</p>`))}
+    </div>
+    ${Card(CardHeader("Schede assegnate", "Le bozze sono visibili solo a te finché non le confermi.") + CardContent(`<div class="relative w-full overflow-x-auto"><table class="w-full text-sm"><thead class="[&_tr]:border-b"><tr><th class="${TH}">Scheda</th><th class="${TH}">Periodo</th><th class="${TH}">Stato</th><th class="${TH} text-right">Azioni</th></tr></thead><tbody class="[&_tr:last-child]:border-0">${rows}</tbody></table></div>`))}
+    ${Card(CardHeader("Appuntamenti") + CardContent(`<div class="relative w-full overflow-x-auto"><table class="w-full text-sm"><thead class="[&_tr]:border-b"><tr><th class="${TH}">Data</th><th class="${TH}">Ora</th><th class="${TH}">Stato</th></tr></thead><tbody class="[&_tr:last-child]:border-0">${APPOINTMENTS.map(x => `<tr class="${TR}"><td class="${TD} tabular">${fmt(x.date)}</td><td class="${TD} tabular">${x.time}</td><td class="${TD}">${Badge(x.status, x.status === "Confermato" ? "success" : "outline")}</td></tr>`).join("")}</tbody></table></div>`))}
+  </main>`;
+}
+function A_plans() {
+  const f = S.flow; const n = f.notice && plan(f.notice);
+  const items = PLANS.map(p => `<button type="button" data-action="a-pick" data-id="${p.id}" class="flex w-full items-center gap-4 border-b px-6 py-4 text-left transition-colors last:border-0 hover:bg-muted/50">
+      <span class="flex size-9 shrink-0 items-center justify-center rounded-md bg-muted">${icon("layers", "size-4")}</span>
+      <span class="min-w-0 flex-1"><span class="block font-medium">${p.name}</span><span class="block text-sm text-muted-foreground">${planSub(p)}</span></span>
+      ${p.unconfigured ? Badge("Non configurata", "warning", "triangle-alert") : Badge("Configurata", "success", "check")}
+      ${icon("chevron-right", "size-4 text-muted-foreground")}</button>`).join("");
+  return `<main class="mx-auto flex max-w-3xl flex-col gap-6">${A_crumbs("Assegna nuova Scheda")}${A_title(1)}
+    ${n ? Alert("La scheda non è configurata", `<p>"${n.name}": ${n.unconfigured} Completala con il caso d'uso PT-04, poi assegnala.</p>`, { v: "destructive", ic: "triangle-alert" }) : ""}
+    ${Card(CardHeader("Scegli la scheda", "Le schede che hai creato. Puoi assegnare solo quelle configurate.") + `<div class="border-t">${items}</div>`)}
+    <div class="flex flex-wrap justify-between gap-2">${Button("Annulla", { v: "outline", action: "a-detail" })}${Button("Crea scheda ad hoc", { v: "secondary", action: "adhoc", ic: "plus" })}</div>
+  </main>`;
+}
+function A_dates() {
+  const f = S.flow; const p = plan(f.planId);
+  const end = f.start ? fmtLong(endOf(f.planId, f.start)) : "Inserisci la data di inizio";
+  return `<main class="mx-auto flex max-w-3xl flex-col gap-6">${A_crumbs("Assegna nuova Scheda")}${A_title(2)}
+    ${Card(CardHeader("Date dell'assegnazione", `Scheda: <span class="font-medium text-foreground">${p.name}</span>`) + CardContent(`<div class="grid gap-5">
+      <div class="grid gap-1"><span class="text-sm font-medium">Durata</span><span class="text-sm text-muted-foreground tabular">${weeksOf(p)} settimane · ${p.blocks.length} blocchi mensili da ${p.blocks.join(" + ")} settimane</span></div>
+      <div class="grid gap-2">${Label("Data di inizio", "a-start")}<input id="a-start" type="date" data-field="start" value="${f.start}" class="${INPUT} max-w-xs">${freeDayChip().replace("inline-flex", "inline-flex w-fit")}</div>
+      <div class="grid gap-2"><span class="text-sm font-medium">Data di fine</span><div class="w-fit rounded-md bg-muted px-3 py-2 text-sm tabular">${end}</div><span class="text-xs text-muted-foreground">Calcolata dalla data di inizio e dal numero di blocchi mensili.</span></div>
+      ${flowAlerts(f)}</div>`) + CardFooter(`${Button("Indietro", { v: "outline", action: "a-plans", ic: "chevron-left" })}<span class="flex-1"></span>${Button("Continua", { action: "a-continue", icr: "chevron-right", disabled: !f.start })}`))}
+  </main>`;
+}
+function A_loads() {
+  const f = S.flow; const p = plan(f.planId); const t = totals(f);
+  const { block } = blockOfWeek(p, f.week);
+  const blockTabs = Tabs(p.blocks.map((_, i) => ({ id: i + 1, label: `Blocco ${i + 1}` })), block, "a-block");
+  const weekTabs = Tabs(weeksOfBlock(p, block).map(w => ({ id: w, label: `Week ${w}`, extra: live(w, "dot") })), f.week, "a-week");
+  const pre = EX_IDS.some(ex => f.pre.has(key(f.week, ex)));
+  const sessions = SESSIONS.map(s => Card(CardHeader(`${s.name} · ${s.focus}`) + CardContent(`<div class="relative w-full overflow-x-auto"><table class="w-full text-sm"><thead class="[&_tr]:border-b"><tr><th class="${TH}">Esercizio</th><th class="${TH}">Serie × rip.</th><th class="${TH}">Recupero</th><th class="${TH} text-right">Carico (kg)</th></tr></thead><tbody class="[&_tr:last-child]:border-0">${sessionRows(f, f.week, s)}</tbody></table></div>`))).join("");
+  return `<main class="mx-auto flex max-w-5xl flex-col gap-6">${A_crumbs(f.resumed ? "Riprendi la bozza" : "Assegna nuova Scheda")}${A_title(3)}
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div class="grid gap-1"><div class="flex items-center gap-2"><span class="font-semibold">${p.name}</span>${Badge("Bozza", "warning", "pencil")}</div><span class="text-sm text-muted-foreground tabular">${fmtLong(f.start)} → ${fmtLong(endOf(f.planId, f.start))}</span></div>
+      <div class="grid w-full gap-1.5 sm:w-64"><div class="flex justify-between text-sm"><span class="text-muted-foreground">Carichi inseriti</span><span class="font-medium tabular" data-live="progress-text">${t.filled} / ${t.total}</span></div>${Progress(t.filled / t.total * 100)}</div>
+    </div>
+    ${flowAlerts(f, { onDates: "a-dates" })}
+    <div class="flex flex-col gap-3">${blockTabs}${weekTabs}</div>
+    <div class="flex flex-wrap items-center gap-2"><h2 class="text-lg font-semibold">Week ${f.week}</h2>${live(f.week, "badge")}${pre ? `<span class="text-sm text-muted-foreground">${icon("copy", "mr-1 inline size-3.5")}Precompilata dalla week ${f.week - 1}: controlla i carichi in corsivo.</span>` : ""}</div>
+    ${sessions}
+    <div class="flex flex-wrap items-center gap-2">${Button("Indietro", { v: "outline", action: "a-dates", ic: "chevron-left" })}<span class="flex-1"></span>${Button("Salva e continua dopo", { v: "secondary", action: "save-draft", ic: "save" })}${Button("Assegna Scheda", { action: "submit", ic: "check" })}</div>
+  </main>`;
+}
+function A_done() {
+  const a = S.assignments.find(x => x.id === S.ui.doneId); const p = plan(a.planId);
+  return `<main class="mx-auto flex max-w-lg flex-col gap-6">${A_crumbs("Assegna nuova Scheda")}
+    ${Card(`<div class="flex flex-col items-center gap-3 p-8 text-center">${icon("circle-check", "size-12 text-success")}<h1 class="text-2xl font-semibold tracking-tight">Scheda assegnata</h1><p class="text-muted-foreground">"${p.name}" è assegnata a ${ATHLETE.name} dal ${fmtLong(a.start)} al ${fmtLong(endOf(a.planId, a.start))}.</p></div>`
+      + CardContent(Alert("Email inviata", `<p>Abbiamo avvisato ${ATHLETE.name} all'indirizzo ${ATHLETE.email}.</p>`, { ic: "mail" }))
+      + CardFooter(`${Button("Torna all'atleta", { action: "a-detail", cls: "flex-1" })}${Button("Apri la scheda", { v: "outline", action: "open-plan", cls: "flex-1" })}`))}
+  </main>`;
+}
+const VA = {
+  key: "A", slug: "variante-a", name: "Wizard a pagine",
+  render() { return AppHeader() + ({ detail: A_detail, plans: A_plans, dates: A_dates, loads: A_loads, done: A_done })[S.ui.aView](); },
+  resume(a) { S.flow = flowFromDraft(a); S.ui.aView = "loads"; },
+  leave() { S.flow = null; S.ui.aView = "detail"; },
+  done(a) { S.flow = null; S.ui.doneId = a.id; S.ui.aView = "done"; },
+};
+
+/* ============================================================
+   Variante B: pannello laterale (Sheet) sul dettaglio atleta
+   ============================================================ */
+function B_page() {
+  const list = sorted().map(a => {
+    const p = plan(a.planId); const e = endOf(a.planId, a.start);
+    const acts = a.status === "draft"
+      ? `${Button("Riprendi", { v: "outline", s: "sm", action: "resume", data: { id: a.id } })}${Button("", { v: "ghost", s: "icon", action: "discard", data: { id: a.id }, ic: "trash-2", title: "Scarta la bozza", cls: "text-destructive hover:text-destructive" })}`
+      : Button("", { v: "ghost", s: "icon", action: "open-plan", ic: "chevron-right", title: "Apri la scheda" });
+    return `<li class="${cx("flex items-center gap-4 px-6 py-4", S.ui.highlight === a.id && "bg-success/10")}">
+      <div class="flex w-14 shrink-0 flex-col items-center rounded-md border py-1.5 text-center leading-tight"><span class="text-xs uppercase tracking-wide text-muted-foreground">${new Date(a.start + "T00:00:00Z").toLocaleDateString("it-IT", { month: "short", timeZone: "UTC" })}</span><span class="text-sm font-semibold tabular">${a.start.slice(0, 4)}</span></div>
+      <div class="min-w-0 flex-1"><div class="flex flex-wrap items-center gap-2"><span class="font-medium">${p.name}</span>${periodBadge(a)}${draftBadge(a)}</div><div class="text-sm text-muted-foreground tabular">${fmt(a.start)} – ${fmt(e)} · ${weeksOf(p)} settimane</div></div>
+      <div class="flex shrink-0 items-center gap-1">${acts}</div></li>`;
+  }).join("");
+  const tab = S.ui.bTab;
+  const body = tab === "schede"
+    ? Card(`<ul class="divide-y">${list}</ul>`)
+    : tab === "appuntamenti"
+      ? Card(`<ul class="divide-y">${APPOINTMENTS.map(x => `<li class="flex items-center justify-between gap-4 px-6 py-4"><div><div class="font-medium tabular">${fmtLong(x.date)}</div><div class="text-sm text-muted-foreground tabular">ore ${x.time}</div></div>${Badge(x.status, x.status === "Confermato" ? "success" : "outline")}</li>`).join("")}</ul>`)
+      : Card(CardContent(`<dl class="grid gap-4 pt-6 sm:grid-cols-2">${[["Nome e cognome", ATHLETE.name], ["Email", ATHLETE.email], ["Età", `${ATHLETE.age} anni`], ["Altezza", `${ATHLETE.height} cm`], ["Peso", `${ATHLETE.weight} kg`], ["Palestre", ATHLETE.gyms.join(", ")]].map(([k, v]) => `<div><dt class="text-sm text-muted-foreground">${k}</dt><dd class="font-medium">${v}</dd></div>`).join("")}</dl>`));
+  return AppHeader() + `<main class="mx-auto flex max-w-3xl flex-col gap-6">
+    ${Breadcrumb([{ label: "Atleti" }, { label: "Mario Rossi" }])}
+    <div class="flex flex-wrap items-start gap-4">${Avatar(ATHLETE.initials, "size-16 text-xl")}
+      <div class="min-w-0 flex-1"><h1 class="text-3xl font-semibold tracking-tight">${ATHLETE.name}</h1>
+        <div class="mt-2 flex flex-wrap gap-1.5">${Badge(`${ATHLETE.age} anni`, "secondary")}${Badge(`${ATHLETE.height} cm`, "secondary")}${Badge(`${ATHLETE.weight} kg`, "secondary")}${Badge(ATHLETE.gyms[0], "outline", "building-2")}</div></div>
+      ${Button("Assegna nuova Scheda", { action: "b-open", ic: "plus" })}</div>
+    ${Tabs([{ id: "schede", label: `Schede <span class="text-xs opacity-60">${S.assignments.length}</span>` }, { id: "appuntamenti", label: "Appuntamenti" }, { id: "profilo", label: "Profilo" }], tab, "b-tab")}
+    ${body}
+  </main>` + (S.ui.bSheet ? B_sheet() : "");
+}
+function B_setup() {
+  const f = S.flow;
+  const items = PLANS.map(p => {
+    const sel = f.planId === p.id, warn = f.notice === p.id;
+    return `<div><button type="button" role="radio" aria-checked="${sel}" data-action="b-pick" data-id="${p.id}" class="${cx("flex w-full items-center gap-3 rounded-lg border p-3 text-left transition-colors hover:bg-muted/50", sel && "border-primary ring-1 ring-primary", p.unconfigured && "opacity-70")}">
+      <span class="${cx("flex size-4 shrink-0 items-center justify-center rounded-full border border-primary", p.unconfigured && "border-muted-foreground")}">${sel ? `<span class="size-2 rounded-full bg-primary"></span>` : ""}</span>
+      <span class="min-w-0 flex-1"><span class="block text-sm font-medium">${p.name}</span><span class="block text-xs text-muted-foreground">${planSub(p)}</span></span>
+      ${p.unconfigured ? Badge("Non configurata", "warning") : ""}</button>
+      ${warn ? `<p class="mt-1.5 flex items-start gap-1.5 px-1 text-xs text-destructive">${icon("triangle-alert", "mt-px size-3.5 shrink-0")}La scheda non è configurata: completala con il caso d'uso PT-04. ${p.unconfigured}</p>` : ""}</div>`;
+  }).join("");
+  let dates = "";
+  if (f.planId) {
+    const p = plan(f.planId); const end = f.start && endOf(f.planId, f.start);
+    const o = f.start && overlapFor(f.start, end, f.id);
+    const check = !f.start ? "" : o
+      ? Alert("Le date si sovrappongono a un'altra scheda", `<p>"${plan(o.planId).name}" va dal ${fmt(o.start)} al ${fmt(endOf(o.planId, o.start))}. Scegli una data di inizio dal ${fmt(addDays(endOf(o.planId, o.start), 1))} in poi.</p>`, { v: "destructive", ic: "circle-x" })
+      : `<p class="flex items-center gap-1.5 text-sm text-success">${icon("circle-check", "size-4")}Nessuna sovrapposizione con le schede confermate.</p>`;
+    dates = `<section class="grid gap-4"><h3 class="text-sm font-semibold">2. Date</h3>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div class="grid gap-2">${Label("Data di inizio", "b-start")}<input id="b-start" type="date" data-field="start" value="${f.start}" class="${INPUT}"></div>
+        <div class="grid gap-2"><span class="text-sm font-medium leading-none">Data di fine</span><div class="flex h-9 items-center rounded-md bg-muted px-3 text-sm tabular">${end ? fmt(end) : "—"}</div></div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">${freeDayChip()}<span class="text-xs text-muted-foreground">Durata: ${weeksOf(p)} settimane</span></div>
+      ${check}</section>`;
+  }
+  const ok = f.planId && f.start && !overlapFor(f.start, endOf(f.planId, f.start), f.id);
+  return {
+    body: `<section class="grid gap-3"><h3 class="text-sm font-semibold">1. Scheda</h3><div role="radiogroup" class="grid gap-2">${items}</div>
+      ${Button("Crea scheda ad hoc", { v: "link", s: "sm", action: "adhoc", ic: "plus", cls: "w-fit" })}</section>${dates}`,
+    footer: `${Button("Annulla", { v: "outline", action: "b-close" })}${Button("Continua", { action: "b-continue", icr: "chevron-right", disabled: !ok })}`,
+  };
+}
+function B_loads() {
+  const f = S.flow; const p = plan(f.planId); const t = totals(f);
+  const weeks = p.blocks.map((_, i) => `<div class="pt-4"><div class="pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Blocco ${i + 1}</div>${weeksOfBlock(p, i + 1).map(w => {
+    const open = f.week === w; const pre = EX_IDS.some(ex => f.pre.has(key(w, ex)));
+    return `<div class="border-b"><button type="button" data-action="b-week" data-id="${w}" aria-expanded="${open}" class="flex w-full items-center justify-between gap-3 py-3 text-left text-sm font-medium transition-all hover:underline">
+        <span>Week ${w}</span><span class="flex items-center gap-2">${live(w, "badge")}${icon("chevron-down", cx("size-4 shrink-0 text-muted-foreground transition-transform", open && "rotate-180"))}</span></button>
+      ${open ? `<div class="grid gap-4 pb-4">${pre ? `<p class="text-xs text-muted-foreground">${icon("copy", "mr-1 inline size-3")}Precompilata dalla week ${w - 1}. I valori in corsivo sono da controllare.</p>` : ""}${SESSIONS.map(s => `<div><div class="mb-1 text-xs font-semibold text-muted-foreground">${s.name} · ${s.focus}</div><div class="divide-y">${sessionRows(f, w, s, { compact: true })}</div></div>`).join("")}</div>` : ""}</div>`;
+  }).join("")}</div>`).join("");
+  return {
+    body: `<div class="grid gap-3 rounded-lg border bg-muted/40 p-4">
+        <div class="flex items-start justify-between gap-3"><div><div class="flex items-center gap-2 font-medium">${p.name}${Badge("Bozza", "warning")}</div><div class="text-sm text-muted-foreground tabular">${fmt(f.start)} – ${fmt(endOf(f.planId, f.start))}</div></div>${Button("Modifica date", { v: "ghost", s: "sm", action: "b-setup", ic: "pencil" })}</div>
+        <div class="grid gap-1.5"><div class="flex justify-between text-xs"><span class="text-muted-foreground">Carichi inseriti</span><span class="font-medium tabular" data-live="progress-text">${t.filled} / ${t.total}</span></div>${Progress(t.filled / t.total * 100)}</div></div>
+      ${flowAlerts(f, { onDates: "b-setup" })}<div>${weeks}</div>`,
+    footer: `${Button("Salva e continua dopo", { v: "secondary", action: "save-draft", ic: "save" })}${Button("Assegna Scheda", { action: "submit", ic: "check" })}`,
+  };
+}
+function B_sheet() {
+  const { body, footer } = S.ui.bPhase === "loads" ? B_loads() : B_setup();
+  return `<div class="fixed inset-0 z-40 bg-black/60" data-action="b-close"></div>
+  <aside role="dialog" aria-modal="true" aria-labelledby="b-sheet-title" class="fixed inset-y-0 right-0 z-50 flex h-full w-full flex-col border-l bg-background shadow-lg sm:max-w-xl" style="padding-top:env(safe-area-inset-top,0px);padding-right:env(safe-area-inset-right,0px)">
+    <div class="flex items-start justify-between gap-4 border-b p-6"><div class="grid gap-1"><h2 id="b-sheet-title" class="text-lg font-semibold text-foreground">${S.flow.resumed ? "Riprendi la bozza" : "Assegna nuova Scheda"}</h2><p class="text-sm text-muted-foreground">${ATHLETE.name} · ${ATHLETE.email}</p></div>${Button("", { v: "ghost", s: "icon-sm", action: "b-close", ic: "x", title: "Chiudi" })}</div>
+    <div class="flex-1 overflow-y-auto"><div class="grid gap-6 p-6">${body}</div></div>
+    <div class="flex flex-wrap justify-end gap-2 border-t p-4 pb-20 sm:pb-4">${footer}</div>
+  </aside>`;
+}
+const VB = {
+  key: "B", slug: "variante-b", name: "Pannello laterale",
+  render: B_page,
+  resume(a) { S.flow = flowFromDraft(a); S.ui.bSheet = true; S.ui.bPhase = "loads"; S.ui.bTab = "schede"; },
+  leave() { S.flow = null; S.ui.bSheet = false; },
+  done(a) {
+    S.flow = null; S.ui.bSheet = false; S.ui.bTab = "schede";
+    toast("Scheda assegnata", `"${plan(a.planId).name}" dal ${fmt(a.start)}. Email di notifica inviata a ${ATHLETE.email}.`);
+  },
+};
+
+/* ============================================================
+   Variante C: calendario + matrice dei carichi su una pagina
+   ============================================================ */
+const T0 = "2026-01-01", T1 = "2027-06-30";
+const tPct = iso => Math.max(0, Math.min(100, daysBetween(T0, iso) / daysBetween(T0, T1) * 100));
+function C_timeline() {
+  const f = S.ui.cOpen ? S.flow : null;
+  const months = []; for (let d = T0; d <= T1;) { months.push(d); const [y, m] = d.split("-").map(Number); d = m === 12 ? `${y + 1}-01-01` : `${y}-${String(m + 1).padStart(2, "0")}-01`; }
+  const axis = months.map(m => `<div class="absolute top-0 h-full border-l border-dashed border-border" style="left:${tPct(m)}%"></div><span class="absolute top-0 pl-1 text-[11px] text-muted-foreground" style="left:${tPct(m)}%">${new Date(m + "T00:00:00Z").toLocaleDateString("it-IT", { month: "short", timeZone: "UTC" })}${m.slice(5, 7) === "01" ? ` ${m.slice(0, 4)}` : ""}</span>`).join("");
+  const bar = (a, lane, cls) => { const e = endOf(a.planId, a.start); const l = tPct(a.start), r = tPct(addDays(e, 1));
+    return `<button type="button" data-action="c-bar" data-id="${a.id || ""}" title="${plan(a.planId).name}: ${fmt(a.start)} – ${fmt(e)}" class="absolute h-7 truncate rounded-md px-2 text-left text-xs font-medium ${cls}" style="top:${lane * 36 + 4}px;left:calc(${l}% + 1px);width:calc(${r - l}% - 2px)">${plan(a.planId).name}</button>`; };
+  const bars = S.assignments.filter(a => !(f && a.id === f.id)).map(a => a.status === "draft"
+    ? bar(a, 1, "border-2 border-dashed border-warning bg-warning/10 text-warning hover:bg-warning/20")
+    : bar(a, 0, cx(periodStatus(a) === "Terminata" ? "bg-muted-foreground/25 text-foreground" : "bg-primary text-primary-foreground", S.ui.highlight === a.id && "ring-2 ring-success ring-offset-2 ring-offset-card"))).join("");
+  let ghost = "";
+  if (f && f.planId && f.start) {
+    const o = overlapFor(f.start, endOf(f.planId, f.start), f.id);
+    ghost = bar({ planId: f.planId, start: f.start }, 2, o ? "border border-destructive bg-destructive/15 text-destructive" : "border border-success bg-success/15 text-success");
+  }
+  const today = `<div class="absolute bottom-0 top-5 w-px bg-destructive" style="left:${tPct(TODAY)}%"><span class="absolute bottom-0 left-1 text-[11px] font-medium text-destructive">oggi</span></div>`;
+  const lanes = ["Confermate", "Bozze", f ? (f.resumed ? "In modifica" : "Nuova") : ""];
+  return Card(CardHeader("Calendario delle schede", "Le bozze non occupano il calendario: la sovrapposizione si controlla solo con le schede confermate.",
+      `<div class="flex flex-wrap gap-3 text-xs text-muted-foreground"><span class="flex items-center gap-1.5"><span class="size-3 rounded-sm bg-primary"></span>Confermata</span><span class="flex items-center gap-1.5"><span class="size-3 rounded-sm border-2 border-dashed border-warning"></span>Bozza</span><span class="flex items-center gap-1.5"><span class="size-3 rounded-sm border border-success bg-success/15"></span>Nuova</span></div>`)
+    + CardContent(`<div class="flex"><div class="w-24 shrink-0 pt-6 text-xs text-muted-foreground">${lanes.map(l => `<div class="flex h-9 items-center">${l}</div>`).join("")}</div>
+      <div class="min-w-0 flex-1 overflow-x-auto"><div class="relative min-w-[720px]" style="height:${24 + 3 * 36}px">${axis}${today}<div class="absolute inset-x-0 top-6 bottom-0">${bars}${ghost}</div></div></div></div>`));
+}
+function C_side() {
+  const f = S.flow; const p = f.planId && plan(f.planId); const n = f.notice && plan(f.notice);
+  const end = p && f.start ? endOf(f.planId, f.start) : null;
+  const o = end && overlapFor(f.start, end, f.id);
+  const t = p ? totals(f) : null;
+  const ready = p && f.start;
+  const opts = `<option value="">Scegli una scheda</option>` + PLANS.map(x => `<option value="${x.id}" ${x.id === f.planId ? "selected" : ""}>${x.name}${x.unconfigured ? " (non configurata)" : ` · ${weeksOf(x)} sett.`}</option>`).join("");
+  return Card(CardHeader(f.resumed ? "Bozza" : "Nuova assegnazione", "", f.id ? Badge("Bozza", "warning", "pencil") : "") + CardContent(`<div class="grid gap-4">
+      <div class="grid gap-2">${Label("Scheda", "c-plan")}<select id="c-plan" data-field="plan" class="${INPUT} pr-8" ${f.resumed ? "disabled" : ""}>${opts}</select>
+        ${n ? `<p class="flex items-start gap-1.5 text-xs text-destructive">${icon("triangle-alert", "mt-px size-3.5 shrink-0")}"${n.name}" non è configurata: completala con il caso d'uso PT-04.</p>` : ""}
+        ${f.resumed ? "" : Button("Crea scheda ad hoc", { v: "link", s: "sm", action: "adhoc", ic: "plus", cls: "h-6 w-fit" })}</div>
+      ${p ? `<div class="grid gap-2">${Label("Data di inizio", "c-start")}<input id="c-start" type="date" data-field="start" value="${f.start}" class="${INPUT}">${freeDayChip().replace("inline-flex", "inline-flex w-fit")}</div>
+      <div class="flex items-center justify-between text-sm"><span class="text-muted-foreground">Data di fine</span><span class="font-medium tabular">${end ? fmt(end) : "—"}</span></div>` : ""}
+      ${o ? Alert("Date sovrapposte", `<p>Si sovrappone a "${plan(o.planId).name}" (${fmt(o.start)} – ${fmt(endOf(o.planId, o.start))}).</p>`, { v: "destructive", ic: "circle-x" }) : ""}
+      ${f.error && f.error.type === "missing" ? flowAlerts(f) : ""}
+      ${t ? `${Separator()}<div class="grid gap-1.5"><div class="flex justify-between text-sm"><span class="text-muted-foreground">Carichi inseriti</span><span class="font-medium tabular" data-live="progress-text">${t.filled} / ${t.total}</span></div>${Progress(t.filled / t.total * 100)}</div>` : ""}
+      <div class="grid gap-2 pt-2">
+        ${Button("Assegna Scheda", { action: "submit", ic: "check", disabled: !ready || !!o })}
+        ${Button("Salva e continua dopo", { v: "secondary", action: "save-draft", ic: "save", disabled: !ready || !!o })}
+        ${f.id ? Button("Scarta la bozza", { v: "ghost", action: "discard", data: { id: f.id }, ic: "trash-2", cls: "text-destructive hover:text-destructive" }) : ""}
+        ${Button("Chiudi", { v: "ghost", action: "c-close" })}
+      </div></div>`), "lg:sticky lg:top-4");
+}
+function C_matrix() {
+  const f = S.flow; const p = f.planId && plan(f.planId);
+  if (!p || !f.start) return Card(`<div class="flex flex-col items-center gap-2 p-12 text-center">${icon("table-2", "size-8 text-muted-foreground")}<h3 class="font-semibold">Matrice dei carichi</h3><p class="max-w-sm text-sm text-muted-foreground">Scegli una scheda e la data di inizio: qui compare una riga per ogni esercizio e una colonna per ogni week.</p></div>`);
+  const s = SESSIONS.find(x => x.id === f.session); const W = weeksOf(p);
+  const weeks = Array.from({ length: W }, (_, i) => i + 1);
+  const head1 = p.blocks.map((n, i) => `<th colspan="${n}" class="h-8 border-l px-2 text-center text-xs font-medium text-muted-foreground">Blocco ${i + 1}</th>`).join("");
+  const head2 = weeks.map(w => `<th class="${cx("h-8 px-1 text-center text-xs font-medium text-muted-foreground", blockOfWeek(p, w).inBlock === 1 && "border-l")}">W${w}</th>`).join("");
+  const cellBorder = w => blockOfWeek(p, w).inBlock === 1 ? "border-l" : "";
+  const rows = s.rows.map(r => {
+    const main = `<tr class="border-b"><th scope="row" class="sticky left-0 z-10 bg-card p-2 text-left align-middle font-normal"><div class="flex items-center justify-between gap-2"><div class="min-w-0"><div class="truncate text-sm font-medium">${r.name}</div><div class="text-xs text-muted-foreground tabular">${r.sets} · ${r.rest}${r.superset ? ` · Superset ${r.superset}` : ""}</div></div>${Button("", { v: "ghost", s: "icon-sm", action: "c-propagate", data: { id: r.id }, ic: "arrow-right-to-line", title: `Copia i carichi di ${r.name} nelle week vuote successive` })}</div></th>
+      ${weeks.map(w => `<td class="p-1 ${cellBorder(w)}">${loadInput(f, w, r.id, "w-16 px-1 text-center")}</td>`).join("")}</tr>`;
+    if (!r.drop) return main;
+    return main + `<tr class="border-b bg-muted/30 text-muted-foreground"><th scope="row" class="sticky left-0 z-10 bg-card p-2 pl-4 text-left text-xs font-normal">${icon("corner-down-right", "mr-1 inline size-3.5")}Drop-set × ${kg(r.drop)} (calcolato)</th>${weeks.map(w => { const d = dropValue(f, w, r); return `<td class="p-1 text-center text-xs tabular ${cellBorder(w)}"><span data-drop="${key(w, r.id)}">${d === null ? "—" : kg(d)}</span></td>`; }).join("")}</tr>`;
+  }).join("");
+  const status = `<tr><th scope="row" class="sticky left-0 z-10 bg-card p-2 text-left text-xs font-normal text-muted-foreground">Week completa</th>${weeks.map(w => `<td class="p-1 text-center ${cellBorder(w)}"><span class="inline-flex justify-center" data-live="week-status" data-week="${w}" data-mode="dot">${weekStatus(f, w, "dot")}</span></td>`).join("")}</tr>`;
+  return Card(CardHeader("Carichi (kg)", "Un valore per esercizio e per week. I valori in corsivo sono copiati dalla week precedente.",
+      Tabs(SESSIONS.map(x => ({ id: x.id, label: `${x.name}` })), f.session, "c-session"))
+    + CardContent(`<div class="mb-3 flex flex-wrap items-center gap-2">${Button(`Precompila le celle vuote di ${s.name}`, { v: "outline", s: "sm", action: "c-prefill", ic: "copy" })}<span class="text-xs text-muted-foreground">${s.focus}</span></div>
+      <div class="relative w-full overflow-x-auto rounded-md border"><table class="w-full border-collapse text-sm"><thead class="border-b bg-muted/30"><tr><th rowspan="2" class="sticky left-0 z-10 min-w-[200px] bg-card p-2 text-left align-bottom text-xs font-medium text-muted-foreground">Esercizio</th>${head1}</tr><tr>${head2}</tr></thead><tbody>${rows}${status}</tbody></table></div>`));
+}
+function C_page() {
+  return AppHeader() + `<main class="mx-auto flex max-w-6xl flex-col gap-6">
+    <div class="flex flex-wrap items-center gap-4">${Avatar(ATHLETE.initials, "size-12")}
+      <div class="min-w-0 flex-1"><div class="text-sm text-muted-foreground">Atleti /</div><h1 class="text-2xl font-semibold tracking-tight">${ATHLETE.name}</h1></div>
+      <div class="hidden flex-wrap gap-x-6 gap-y-1 text-sm md:flex">${[["Email", ATHLETE.email], ["Età", `${ATHLETE.age}`], ["Fisico", `${ATHLETE.height} cm · ${ATHLETE.weight} kg`], ["Palestra", ATHLETE.gyms[0]]].map(([k, v]) => `<div><div class="text-xs text-muted-foreground">${k}</div><div class="font-medium tabular">${v}</div></div>`).join("")}</div>
+      ${S.ui.cOpen ? "" : Button("Assegna nuova Scheda", { action: "c-open", ic: "plus" })}</div>
+    ${C_timeline()}
+    ${S.ui.cOpen ? `<div class="grid items-start gap-4 lg:grid-cols-[300px_minmax(0,1fr)]">${C_side()}<div class="min-w-0">${C_matrix()}</div></div>` : ""}
+  </main>`;
+}
+const VC = {
+  key: "C", slug: "variante-c", name: "Matrice dei carichi",
+  render: C_page,
+  resume(a) { S.flow = flowFromDraft(a); S.ui.cOpen = true; },
+  leave() { S.flow = null; S.ui.cOpen = false; },
+  done(a) {
+    S.flow = null; S.ui.cOpen = false;
+    toast("Scheda assegnata", `"${plan(a.planId).name}" dal ${fmt(a.start)}. Email di notifica inviata a ${ATHLETE.email}.`);
+  },
+};
+
+/* ============================================================
+   Overlay: AlertDialog, toast, barra del prototipo
+   ============================================================ */
+const VARIANTS = [VA, VB, VC];
+const V = () => VARIANTS[S.variant];
+let toastTimer;
+function toast(title, desc) { S.toast = { title, desc }; clearTimeout(toastTimer); toastTimer = setTimeout(() => { S.toast = null; document.getElementById("overlays").innerHTML = overlays(); if (window.lucide) lucide.createIcons(); }, 4500); }
+function overlays() {
+  let h = "";
+  if (S.dialog) {
+    const a = S.assignments.find(x => x.id === S.dialog.id);
+    h += `<div class="fixed inset-0 z-[80] bg-black/70"></div><div role="alertdialog" aria-modal="true" aria-labelledby="dlg-title" class="fixed left-1/2 top-1/2 z-[81] grid w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border bg-background p-6 shadow-lg">
+      <div class="grid gap-2"><h2 id="dlg-title" class="text-lg font-semibold">Scartare la bozza?</h2><p class="text-sm text-muted-foreground">Elimini "${plan(a.planId).name}" (${fmt(a.start)} – ${fmt(endOf(a.planId, a.start))}) con tutti i carichi inseriti. L'operazione non è reversibile.</p></div>
+      <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">${Button("Annulla", { v: "outline", action: "dialog-cancel" })}${Button("Scarta la bozza", { v: "destructive", action: "dialog-confirm" })}</div></div>`;
+  }
+  if (S.toast) {
+    h += `<div role="status" class="fixed bottom-20 right-4 z-[70] flex w-[calc(100%-2rem)] max-w-sm items-start gap-3 rounded-lg border bg-background p-4 shadow-lg" style="margin-right:env(safe-area-inset-right,0px)">${icon("circle-check", "mt-0.5 size-4 shrink-0 text-success")}<div class="grid flex-1 gap-1"><div class="text-sm font-semibold">${S.toast.title}</div><div class="text-sm text-muted-foreground">${S.toast.desc}</div></div>${Button("", { v: "ghost", s: "icon-sm", action: "toast-close", ic: "x", title: "Chiudi", cls: "-mr-1 -mt-1" })}</div>`;
+  }
+  return h;
+}
+function stateDump() {
+  const pad = (s, n) => (s + " ".repeat(n)).slice(0, n);
+  const lines = [`Variante ${V().key} (${V().name})` + (S.variant === 0 ? ` · vista: ${S.ui.aView}` : ""), "", "Schede dell'atleta (TODAY = " + fmt(TODAY) + "):"];
+  for (const a of sorted()) lines.push(`  #${a.id} ${pad(plan(a.planId).name, 24)} ${fmt(a.start)} – ${fmt(endOf(a.planId, a.start))}  ${a.status === "draft" ? "BOZZA" : "confermata"} · ${periodStatus(a)}`);
+  lines.push("", "Flusso in corso:");
+  const f = S.flow;
+  if (!f) lines.push("  nessuno");
+  else {
+    lines.push(`  assegnazione: ${f.id ? `#${f.id} (bozza salvata)` : "non ancora creata"}${f.resumed ? " · ripresa (flusso 2a)" : ""}`);
+    lines.push(`  scheda: ${f.planId ? plan(f.planId).name : "—"} · inizio ${fmt(f.start)} · fine ${f.planId && f.start ? fmt(endOf(f.planId, f.start)) : "—"}`);
+    if (f.planId) { const t = totals(f); const inc = incompleteWeeks(f); lines.push(`  carichi: ${t.filled}/${t.total} · week incomplete: ${inc.length ? weekRanges(inc) : "nessuna"}`); }
+    lines.push(`  precompilati da confermare: ${f.pre.size}`);
+    lines.push(`  errore: ${f.error ? f.error.type : "—"}`);
+  }
+  return lines.join("\n");
+}
+function proto() {
+  const v = V();
+  return `${S.showState ? `<div class="fixed bottom-16 left-1/2 z-[90] max-h-[50vh] w-[min(620px,calc(100%-2rem))] -translate-x-1/2 overflow-auto rounded-lg bg-foreground p-4 text-background shadow-xl" style="margin-bottom:env(safe-area-inset-bottom,0px)"><pre id="state-dump" class="whitespace-pre-wrap font-mono text-xs leading-relaxed">${stateDump()}</pre></div>` : ""}
+  <div class="fixed bottom-4 left-1/2 z-[90] flex -translate-x-1/2 items-center gap-1 rounded-full bg-foreground p-1 text-background shadow-xl" style="margin-bottom:env(safe-area-inset-bottom,0px)">
+    <button type="button" data-action="proto-prev" aria-label="Variante precedente" class="grid size-8 place-items-center rounded-full hover:bg-background/15 [&_svg]:size-4">${icon("chevron-left")}</button>
+    <span class="whitespace-nowrap px-1 text-xs font-medium"><span class="opacity-60">Prototipo · </span>${v.key} <span class="opacity-70">(${v.name})</span></span>
+    <button type="button" data-action="proto-next" aria-label="Variante successiva" class="grid size-8 place-items-center rounded-full hover:bg-background/15 [&_svg]:size-4">${icon("chevron-right")}</button>
+    <span class="mx-0.5 h-4 w-px bg-background/25"></span>
+    <button type="button" data-action="proto-state" aria-pressed="${S.showState}" class="h-8 rounded-full px-3 text-xs font-medium hover:bg-background/15">${S.showState ? "Nascondi stato" : "Stato"}</button>
+    <button type="button" data-action="proto-reset" class="h-8 rounded-full px-3 text-xs font-medium opacity-70 hover:bg-background/15 hover:opacity-100">Reset</button>
+  </div>`;
+}
+
+/* ============================================================
+   Render e aggiornamenti mirati durante la digitazione
+   ============================================================ */
+function render() {
+  document.getElementById("app").innerHTML = V().render();
+  document.getElementById("overlays").innerHTML = overlays();
+  document.getElementById("proto").innerHTML = proto();
+  if (window.lucide) lucide.createIcons();
+}
+function updateLive() {
+  const f = S.flow; if (!f || !f.planId) return;
+  const t = totals(f);
+  document.querySelectorAll('[data-live="progress-bar"]').forEach(e => e.style.width = (t.filled / t.total * 100) + "%");
+  document.querySelectorAll('[data-live="progress-text"]').forEach(e => e.textContent = `${t.filled} / ${t.total}`);
+  document.querySelectorAll('[data-live="week-status"]').forEach(e => e.innerHTML = weekStatus(f, +e.dataset.week, e.dataset.mode));
+  document.querySelectorAll("[data-drop]").forEach(e => { const [w, ex] = e.dataset.drop.split("|"); const r = SESSIONS.flatMap(s => s.rows).find(x => x.id === ex); const d = dropValue(f, +w, r); e.textContent = d === null ? "—" : kg(d); });
+  const dump = document.getElementById("state-dump"); if (dump) dump.textContent = stateDump();
+  if (window.lucide) lucide.createIcons();
+}
+
+/* ============================================================
+   Azioni
+   ============================================================ */
+const ACT = {
+  // comuni
+  "adhoc": () => toast("Crea scheda ad hoc", "Il flusso continua con PT-03 e PT-04 e poi torna al passo 5. Non fa parte di questo prototipo."),
+  "open-plan": () => toast("Apri la scheda", "Il dettaglio della scheda assegnata non fa parte di questo prototipo."),
+  "resume": d => { const a = S.assignments.find(x => x.id === +d.id); V().resume(a); },
+  "discard": d => { S.dialog = { id: +d.id }; },
+  "dialog-cancel": () => { S.dialog = null; },
+  "dialog-confirm": () => {
+    const id = S.dialog.id; const name = plan(S.assignments.find(x => x.id === id).planId).name;
+    S.assignments = S.assignments.filter(x => x.id !== id); S.dialog = null;
+    if (S.flow && S.flow.id === id) V().leave();
+    toast("Bozza scartata", `"${name}" e i suoi carichi sono stati eliminati.`);
+  },
+  "set-start": d => { S.flow.start = d.d; S.flow.error = null; },
+  "save-draft": () => saveDraft(),
+  "submit": () => submit(),
+  "toast-close": () => { S.toast = null; },
+  "proto-prev": () => setVariant((S.variant + VARIANTS.length - 1) % VARIANTS.length),
+  "proto-next": () => setVariant((S.variant + 1) % VARIANTS.length),
+  "proto-state": () => { S.showState = !S.showState; },
+  "proto-reset": () => { S.assignments = initialAssignments(); S.nextId = 5; S.dialog = null; S.toast = null; resetUi(); },
+  // A
+  "a-detail": () => { S.flow = null; S.ui.aView = "detail"; },
+  "a-new": () => { S.flow = newFlow(); S.ui.highlight = null; S.ui.aView = "plans"; },
+  "a-plans": () => { S.ui.aView = "plans"; },
+  "a-pick": d => { const p = plan(d.id); if (p.unconfigured) { S.flow.notice = p.id; return; } S.flow.notice = null; S.flow.planId = p.id; S.ui.aView = "dates"; },
+  "a-dates": () => { S.flow.error = null; S.ui.aView = "dates"; },
+  "a-continue": () => { if (continueToLoads()) S.ui.aView = "loads"; },
+  "a-block": d => { const p = plan(S.flow.planId); S.flow.week = weeksOfBlock(p, +d.id)[0]; prefillWeek(S.flow, S.flow.week); },
+  "a-week": d => { S.flow.week = +d.id; prefillWeek(S.flow, S.flow.week); },
+  // B
+  "b-tab": d => { S.ui.bTab = d.id; },
+  "b-open": () => { S.flow = newFlow(); S.ui.highlight = null; S.ui.bSheet = true; S.ui.bPhase = "setup"; },
+  "b-close": () => { S.flow = null; S.ui.bSheet = false; },
+  "b-pick": d => { const p = plan(d.id); if (p.unconfigured) { S.flow.notice = p.id; return; } if (S.flow.resumed) return; S.flow.notice = null; S.flow.planId = p.id; },
+  "b-continue": () => { if (continueToLoads()) S.ui.bPhase = "loads"; },
+  "b-setup": () => { S.flow.error = null; S.ui.bPhase = "setup"; },
+  "b-week": d => { const w = +d.id; S.flow.week = S.flow.week === w ? 0 : w; if (S.flow.week) prefillWeek(S.flow, w); },
+  // C
+  "c-open": () => { S.flow = newFlow(); S.ui.highlight = null; S.ui.cOpen = true; },
+  "c-close": () => { S.flow = null; S.ui.cOpen = false; },
+  "c-bar": d => {
+    const a = S.assignments.find(x => x.id === +d.id); if (!a) return;
+    if (a.status === "draft") { VC.resume(a); } else ACT["open-plan"]();
+  },
+  "c-session": d => { S.flow.session = d.id; },
+  "c-prefill": () => { const f = S.flow; const ids = SESSIONS.find(s => s.id === f.session).rows.map(r => r.id); for (let w = 2; w <= weeksOf(plan(f.planId)); w++) prefillWeek(f, w, ids); },
+  "c-propagate": d => { const f = S.flow; for (let w = 2; w <= weeksOf(plan(f.planId)); w++) prefillWeek(f, w, [d.id]); },
+};
+
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-action]"); if (!el || el.disabled) return;
+  const fn = ACT[el.dataset.action]; if (!fn) return;
+  fn(el.dataset, el); render();
+});
+document.addEventListener("input", e => {
+  const el = e.target; if (!el.dataset || !el.dataset.load || !S.flow) return;
+  const [w, ex] = el.dataset.load.split("|"); const k = key(w, ex);
+  S.flow.loads[k] = el.value === "" ? "" : Number(el.value); S.flow.pre.delete(k);
+  el.classList.remove("italic", "text-muted-foreground");
+  if (el.value !== "") el.classList.remove("border-destructive", "bg-destructive/5");
+  updateLive();
+});
+document.addEventListener("change", e => {
+  const el = e.target; if (!S.flow || !el.dataset) return;
+  if (el.dataset.field === "start") { S.flow.start = el.value; S.flow.error = null; render(); }
+  if (el.dataset.field === "plan") {
+    const p = plan(el.value);
+    if (p && p.unconfigured) { S.flow.notice = p.id; }
+    else { S.flow.notice = null; S.flow.planId = el.value || null; S.flow.loads = {}; S.flow.pre = new Set(); }
+    render();
+  }
+});
+document.addEventListener("keydown", e => {
+  const t = e.target;
+  if (e.key === "Escape") { if (S.dialog) S.dialog = null; else if (S.showState) S.showState = false; else if (S.ui.bSheet) ACT["b-close"](); else return; render(); return; }
+  if (t.closest && t.closest("input, textarea, select, [contenteditable]")) return;
+  if (e.key === "ArrowLeft") ACT["proto-prev"]();
+  if (e.key === "ArrowRight") ACT["proto-next"]();
+});
+
+/* Variante nell'hash (#variante-a). Accetta anche ?variant=B quando il file è aperto in locale. */
+function setVariant(i) { const slug = VARIANTS[i].slug; if (location.hash.slice(1) !== slug) location.hash = slug; else applyRoute(); }
+function applyRoute() {
+  const h = location.hash.slice(1); let i = VARIANTS.findIndex(v => v.slug === h);
+  if (i < 0) { const q = new URLSearchParams(location.search).get("variant"); i = Math.max(0, VARIANTS.findIndex(v => v.key === (q || "A").toUpperCase())); }
+  if (i !== S.variant) { S.variant = i; resetUi(); }
+  render();
+}
+window.addEventListener("hashchange", applyRoute);
+applyRoute();
+</script>
