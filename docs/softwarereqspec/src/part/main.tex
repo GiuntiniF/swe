@@ -198,6 +198,98 @@ comuni, PT per il Personal Trainer, A per l'Atleta.
 \subsubsection{A-06: Visualizzazione Palestre}
 \subfile{../diagrams/useCaseTemplates/atleta/src/A-06-visualizzazionePalestre}
 
+\subsection{Mockup dell'interfaccia}
+Questa sezione mostra i mockup dell'interfaccia per alcuni casi d'uso.
+I mockup spiegano i passi dei casi d'uso. Non definiscono l'aspetto
+finale dell'applicazione. Le figure usano dati di esempio: l'atleta è
+Mario Rossi e la scheda da assegnare è \enquote{Forza avanzata}.
+
+\subsubsection{PT-05: Assegnazione Scheda ad un Atleta}
+Le figure seguenti mostrano il flusso principale del caso d'uso PT-05
+e alcuni flussi alternativi. L'assegnazione ha tre passi: scelta della
+scheda, date e carichi. Un indicatore in alto mostra il passo corrente.
+
+La figura \ref{fig:mockupPT05Dettaglio} mostra la pagina di dettaglio
+di un atleta (passi 1 e 2). La pagina divide i dati in tre tab:
+Schede, Appuntamenti e Profilo. Il tab Schede elenca le schede
+assegnate con il periodo e lo stato. Un'assegnazione in bozza ha il
+pulsante \enquote{Riprendi} (flusso alternativo 2a) e il pulsante per
+scartarla (flusso alternativo 2b). Il pulsante \enquote{Assegna nuova
+Scheda} avvia il caso d'uso.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/Mockups/PT-05/screens/pt05-01-dettaglio-atleta.png}
+  \caption{Mockup del dettaglio di un atleta (PT-05, passi 1 e 2)}
+  \label{fig:mockupPT05Dettaglio}
+\end{figure}
+
+La figura \ref{fig:mockupPT05Schede} mostra la lista delle schede del
+PT (passi 3 e 4). Il sistema segnala le schede non configurate. Nella
+figura il PT ha premuto su una scheda non configurata. Il sistema non
+permette di sceglierla e mostra un messaggio (flusso alternativo 4b).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/Mockups/PT-05/screens/pt05-02-scelta-scheda.png}
+  \caption{Mockup della scelta della scheda (PT-05, passi 3 e 4, flusso alternativo 4b)}
+  \label{fig:mockupPT05Schede}
+\end{figure}
+
+La figura \ref{fig:mockupPT05Date} mostra il form delle date (passi 5
+e 6). Il PT inserisce la data di inizio. Il sistema calcola la data di
+fine dal numero di blocchi mensili (Nota 3). Nella figura l'intervallo
+si sovrappone a una scheda confermata. Il sistema mostra il nome e il
+periodo della scheda in conflitto (flusso alternativo 6a).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/Mockups/PT-05/screens/pt05-03-date-sovrapposizione.png}
+  \caption{Mockup del form delle date con una sovrapposizione (PT-05, passi 5 e 6, flusso alternativo 6a)}
+  \label{fig:mockupPT05Date}
+\end{figure}
+
+La figura \ref{fig:mockupPT05Carichi} mostra il form dei carichi
+(passi 7 e 8). Il PT sceglie il blocco mensile e la settimana. Per
+ogni sessione il form elenca gli esercizi con le serie, le ripetizioni
+e il recupero. Il sistema precompila la settimana 2 con i carichi della
+settimana 1. I carichi precompilati sono in corsivo finché il PT non li
+modifica (Nota 1). Nella figura il PT ha modificato il carico dello
+squat. Il sistema calcola il carico del drop-set con il moltiplicatore
+della variante (Nota 2). Il pulsante \enquote{Salva e continua dopo}
+salva l'assegnazione in bozza (flusso alternativo 8a).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{diagrams/Mockups/PT-05/screens/pt05-04-form-carichi.png}
+  \caption{Mockup del form dei carichi (PT-05, passi 7 e 8)}
+  \label{fig:mockupPT05Carichi}
+\end{figure}
+
+La figura \ref{fig:mockupPT05Mancanti} mostra il controllo dei carichi
+alla conferma (flusso alternativo 9a). Il PT preme \enquote{Assegna
+Scheda}, ma manca il carico di almeno un esercizio. Il sistema elenca
+le settimane incomplete e segna in rosso il campo vuoto. Il sistema
+non conferma l'assegnazione, che resta in bozza.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{diagrams/Mockups/PT-05/screens/pt05-05-carichi-mancanti.png}
+  \caption{Mockup dei carichi incompleti alla conferma (PT-05, flusso alternativo 9a)}
+  \label{fig:mockupPT05Mancanti}
+\end{figure}
+
+La figura \ref{fig:mockupPT05Conferma} mostra la conferma
+dell'assegnazione (passi 10 e 11). Il sistema mostra il periodo della
+scheda e conferma l'invio dell'email all'atleta.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/Mockups/PT-05/screens/pt05-06-conferma.png}
+  \caption{Mockup della conferma dell'assegnazione (PT-05, passi 10 e 11)}
+  \label{fig:mockupPT05Conferma}
+\end{figure}
+
 \newpage
 \section{Implementazione}
 \subsection{Architettura di Sistema}
